@@ -1,0 +1,33 @@
+{
+  "name": "skyrim-mcp",
+  "version": "0.1.0",
+  "description": "MCP Server for Skyrim SE/AE - Read game state and execute console commands",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "skyrim",
+    "gaming",
+    "memory-reading"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "koffi": "^2.9.0",
+    "@nut-tree/nut-js": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

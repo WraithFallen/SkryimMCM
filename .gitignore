@@ -1,0 +1,28 @@
+# Node
+node_modules/
+dist/
+
+# .NET
+bin/
+obj/
+
+# C++ build
+SkyrimMCPPlugin/build/
+SkyrimMCPPlugin/output/
+
+# CommonLibSSE-NG (large dependency, cloned locally)
+SkyrimMCPPlugin/extern/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# IDE
+.idea/
+.claude/
+
+# OS
+Thumbs.db
+.DS_Store

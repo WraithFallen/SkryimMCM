@@ -1,4 +1,5 @@
 #include "Protocol.h"
+#include "EventSystem.h"
 #include "GameInterface.h"
 #include "TaskQueue.h"
 
@@ -34,6 +35,16 @@ namespace SkyrimMCP::Protocol {
             // ping is handled directly — no game thread needed
             if (action == "ping") {
                 return MakeResponse(id, true, json::object()).dump() + "\n";
+            }
+
+            // poll_events — drain queued game events, no game thread needed
+            if (action == "poll_events") {
+                auto events = EventSystem::GetSingleton().DrainEvents();
+                json arr = json::array();
+                for (auto& e : events) {
+                    arr.push_back(e);
+                }
+                return MakeResponse(id, true, {{"events", arr}, {"count", events.size()}}).dump() + "\n";
             }
 
             // All other actions are dispatched to the game thread
@@ -232,14 +243,21 @@ namespace SkyrimMCP::Protocol {
                 if (query.empty()) return MakeResponse(id, false, {}, "Missing 'query' parameter").dump() + "\n";
                 result = TaskQueue::RunOnGameThread([query, typeFilter, maxResults]() { return GameInterface::SearchForms(query, typeFilter, maxResults); });
             }
-            // Save game
+            // Save game — fire and forget, don't wait for completion
             else if (action == "save_game") {
                 std::string saveName = params.value("saveName", "MCPSave");
-                result = TaskQueue::RunOnGameThread([saveName]() { return GameInterface::SaveGame(saveName); });
+                // Queue save on game thread but don't block pipe waiting for it
+                SKSE::GetTaskInterface()->AddTask([saveName]() {
+                    GameInterface::SaveGame(saveName);
+                });
+                return MakeResponse(id, true, {{"saving", true}, {"saveName", saveName}}).dump() + "\n";
             }
             // Load order
             else if (action == "get_load_order") {
                 result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetLoadOrder(); });
+            }
+            else if (action == "get_loaded_skse_plugins") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetLoadedSKSEPlugins(); });
             }
             else if (action == "get_mod_formid_prefix") {
                 std::string modName = params.value("modName", "");

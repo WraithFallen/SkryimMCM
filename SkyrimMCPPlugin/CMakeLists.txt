@@ -27,6 +27,7 @@ set(SOURCES
     src/Protocol.cpp
     src/GameInterface.cpp
     src/TaskQueue.cpp
+    src/EventSystem.cpp
 )
 
 set(HEADERS
@@ -34,6 +35,7 @@ set(HEADERS
     src/Protocol.h
     src/GameInterface.h
     src/TaskQueue.h
+    src/EventSystem.h
 )
 
 # Create the SKSE plugin as a shared library (DLL)

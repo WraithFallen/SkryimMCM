@@ -268,7 +268,7 @@ public class SkyrimTools
             ["saveName"] = saveName
         });
 
-        await NotifyInGame($"Game Saved");
+        // Notification is handled by the plugin after save completes
         return new { success = true, message = $"Game saved as: {saveName}" };
     }
 
@@ -309,6 +309,28 @@ public class SkyrimTools
             ["type"] = type,
             ["maxResults"] = maxResults
         });
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Poll for recent game events (combat, deaths, quest updates, location changes, item pickups, etc.). " +
+        "Returns all events that have occurred since the last poll. Call this periodically to stay aware of what's happening " +
+        "in the game, or after performing actions to see their effects. Events include: combat (started/ended/searching), " +
+        "death, quest_stage, quest_start_stop, location_change, cell_loaded, inventory_change, equip, hit, spell_cast, " +
+        "activate, open_close, sleep, wait, fast_travel, book_read, lock_changed, stat_change.")]
+    public async Task<object> PollEvents()
+    {
+        var data = await _pipe.SendRequestAsync("poll_events");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("List all installed SKSE plugins with integration potential. " +
+        "Identifies plugins like ConsoleUtilSSE, HDT-SMP, PapyrusUtil, RaceMenu, TrueHUD, etc. " +
+        "and notes which ones have APIs that could extend MCP capabilities.")]
+    public async Task<object> GetLoadedSKSEPlugins()
+    {
+        var data = await _pipe.SendRequestAsync("get_loaded_skse_plugins");
         return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
     }
 

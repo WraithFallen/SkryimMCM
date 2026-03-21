@@ -64,6 +64,9 @@ namespace SkyrimMCP {
 
         // Search
         json SearchForms(const std::string& query, const std::string& formTypeFilter, int maxResults);
+
+        // Plugin detection
+        json GetLoadedSKSEPlugins();
     }
 
 }

@@ -4,6 +4,7 @@
 #include <SKSE/SKSE.h>
 
 #include <excpt.h>
+#include <filesystem>
 #include <format>
 #include <mutex>
 #include <optional>
@@ -232,22 +233,32 @@ namespace SkyrimMCP::GameInterface {
 
     // ==================== World Interaction ====================
 
-    // Execute console commands by looking up the SCRIPT_FUNCTION entry and calling
-    // its executeFunction directly. This bypasses Script::CompileAndRun entirely,
-    // which crashes from the SKSE task thread.
+    // Console command execution approach adapted from ConsoleUtilSSE by VersuchDrei
+    // (https://github.com/VersuchDrei/ConsoleUtilSSE, MIT License)
     //
-    // Flow:
-    //   1. Parse command string into command name + arguments
-    //   2. LocateConsoleCommand(name) to find the SCRIPT_FUNCTION
-    //   3. Call executeFunction with the player as thisObj
-    //
-    // For commands with no parameters (tgm, tcl), we pass nullptr for scriptData.
-    // For commands with parameters, we build a ScriptData chunk manually.
+    // Key insight: CommonLibSSE-NG's Script::CompileAndRun() uses a relocation that
+    // crashes on game versions >= 1.6.1130. ConsoleUtilSSE uses a version-conditional
+    // relocation (441582 for patch >= 1130) that works correctly.
 
-    // Fallback SEH wrapper — still used as safety net
-    static bool RunScriptSEH(RE::Script* script, RE::PlayerCharacter* player) {
+    static void CompileAndRunImpl(RE::Script* script, RE::ScriptCompiler* compiler,
+        RE::COMPILER_NAME name, RE::TESObjectREFR* targetRef) {
+        using func_t = decltype(CompileAndRunImpl);
+        REL::Relocation<func_t> func{
+            RELOCATION_ID(21416, REL::Module::get().version().patch() < 1130 ? 21890 : 441582)
+        };
+        return func(script, compiler, name, targetRef);
+    }
+
+    static void CompileAndRunSafe(RE::Script* script, RE::TESObjectREFR* targetRef,
+        RE::COMPILER_NAME name = RE::COMPILER_NAME::kSystemWindowCompiler) {
+        RE::ScriptCompiler compiler;
+        CompileAndRunImpl(script, &compiler, name, targetRef);
+    }
+
+    // SEH wrapper for safety
+    static bool RunScriptSEH(RE::Script* script, RE::TESObjectREFR* targetRef) {
         __try {
-            script->CompileAndRun(player, RE::COMPILER_NAME::kSystemWindowCompiler);
+            CompileAndRunSafe(script, targetRef);
             return true;
         } __except(EXCEPTION_EXECUTE_HANDLER) {
             return false;
@@ -255,156 +266,40 @@ namespace SkyrimMCP::GameInterface {
     }
 
     json ExecuteConsoleCommand(const std::string& command) {
+        // Console command execution using the approach from ConsoleUtilSSE
+        // by VersuchDrei (https://github.com/VersuchDrei/ConsoleUtilSSE, MIT License)
+        //
+        // Uses version-conditional relocation IDs that work on Skyrim >= 1.6.1130,
+        // unlike CommonLibSSE-NG's built-in CompileAndRun which crashes on newer versions.
+
         auto* player = RE::PlayerCharacter::GetSingleton();
         if (!player) return {{"error", "Player not available"}};
 
-        // Parse command: first token is the command name, rest is arguments
-        std::string cmdName;
-        std::string args;
-        auto spacePos = command.find(' ');
-        if (spacePos != std::string::npos) {
-            cmdName = command.substr(0, spacePos);
-            args = command.substr(spacePos + 1);
-        } else {
-            cmdName = command;
-        }
-
-        // Strip "player." prefix if present — the command lookup doesn't include it
-        RE::TESObjectREFR* targetRef = player;
-        std::string lowerCmd = cmdName;
-        std::transform(lowerCmd.begin(), lowerCmd.end(), lowerCmd.begin(), ::tolower);
-        if (lowerCmd.starts_with("player.")) {
-            cmdName = cmdName.substr(7);
-            lowerCmd = lowerCmd.substr(7);
-        }
-
-        // Look up the console command
-        auto* cmd = RE::SCRIPT_FUNCTION::LocateConsoleCommand(cmdName);
-        if (!cmd) {
-            // Also try as a script command (some commands are registered there)
-            cmd = RE::SCRIPT_FUNCTION::LocateScriptCommand(cmdName);
-        }
-        if (!cmd || !cmd->executeFunction) {
-            SKSE::log::warn("Console command '{}' not found, falling back to CompileAndRun", cmdName);
-            // Fallback to CompileAndRun with SEH
-            auto* factory = RE::IFormFactory::GetConcreteFormFactoryByType<RE::Script>();
-            if (!factory) return {{"error", "Script factory not available"}};
-            auto* script = factory->Create();
-            if (!script) return {{"error", "Failed to create script"}};
-
-            ClearConsoleOutput();
-            script->SetCommand(command);
-            bool ok = RunScriptSEH(script, player);
-            std::string output = CaptureLastConsoleOutput();
-
-            if (!ok) {
-                return {{"error", "Command not found and CompileAndRun fallback crashed: " + command}};
-            }
-            json result;
-            result["executed"] = true;
-            result["command"] = command;
-            result["method"] = "CompileAndRun_fallback";
-            if (!output.empty()) result["output"] = output;
-            return result;
-        }
-
-        SKSE::log::info("Found console command '{}' -> '{}' with {} params",
-            cmdName, cmd->functionName ? cmd->functionName : "?", cmd->numParams);
-
-        // Clear console output to capture any response
-        ClearConsoleOutput();
-
-        // Execute the command
-        // For commands with no params (tgm, tcl, tfc, etc.), just call directly
-        // For commands with params, we need to build ScriptData or use the
-        // Script::CompileAndRun approach as a fallback
-        double resultVal = 0;
-        std::uint32_t opcodeOffset = 0;
-
-        if (cmd->numParams == 0 || args.empty()) {
-            // No-param command — call execute directly
-            bool success = cmd->executeFunction(
-                cmd->params,        // paramInfo
-                nullptr,            // scriptData (no params)
-                targetRef,          // thisObj (player)
-                nullptr,            // containingObj
-                nullptr,            // scriptObj
-                nullptr,            // locals
-                resultVal,          // result
-                opcodeOffset        // opcodeOffsetPtr
-            );
-
-            std::string output = CaptureLastConsoleOutput();
-
-            json result;
-            result["executed"] = success;
-            result["command"] = command;
-            result["method"] = "direct_execute";
-            if (!output.empty()) result["output"] = output;
-            return result;
-        }
-
-        // For commands with parameters, we need to use CompileAndRun since building
-        // ScriptData chunks manually is complex and error-prone.
-        // But first try a simpler approach: for known commands, handle params directly.
-
-        // SetStage <questId> <stageNum> — handle manually
-        if (lowerCmd == "setstage" || lowerCmd == "setqueststage") {
-            // Parse: setstage <formId> <stage>
-            std::string questIdStr, stageStr;
-            auto argSpace = args.find(' ');
-            if (argSpace != std::string::npos) {
-                questIdStr = args.substr(0, argSpace);
-                stageStr = args.substr(argSpace + 1);
-            } else {
-                return {{"error", "setstage requires <questId> <stage>"}};
-            }
-
-            try {
-                auto questFormId = static_cast<RE::FormID>(std::stoul(questIdStr, nullptr, 16));
-                auto* quest = RE::TESForm::LookupByID<RE::TESQuest>(questFormId);
-                if (!quest) return {{"error", "Quest not found: " + questIdStr}};
-
-                int stage = std::stoi(stageStr);
-
-                // Use the quest's internal stage setting via the execute function
-                // Pass quest as param1, stage as param2
-                bool success = cmd->executeFunction(
-                    cmd->params, nullptr, targetRef, nullptr, nullptr, nullptr, resultVal, opcodeOffset);
-
-                std::string output = CaptureLastConsoleOutput();
-                json result;
-                result["executed"] = success;
-                result["command"] = command;
-                result["method"] = "direct_execute";
-                if (!output.empty()) result["output"] = output;
-                return result;
-            } catch (...) {
-                return {{"error", "Failed to parse setstage arguments: " + args}};
-            }
-        }
-
-        // For all other parameterized commands, fall back to CompileAndRun with SEH
         auto* factory = RE::IFormFactory::GetConcreteFormFactoryByType<RE::Script>();
         if (!factory) return {{"error", "Script factory not available"}};
+
         auto* script = factory->Create();
         if (!script) return {{"error", "Failed to create script"}};
 
         ClearConsoleOutput();
+
         script->SetCommand(command);
         bool ok = RunScriptSEH(script, player);
+
         std::string output = CaptureLastConsoleOutput();
 
         if (!ok) {
-            SKSE::log::error("Command '{}' caused an access violation in CompileAndRun fallback", command);
+            SKSE::log::error("Command '{}' caused an access violation — caught by SEH", command);
             return {{"error", "Command failed (caught safely): " + command},
-                    {"command", command}};
+                    {"command", command},
+                    {"partialOutput", output}};
         }
+
+        SKSE::log::info("Command '{}' executed successfully, output: {} bytes", command, output.size());
 
         json result;
         result["executed"] = true;
         result["command"] = command;
-        result["method"] = "CompileAndRun_fallback";
         if (!output.empty()) result["output"] = output;
         return result;
     }
@@ -987,16 +882,77 @@ namespace SkyrimMCP::GameInterface {
         return {{"results", results}, {"count", count}, {"query", query}};
     }
 
+    // ==================== Plugin Detection ====================
+
+    json GetLoadedSKSEPlugins() {
+        json plugins = json::array();
+
+        // Scan SKSE plugins directory
+        try {
+            auto skyrimPath = std::filesystem::current_path();
+            auto pluginsPath = skyrimPath / "Data" / "SKSE" / "Plugins";
+
+            if (std::filesystem::exists(pluginsPath)) {
+                for (auto& entry : std::filesystem::directory_iterator(pluginsPath)) {
+                    if (entry.is_regular_file() && entry.path().extension() == ".dll") {
+                        auto name = entry.path().filename().string();
+
+                        json p;
+                        p["name"] = name;
+                        p["path"] = entry.path().string();
+                        p["sizeBytes"] = entry.file_size();
+
+                        // Flag known plugins with integration potential
+                        std::string lowerName = name;
+                        std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+
+                        if (lowerName.find("consoleutilsse") != std::string::npos ||
+                            lowerName.find("consoleutil") != std::string::npos) {
+                            p["integration"] = "console_commands";
+                            p["note"] = "Can execute console commands reliably — potential fix for CompileAndRun issues";
+                        } else if (lowerName.find("hdtsmp") != std::string::npos) {
+                            p["integration"] = "physics";
+                            p["note"] = "HDT-SMP physics — potential physics state queries";
+                        } else if (lowerName.find("papyrusutil") != std::string::npos) {
+                            p["integration"] = "papyrus_bridge";
+                            p["note"] = "PapyrusUtil — file I/O and JSON storage from scripts";
+                        } else if (lowerName.find("jcontainers") != std::string::npos) {
+                            p["integration"] = "data_storage";
+                            p["note"] = "JContainers — advanced data structures for scripts";
+                        } else if (lowerName.find("po3_tweaks") != std::string::npos ||
+                                   lowerName.find("powerofthree") != std::string::npos) {
+                            p["integration"] = "engine_tweaks";
+                            p["note"] = "powerofthree's Tweaks — extended engine functionality";
+                        } else if (lowerName.find("skee") != std::string::npos ||
+                                   lowerName.find("racemenu") != std::string::npos) {
+                            p["integration"] = "appearance";
+                            p["note"] = "RaceMenu/SKEE — advanced character appearance customization API";
+                        } else if (lowerName.find("enb") != std::string::npos) {
+                            p["integration"] = "graphics";
+                            p["note"] = "ENB — graphics post-processing";
+                        }
+
+                        plugins.push_back(p);
+                    }
+                }
+            }
+        } catch (const std::exception& e) {
+            return {{"error", std::string("Failed to scan plugins: ") + e.what()}};
+        }
+
+        return {{"plugins", plugins}, {"count", plugins.size()}};
+    }
+
     // ==================== Load Order ====================
 
     json SaveGame(const std::string& saveName) {
         auto* saveLoadManager = RE::BGSSaveLoadManager::GetSingleton();
         if (!saveLoadManager) {
-            // Fallback to console command
-            return ExecuteConsoleCommand("save " + saveName);
+            return {{"error", "Save manager not available"}};
         }
 
         saveLoadManager->Save(saveName.c_str());
+        RE::DebugNotification("Game Saved");
         return {{"saved", true}, {"saveName", saveName}};
     }
 

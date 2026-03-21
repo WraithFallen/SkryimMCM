@@ -4,6 +4,7 @@
 #include <spdlog/sinks/basic_file_sink.h>
 
 #include "PipeServer.h"
+#include "EventSystem.h"
 
 namespace {
     std::unique_ptr<SkyrimMCP::PipeServer> g_pipeServer;
@@ -11,7 +12,9 @@ namespace {
     void MessageCallback(SKSE::MessagingInterface::Message* a_msg) {
         switch (a_msg->type) {
             case SKSE::MessagingInterface::kDataLoaded:
-                SKSE::log::info("Game data loaded, starting pipe server...");
+                SKSE::log::info("Game data loaded, starting systems...");
+                SkyrimMCP::EventSystem::GetSingleton().Register();
+                SKSE::log::info("Event system registered");
                 g_pipeServer = std::make_unique<SkyrimMCP::PipeServer>();
                 g_pipeServer->Start();
                 SKSE::log::info("Pipe server started on \\\\.\\pipe\\SkyrimMCP");

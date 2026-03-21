@@ -338,6 +338,23 @@ public class SkyrimTools
     }
 
     [McpServerTool]
+    [Description("Get the player's appearance data: race, sex, weight, height, all 19 face morph values, " +
+        "face presets, and head parts (hair, eyes, etc.). Use this for character recreation or face morphing.")]
+    public async Task<object> GetAppearance()
+    {
+        var data = await _pipe.SendRequestAsync("get_appearance");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Get the player's favorited spells and items (the ones assigned to the favorites menu/hotkeys).")]
+    public async Task<object> GetFavorites()
+    {
+        var data = await _pipe.SendRequestAsync("get_favorites");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
     [Description("Export a complete character blueprint as JSON. Includes player info, all 18 skills, perks, " +
         "known spells, known shouts, equipped items, full inventory, gold, and active effects. " +
         "Use this to save a character template that can be re-applied to a new character. " +

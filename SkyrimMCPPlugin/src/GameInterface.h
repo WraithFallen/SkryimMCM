@@ -65,6 +65,8 @@ namespace SkyrimMCP {
         json GetPerks();
         json UnlockShout(const std::string& formIdHex);
         json GetCharacterBlueprint();
+        json GetAppearance();
+        json GetFavorites();
 
         // Utility
         json IsInCombat();

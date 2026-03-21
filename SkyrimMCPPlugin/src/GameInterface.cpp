@@ -153,31 +153,71 @@ namespace SkyrimMCP::GameInterface {
         for (auto& [form, data] : inv) {
             if (!form || data.first <= 0) continue;
 
-            json item;
-            item["formId"] = std::format("{:08X}", form->GetFormID());
-            item["name"] = form->GetName();
-            item["count"] = data.first;
+            try {
+                json item;
+                item["formId"] = std::format("{:08X}", form->GetFormID());
+                item["name"] = form->GetName();
+                item["count"] = data.first;
 
-            switch (form->GetFormType()) {
-                case RE::FormType::Weapon: item["type"] = "weapon"; break;
-                case RE::FormType::Armor: item["type"] = "armor"; break;
-                case RE::FormType::AlchemyItem: item["type"] = "potion"; break;
-                case RE::FormType::Ingredient: item["type"] = "ingredient"; break;
-                case RE::FormType::Book: item["type"] = "book"; break;
-                case RE::FormType::Misc: item["type"] = "misc"; break;
-                case RE::FormType::Ammo: item["type"] = "ammo"; break;
-                case RE::FormType::SoulGem: item["type"] = "soulgem"; break;
-                case RE::FormType::KeyMaster: item["type"] = "key"; break;
-                case RE::FormType::Scroll: item["type"] = "scroll"; break;
-                default: item["type"] = "other"; break;
+                // Get display name (custom renamed items) and enchantments from InventoryEntryData
+                auto& entryData = data.second;
+                if (entryData) {
+                    const char* displayName = entryData->GetDisplayName();
+                    if (displayName && displayName[0] && std::strcmp(displayName, form->GetName()) != 0) {
+                        item["displayName"] = displayName;
+                    }
+
+                    // Get enchantment
+                    auto* enchantment = entryData->GetEnchantment();
+                    if (enchantment) {
+                        json ench;
+                        ench["name"] = enchantment->GetName();
+                        ench["formId"] = std::format("{:08X}", enchantment->GetFormID());
+
+                        json effects = json::array();
+                        for (auto* effect : enchantment->effects) {
+                            if (!effect || !effect->baseEffect) continue;
+                            json e;
+                            e["name"] = effect->baseEffect->GetName();
+                            e["magnitude"] = effect->effectItem.magnitude;
+                            e["duration"] = effect->effectItem.duration;
+                            e["area"] = effect->effectItem.area;
+                            effects.push_back(e);
+                        }
+                        ench["effects"] = effects;
+                        item["enchantment"] = ench;
+                    }
+
+                    // Get enchantment charge
+                    auto charge = entryData->GetEnchantmentCharge();
+                    if (charge.has_value()) {
+                        item["enchantmentCharge"] = charge.value();
+                    }
+                }
+
+                switch (form->GetFormType()) {
+                    case RE::FormType::Weapon: item["type"] = "weapon"; break;
+                    case RE::FormType::Armor: item["type"] = "armor"; break;
+                    case RE::FormType::AlchemyItem: item["type"] = "potion"; break;
+                    case RE::FormType::Ingredient: item["type"] = "ingredient"; break;
+                    case RE::FormType::Book: item["type"] = "book"; break;
+                    case RE::FormType::Misc: item["type"] = "misc"; break;
+                    case RE::FormType::Ammo: item["type"] = "ammo"; break;
+                    case RE::FormType::SoulGem: item["type"] = "soulgem"; break;
+                    case RE::FormType::KeyMaster: item["type"] = "key"; break;
+                    case RE::FormType::Scroll: item["type"] = "scroll"; break;
+                    default: item["type"] = "other"; break;
+                }
+
+                if (auto* boundObj = form->As<RE::TESBoundObject>()) {
+                    item["weight"] = boundObj->GetWeight();
+                    item["value"] = boundObj->GetGoldValue();
+                }
+
+                items.push_back(item);
+            } catch (...) {
+                continue;
             }
-
-            if (auto* boundObj = form->As<RE::TESBoundObject>()) {
-                item["weight"] = boundObj->GetWeight();
-                item["value"] = boundObj->GetGoldValue();
-            }
-
-            items.push_back(item);
         }
 
         return {{"items", items}};
@@ -1127,6 +1167,89 @@ namespace SkyrimMCP::GameInterface {
         }
     }
 
+    json GetAppearance() {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        auto* base = player->GetActorBase();
+        if (!base) return {{"error", "Actor base not available"}};
+
+        json result;
+        result["race"] = base->GetRace() ? base->GetRace()->GetName() : "unknown";
+        result["raceFormId"] = base->GetRace() ? std::format("{:08X}", base->GetRace()->GetFormID()) : "";
+        result["sex"] = base->GetSex() == RE::SEX::kMale ? "male" : "female";
+        result["weight"] = base->GetWeight();
+        result["height"] = base->GetHeight();
+
+        // Face morphs (19 values)
+        if (base->faceData) {
+            json morphs;
+            static const char* morphNames[] = {
+                "noseLongShort", "noseUpDown", "jawUpDown", "jawNarrowWide", "jawForwardBack",
+                "cheeksUpDown", "cheeksForwardBack", "eyesUpDown", "eyesInOut",
+                "browsUpDown", "browsInOut", "browsForwardBack", "lipsUpDown", "lipsInOut",
+                "chinNarrowWide", "chinUpDown", "chinUnderbiteOverbite", "eyesForwardBack", "unk"
+            };
+            for (int i = 0; i < RE::TESNPC::FaceData::Morphs::kTotal; i++) {
+                morphs[morphNames[i]] = base->faceData->morphs[i];
+            }
+            result["faceMorphs"] = morphs;
+
+            json parts;
+            static const char* partNames[] = { "nose", "unknown", "eyes", "mouth" };
+            for (int i = 0; i < RE::TESNPC::FaceData::Parts::kTotal; i++) {
+                parts[partNames[i]] = base->faceData->parts[i];
+            }
+            result["facePresets"] = parts;
+        }
+
+        // Head parts
+        json headParts = json::array();
+        if (base->headParts && base->numHeadParts > 0) {
+            for (int i = 0; i < base->numHeadParts; i++) {
+                auto* part = base->headParts[i];
+                if (!part) continue;
+                json hp;
+                hp["formId"] = std::format("{:08X}", part->GetFormID());
+                hp["name"] = part->GetName() ? part->GetName() : "";
+                hp["type"] = static_cast<int>(part->type.get());
+                headParts.push_back(hp);
+            }
+        }
+        result["headParts"] = headParts;
+
+        // Carry weight
+        auto* avo = player->AsActorValueOwner();
+        if (avo) {
+            result["carryWeight"] = avo->GetActorValue(RE::ActorValue::kCarryWeight);
+            result["carryWeightBase"] = avo->GetBaseActorValue(RE::ActorValue::kCarryWeight);
+        }
+
+        return result;
+    }
+
+    json GetFavorites() {
+        auto* favorites = RE::MagicFavorites::GetSingleton();
+        if (!favorites) return {{"error", "Favorites not available"}};
+
+        json spells = json::array();
+        for (auto* form : favorites->spells) {
+            if (!form) continue;
+            try {
+                json f;
+                f["formId"] = std::format("{:08X}", form->GetFormID());
+                f["name"] = form->GetName();
+                f["type"] = form->GetFormType() == RE::FormType::Spell ? "spell" :
+                            form->GetFormType() == RE::FormType::Shout ? "shout" : "other";
+                spells.push_back(f);
+            } catch (...) {
+                continue;
+            }
+        }
+
+        return {{"favorites", spells}, {"count", spells.size()}};
+    }
+
     json GetCharacterBlueprint() {
         // Single call that exports everything needed to recreate a character
         json blueprint;
@@ -1159,6 +1282,12 @@ namespace SkyrimMCP::GameInterface {
 
         // Active effects
         blueprint["activeEffects"] = GetActiveEffects();
+
+        // Appearance (face morphs, head parts, race, sex)
+        blueprint["appearance"] = GetAppearance();
+
+        // Favorites
+        blueprint["favorites"] = GetFavorites();
 
         return blueprint;
     }

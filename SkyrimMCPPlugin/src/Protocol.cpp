@@ -276,6 +276,12 @@ namespace SkyrimMCP::Protocol {
             else if (action == "get_perks") {
                 result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetPerks(); });
             }
+            else if (action == "get_appearance") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetAppearance(); });
+            }
+            else if (action == "get_favorites") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetFavorites(); });
+            }
             else if (action == "get_character_blueprint") {
                 result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetCharacterBlueprint(); });
             }

@@ -61,7 +61,27 @@ namespace SkyrimMCP {
         try { holder->RemoveEventSink<RE::TESFastTravelEndEvent>(this); } catch (...) {}
     }
 
+    // Suppress noisy framework events
+    static bool ShouldSuppressEvent(const std::string& eventType, const json& data) {
+        // Suppress framework quest start/stop cycling (NFF, follower frameworks, etc.)
+        if (eventType == "quest_start_stop") {
+            auto formId = data.value("questFormId", "");
+            // These are known framework quests that cycle constantly
+            if (formId == "FEBD3801" || formId == "000F9075") return true;
+        }
+
+        // Suppress generic door lock_changed (only interesting for player-picked locks)
+        if (eventType == "lock_changed") {
+            // We don't have enough info to know if player-initiated, so keep all for now
+            // but could add filtering here later
+        }
+
+        return false;
+    }
+
     void EventSystem::PushEvent(const std::string& eventType, json data) {
+        if (ShouldSuppressEvent(eventType, data)) return;
+
         std::lock_guard lock(_mutex);
         if (_eventQueue.size() >= MAX_QUEUE_SIZE) {
             _eventQueue.pop();
@@ -199,14 +219,43 @@ namespace SkyrimMCP {
     RE::BSEventNotifyControl EventSystem::ProcessEvent(const RE::TESHitEvent* event, RE::BSTEventSource<RE::TESHitEvent>*) {
         if (!event || !event->target) return RE::BSEventNotifyControl::kContinue;
         auto* player = RE::PlayerCharacter::GetSingleton();
-        if (event->target.get() != player && (!event->cause || event->cause.get() != player))
+
+        auto* target = event->target.get();
+        auto* attacker = event->cause ? event->cause.get() : nullptr;
+
+        // Determine relationship to player for clarity
+        bool targetIsPlayer = (target == player);
+        bool attackerIsPlayer = (attacker == player);
+
+        // Check if target or attacker is a teammate/follower
+        bool targetIsTeammate = false;
+        bool attackerIsTeammate = false;
+        if (target && !targetIsPlayer) {
+            auto* targetActor = target->As<RE::Actor>();
+            if (targetActor) targetIsTeammate = targetActor->IsPlayerTeammate();
+        }
+        if (attacker && !attackerIsPlayer) {
+            auto* attackerActor = attacker->As<RE::Actor>();
+            if (attackerActor) attackerIsTeammate = attackerActor->IsPlayerTeammate();
+        }
+
+        // Only track hits involving the player or their followers
+        if (!targetIsPlayer && !attackerIsPlayer && !targetIsTeammate && !attackerIsTeammate)
             return RE::BSEventNotifyControl::kContinue;
 
+        // Build a clear description of who hit whom
+        std::string targetRole = targetIsPlayer ? "player" : (targetIsTeammate ? "follower" : "other");
+        std::string attackerRole = attackerIsPlayer ? "player" : (attackerIsTeammate ? "follower" : "other");
+
         PushEvent("hit", {
-            {"target", GetRefName(event->target.get())},
-            {"attacker", event->cause ? GetRefName(event->cause.get()) : "none"},
-            {"sourceFormId", std::format("{:08X}", event->source)},
-            {"playerIsTarget", event->target.get() == player}
+            {"targetName", GetRefName(target)},
+            {"targetRefId", std::format("{:08X}", target->GetFormID())},
+            {"targetRole", targetRole},
+            {"attackerName", attacker ? GetRefName(attacker) : "none"},
+            {"attackerRefId", attacker ? std::format("{:08X}", attacker->GetFormID()) : ""},
+            {"attackerRole", attackerRole},
+            {"weaponFormId", std::format("{:08X}", event->source)},
+            {"weaponName", GetFormName(event->source)}
         });
         return RE::BSEventNotifyControl::kContinue;
     }

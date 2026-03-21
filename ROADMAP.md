@@ -40,26 +40,26 @@ Based on a comprehensive analysis of CommonLibSSE-NG's API surface (~200+ classe
 
 **Priority: Critical**
 
-- [ ] Fix `CompileAndRun` crash — investigate thread safety, try alternative console execution methods
-- [ ] Alternative: implement key actions as direct API calls to eliminate console dependency:
-  - Teleport via cell lookup + `MoveTo` or `MoveToCell`
-  - God mode via direct flag manipulation on Actor
-  - Set quest stage via quest API (may need SKSE Papyrus bridge)
-  - Time manipulation via `RE::Calendar` / `BSTimer::SetGlobalTimeMultiplier()`
-- [ ] Validate SEH doesn't leave game in corrupted state after catching exceptions
-- [ ] Add connection health monitoring (periodic ping, auto-reconnect)
+- [x] Fix `CompileAndRun` crash — ConsoleUtilSSE-style relocation fix (RELOCATION_ID 441582 for patch >= 1130)
+- [x] Direct API: God mode via static bool flip, Collision via SetCollision(), Time via Calendar
+- [x] SEH crash protection — __try/__except catches access violations safely
+- [x] Connection health monitoring — ping action
+- [ ] Teleport via direct API (works via console command for now)
 
 ## Phase 2 — Deep Player Management
 
 **Priority: High** | **API: RE::PlayerCharacter, RE::TESNPC, RE::ActorValueOwner**
 
-- [ ] **Skill Management** — Read/write all 18 skills, advance skill XP
-- [ ] **Perk Tree Browser** — List available perks per skill tree, show requirements, add/remove perks by name
-- [ ] **Spell Book** — List all known spells, filter by school/type, favorites management via `MagicFavorites`
-- [ ] **Shout Management** — List unlocked shouts/words of power, unlock new words
+- [x] **Skill Management** — Read all 18 skills via GetSkillLevels, write via SetActorValue
+- [x] **Perk Browser** — List acquired perks via GetPerks, add/remove perks
+- [x] **Spell Book** — List all known spells via GetKnownSpells with school/type classification
+- [x] **Shout Management** — List shouts via GetKnownShouts with per-word detail, unlock via UnlockShout
+- [x] **Equipped Items** — GetEquippedItems shows all biped slots + wielded weapons
+- [x] **Character Blueprint** — GetCharacterBlueprint exports everything in one call (skills, perks, spells, shouts, equipment, inventory, gold, active effects)
 - [ ] **Level Management** — Set level, add XP, show XP to next level
 - [ ] **Appearance Query** — Read race, sex, head parts, face morphs (19 facial values via `TESNPC::FaceData`)
 - [ ] **Carry Weight** — Read/set carry weight, show encumbrance status
+- [ ] **Favorites Management** — Read/write spell and item favorites via `MagicFavorites`
 
 ## Phase 3 — World Interaction
 
@@ -144,6 +144,8 @@ Based on a comprehensive analysis of CommonLibSSE-NG's API surface (~200+ classe
 
 - [ ] **Quest Completion Scripts** — Multi-step quest resolution (set stages, add items, move NPCs, update factions)
 - [ ] **Character Build Planner** — Set all skills, perks, spells to match a build template
+- [ ] **Apply Character Blueprint** — Import a blueprint JSON and apply it: set skills → add perks → add spells → teach shouts → add items → equip items → set stats. Orchestrated in C# as sequential pipe calls with error-per-item handling
+- [ ] **Spawn NPC From Blueprint** — Create a new NPC at runtime using a character blueprint's face morphs, stats, skills, perks, spells, and equipment. Add to `CurrentFollowerFaction` (0x0005C84E) + set relationship rank for follower behavior. Assign a voice type. Steps: create TESNPC form → set face data (19 morphs + head parts) → set race/sex → place reference in world → apply stats/perks/spells → add/equip items → configure follower AI. Optionally use NFF template NPC as base for cleaner persistence. Runtime NPCs get `FFxxxxxx` FormIDs — persistence across saves needs testing.
 - [ ] **Inventory Optimizer** — Suggest items to sell/keep based on weight/value ratio
 - [ ] **Loot Scanner** — Scan nearby containers and report valuable items
 - [ ] **Mod Conflict Detector** — Check for FormID conflicts across loaded mods

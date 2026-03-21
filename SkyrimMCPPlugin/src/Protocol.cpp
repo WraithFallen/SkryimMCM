@@ -38,13 +38,39 @@ namespace SkyrimMCP::Protocol {
             }
 
             // poll_events — drain queued game events, no game thread needed
+            // Optional filters: "eventTypes" (array of types to include), "excludeTypes" (array to exclude)
             if (action == "poll_events") {
                 auto events = EventSystem::GetSingleton().DrainEvents();
+
+                // Apply filters if provided
+                auto includeTypes = params.value("eventTypes", json::array());
+                auto excludeTypes = params.value("excludeTypes", json::array());
+
                 json arr = json::array();
                 for (auto& e : events) {
+                    std::string eventType = e.value("event", "");
+
+                    // Include filter
+                    if (!includeTypes.empty()) {
+                        bool found = false;
+                        for (auto& t : includeTypes) {
+                            if (t.get<std::string>() == eventType) { found = true; break; }
+                        }
+                        if (!found) continue;
+                    }
+
+                    // Exclude filter
+                    if (!excludeTypes.empty()) {
+                        bool excluded = false;
+                        for (auto& t : excludeTypes) {
+                            if (t.get<std::string>() == eventType) { excluded = true; break; }
+                        }
+                        if (excluded) continue;
+                    }
+
                     arr.push_back(e);
                 }
-                return MakeResponse(id, true, {{"events", arr}, {"count", events.size()}}).dump() + "\n";
+                return MakeResponse(id, true, {{"events", arr}, {"count", arr.size()}}).dump() + "\n";
             }
 
             // All other actions are dispatched to the game thread
@@ -225,6 +251,38 @@ namespace SkyrimMCP::Protocol {
             else if (action == "set_game_time") {
                 float hours = params.value("hours", 12.0f);
                 result = TaskQueue::RunOnGameThread([hours]() { return GameInterface::SetGameTime(hours); });
+            }
+            else if (action == "get_crosshair_ref") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetCrosshairRef(); });
+            }
+            else if (action == "kill_actor") {
+                std::string refId = params.value("refId", "");
+                if (refId.empty()) return MakeResponse(id, false, {}, "Missing 'refId' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([refId]() { return GameInterface::KillActor(refId); });
+            }
+            else if (action == "get_equipped_items") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetEquippedItems(); });
+            }
+            // Character Blueprint (Phase 2)
+            else if (action == "get_known_spells") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetKnownSpells(); });
+            }
+            else if (action == "get_known_shouts") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetKnownShouts(); });
+            }
+            else if (action == "get_skill_levels") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetSkillLevels(); });
+            }
+            else if (action == "get_perks") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetPerks(); });
+            }
+            else if (action == "get_character_blueprint") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetCharacterBlueprint(); });
+            }
+            else if (action == "unlock_shout") {
+                std::string formId = params.value("formId", "");
+                if (formId.empty()) return MakeResponse(id, false, {}, "Missing 'formId' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([formId]() { return GameInterface::UnlockShout(formId); });
             }
             else if (action == "is_in_combat") {
                 result = TaskQueue::RunOnGameThread([]() { return GameInterface::IsInCombat(); });

@@ -53,6 +53,19 @@ namespace SkyrimMCP {
         json GetGameTime();
         json SetGameTime(float hours);
 
+        // Targeting
+        json GetCrosshairRef();
+        json KillActor(const std::string& refFormIdHex);
+        json GetEquippedItems();
+
+        // Character Blueprint (Phase 2)
+        json GetKnownSpells();
+        json GetKnownShouts();
+        json GetSkillLevels();
+        json GetPerks();
+        json UnlockShout(const std::string& formIdHex);
+        json GetCharacterBlueprint();
+
         // Utility
         json IsInCombat();
         json GetLoadOrder();

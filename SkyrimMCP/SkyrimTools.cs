@@ -70,9 +70,13 @@ public class SkyrimTools
 
     [McpServerTool]
     [Description("Execute a console command in Skyrim (e.g., 'tgm', 'player.additem 0000000f 1000'). " +
+        "IMPORTANT — TARGETING NPCs/OBJECTS: Use dot-notation with the REFERENCE ID (refId), NOT prid. " +
+        "Example: 'FE124B0E.kill' or 'FE124B0E.setav health 500'. The prid command does NOT persist between calls. " +
+        "Get refIds from GetNearbyNPCs or GetCrosshairRef. " +
+        "For player-targeted commands use 'player.' prefix: 'player.additem 0000000F 100'. " +
         "CAUTION: Commands referencing invalid FormIDs will crash the game. Always verify FormIDs before use. " +
         "Avoid running commands during loading screens, combat, or scripted events. " +
-        "Prefer dedicated tools (AddItem, Teleport, etc.) over raw console commands when available.")]
+        "Prefer dedicated tools (AddItem, Teleport, KillActor, etc.) over raw console commands when available.")]
     public async Task<object> ExecuteConsoleCommand(string command)
     {
         var data = await _pipe.SendRequestAsync("execute_command", new JsonObject
@@ -214,6 +218,94 @@ public class SkyrimTools
     }
 
     [McpServerTool]
+    [Description("Kill an actor by reference ID. Removes essential/protected flags first. " +
+        "Use GetCrosshairRef or GetNearbyNPCs to get the refId. " +
+        "CAUTION: Killing essential NPCs can break quests. Confirm with user first.")]
+    public async Task<object> KillActor(string refId)
+    {
+        var data = await _pipe.SendRequestAsync("kill_actor", new JsonObject
+        {
+            ["refId"] = refId
+        });
+        var name = data?["name"]?.GetValue<string>() ?? refId;
+        await NotifyInGame($"{name} killed");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Get all currently equipped items including armor, weapons, jewelry, and shield. " +
+        "Shows which slot each item occupies (head, body, hands, feet, leftHand, rightHand, etc.).")]
+    public async Task<object> GetEquippedItems()
+    {
+        var data = await _pipe.SendRequestAsync("get_equipped_items");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Get all spells the player has learned, organized by school (Alteration, Conjuration, etc.) and type (spell, power, ability).")]
+    public async Task<object> GetKnownSpells()
+    {
+        var data = await _pipe.SendRequestAsync("get_known_spells");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Get all shouts the player knows, including per-word unlock status and recovery times.")]
+    public async Task<object> GetKnownShouts()
+    {
+        var data = await _pipe.SendRequestAsync("get_known_shouts");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Get all 18 skill levels (current and base values) plus player level.")]
+    public async Task<object> GetSkillLevels()
+    {
+        var data = await _pipe.SendRequestAsync("get_skill_levels");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Get all perks the player has acquired, with rank information.")]
+    public async Task<object> GetPerks()
+    {
+        var data = await _pipe.SendRequestAsync("get_perks");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Unlock a shout or word of power by FormID. If given a shout FormID, unlocks all three words. " +
+        "If given an individual word FormID, unlocks just that word. Uses teachword + unlockword console commands.")]
+    public async Task<object> UnlockShout(string formId)
+    {
+        var data = await _pipe.SendRequestAsync("unlock_shout", new JsonObject { ["formId"] = formId });
+        await NotifyInGame("Shout unlocked");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Export a complete character blueprint as JSON. Includes player info, all 18 skills, perks, " +
+        "known spells, known shouts, equipped items, full inventory, gold, and active effects. " +
+        "Use this to save a character template that can be re-applied to a new character. " +
+        "Returns all data in a single call for efficiency.")]
+    public async Task<object> GetCharacterBlueprint()
+    {
+        var data = await _pipe.SendRequestAsync("get_character_blueprint");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Get the reference ID of whatever the player's crosshair is pointing at. " +
+        "Returns refId and baseId. Use refId with dot-notation for console commands (e.g., 'refId.kill'). " +
+        "Use baseId for commands like setessential. " +
+        "Use this when the player says 'that NPC' or 'this object' — it tells you exactly what they're looking at.")]
+    public async Task<object> GetCrosshairRef()
+    {
+        var data = await _pipe.SendRequestAsync("get_crosshair_ref");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
     [Description("Get information about active quests including objectives and completion status. " +
         "Note: In heavily modded games this may return a large number of quests. " +
         "For a specific quest, use ExecuteConsoleCommand with 'getqueststage <questID>' instead.")]
@@ -224,7 +316,8 @@ public class SkyrimTools
     }
 
     [McpServerTool]
-    [Description("Get nearby NPCs within a given radius, including their name, race, level, distance, and hostility")]
+    [Description("Get nearby NPCs within a given radius. Returns refId (use for dot-notation console commands like 'refId.kill') " +
+        "and baseId (use for setessential). Also includes name, race, level, distance, hostility, and dead status.")]
     public async Task<object> GetNearbyNPCs(float radius = 4096)
     {
         var data = await _pipe.SendRequestAsync("get_nearby_npcs", new JsonObject
@@ -313,14 +406,30 @@ public class SkyrimTools
     }
 
     [McpServerTool]
-    [Description("Poll for recent game events (combat, deaths, quest updates, location changes, item pickups, etc.). " +
-        "Returns all events that have occurred since the last poll. Call this periodically to stay aware of what's happening " +
-        "in the game, or after performing actions to see their effects. Events include: combat (started/ended/searching), " +
-        "death, quest_stage, quest_start_stop, location_change, cell_loaded, inventory_change, equip, hit, spell_cast, " +
-        "activate, open_close, sleep, wait, fast_travel, book_read, lock_changed, stat_change.")]
-    public async Task<object> PollEvents()
+    [Description("Poll for recent game events. Returns all events since last poll. " +
+        "Events: combat, death, quest_stage, quest_start_stop, location_change, cell_loaded, " +
+        "inventory_change, equip, hit, spell_cast, activate, open_close, sleep_ended, wait_ended, " +
+        "fast_travel, lock_changed, stat_change. " +
+        "Framework quest noise is auto-filtered. For focused polling, pass eventTypes (array of types to include) " +
+        "or excludeTypes (array to exclude) as parameters.")]
+    public async Task<object> PollEvents(string? eventTypes = null, string? excludeTypes = null)
     {
-        var data = await _pipe.SendRequestAsync("poll_events");
+        var parms = new JsonObject();
+        if (!string.IsNullOrEmpty(eventTypes))
+        {
+            var types = new JsonArray();
+            foreach (var t in eventTypes.Split(',', StringSplitOptions.TrimEntries))
+                types.Add(t);
+            parms["eventTypes"] = types;
+        }
+        if (!string.IsNullOrEmpty(excludeTypes))
+        {
+            var types = new JsonArray();
+            foreach (var t in excludeTypes.Split(',', StringSplitOptions.TrimEntries))
+                types.Add(t);
+            parms["excludeTypes"] = types;
+        }
+        var data = await _pipe.SendRequestAsync("poll_events", parms);
         return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
     }
 

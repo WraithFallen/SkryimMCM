@@ -218,6 +218,84 @@ public class SkyrimTools
     }
 
     [McpServerTool]
+    [Description("Get the current weather conditions.")]
+    public async Task<object> GetWeather()
+    {
+        var data = await _pipe.SendRequestAsync("get_weather");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Change the weather. Pass a weather FormID or a search term like 'snow', 'rain', 'clear', 'storm', 'fog'. " +
+        "The weather transitions naturally over a few seconds.")]
+    public async Task<object> SetWeather(string weather)
+    {
+        var data = await _pipe.SendRequestAsync("set_weather", new JsonObject { ["weather"] = weather });
+        var name = data?["weather"]?.GetValue<string>() ?? weather;
+        await NotifyInGame($"Weather: {name}");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Get detailed info about the player's current cell/location including interior/exterior status, " +
+        "worldspace, exact coordinates, and facing angle.")]
+    public async Task<object> GetCellInfo()
+    {
+        var data = await _pipe.SendRequestAsync("get_cell_info");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Find nearby objects like containers, doors, furniture, crafting stations, activators, and flora. " +
+        "Filter by type: 'all', 'container', 'chest', 'door', 'furniture', 'crafting', 'activator', 'flora', 'light'. " +
+        "Returns refId, name, type, distance, and locked status. Use this for 'what's nearby?' or 'find a forge'.")]
+    public async Task<object> GetNearbyObjects(float radius = 2048, string type = "all")
+    {
+        var data = await _pipe.SendRequestAsync("get_nearby_objects", new JsonObject
+        {
+            ["radius"] = radius,
+            ["type"] = type
+        });
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Unlock a locked door or container by reference ID. Use GetNearbyObjects or GetCrosshairRef to find the refId.")]
+    public async Task<object> UnlockDoor(string refId)
+    {
+        var data = await _pipe.SendRequestAsync("unlock_door", new JsonObject { ["refId"] = refId });
+        await NotifyInGame("Unlocked");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Lock a door or container by reference ID. lockLevel: 1=novice, 25=apprentice, 50=adept, 75=expert, 100=master, 255=requires key.")]
+    public async Task<object> LockDoor(string refId, int lockLevel = 50)
+    {
+        var data = await _pipe.SendRequestAsync("lock_door", new JsonObject { ["refId"] = refId, ["lockLevel"] = lockLevel });
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Read the inventory of a container by reference ID. Use GetNearbyObjects to find containers, then pass the refId. " +
+        "Shows all items with name, FormID, count, weight, and value. Also shows locked status.")]
+    public async Task<object> GetContainerInventory(string refId)
+    {
+        var data = await _pipe.SendRequestAsync("get_container_inventory", new JsonObject { ["refId"] = refId });
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Discover all map markers on the map. Uses tmm 1 console command. " +
+        "CAUTION: This reveals every location on the map and cannot be undone without reloading a save.")]
+    public async Task<object> DiscoverAllMapMarkers()
+    {
+        var data = await _pipe.SendRequestAsync("discover_all_map_markers");
+        await NotifyInGame("All map markers discovered");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
     [Description("Kill an actor by reference ID. Removes essential/protected flags first. " +
         "Use GetCrosshairRef or GetNearbyNPCs to get the refId. " +
         "CAUTION: Killing essential NPCs can break quests. Confirm with user first.")]

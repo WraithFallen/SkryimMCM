@@ -252,6 +252,42 @@ namespace SkyrimMCP::Protocol {
                 float hours = params.value("hours", 12.0f);
                 result = TaskQueue::RunOnGameThread([hours]() { return GameInterface::SetGameTime(hours); });
             }
+            // World (Phase 3)
+            else if (action == "get_weather") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetWeather(); });
+            }
+            else if (action == "set_weather") {
+                std::string weather = params.value("weather", "");
+                if (weather.empty()) return MakeResponse(id, false, {}, "Missing 'weather' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([weather]() { return GameInterface::SetWeather(weather); });
+            }
+            else if (action == "get_cell_info") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetCellInfo(); });
+            }
+            else if (action == "get_nearby_objects") {
+                float radius = params.value("radius", 2048.0f);
+                std::string typeFilter = params.value("type", "all");
+                result = TaskQueue::RunOnGameThread([radius, typeFilter]() { return GameInterface::GetNearbyObjects(radius, typeFilter); });
+            }
+            else if (action == "unlock_door") {
+                std::string refId = params.value("refId", "");
+                if (refId.empty()) return MakeResponse(id, false, {}, "Missing 'refId' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([refId]() { return GameInterface::UnlockDoor(refId); });
+            }
+            else if (action == "lock_door") {
+                std::string refId = params.value("refId", "");
+                int lockLevel = params.value("lockLevel", 1);
+                if (refId.empty()) return MakeResponse(id, false, {}, "Missing 'refId' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([refId, lockLevel]() { return GameInterface::LockDoor(refId, lockLevel); });
+            }
+            else if (action == "get_container_inventory") {
+                std::string refId = params.value("refId", "");
+                if (refId.empty()) return MakeResponse(id, false, {}, "Missing 'refId' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([refId]() { return GameInterface::GetContainerInventory(refId); });
+            }
+            else if (action == "discover_all_map_markers") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::DiscoverAllMapMarkers(); });
+            }
             else if (action == "get_crosshair_ref") {
                 result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetCrosshairRef(); });
             }

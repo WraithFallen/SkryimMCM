@@ -60,9 +60,10 @@
         { "id": "FEAT-034", "type": "feature", "status": "implemented-untested", "title": "Unlock shouts", "description": "UnlockShout — teachword + unlockword for shout or individual word." },
         { "id": "FEAT-035", "type": "feature", "status": "complete", "title": "Character blueprint export", "description": "GetCharacterBlueprint — single call exporting skills, perks, spells, shouts, equipment, inventory, gold, effects. OutputPath parameter added — writes to disk, returns summary only. Tested 2026-03-21." },
         { "id": "FEAT-036", "type": "feature", "status": "planned", "title": "Level management", "description": "Set level, add XP, show XP to next level." },
-        { "id": "FEAT-037", "type": "feature", "status": "planned", "title": "Appearance query", "description": "Read race, sex, head parts, face morphs (19 facial values via TESNPC::FaceData)." },
-        { "id": "FEAT-038", "type": "feature", "status": "planned", "title": "Carry weight management", "description": "Read/set carry weight, show encumbrance status." },
-        { "id": "FEAT-039", "type": "feature", "status": "planned", "title": "Favorites management", "description": "Read/write spell and item favorites via MagicFavorites." },
+        { "id": "FEAT-037", "type": "feature", "status": "implemented-untested", "title": "Appearance query", "description": "GetAppearance — race, sex, weight, height, 19 face morphs, face presets, head parts, carry weight." },
+        { "id": "FEAT-038", "type": "feature", "status": "implemented-untested", "title": "Carry weight query", "description": "Included in GetAppearance — carryWeight and carryWeightBase via ActorValueOwner." },
+        { "id": "FEAT-039", "type": "feature", "status": "implemented-untested", "title": "Favorites query", "description": "GetFavorites — all favorited spells/items from MagicFavorites singleton." },
+        { "id": "FEAT-045", "type": "feature", "status": "implemented-untested", "title": "Inventory enchantments + display names", "description": "GetInventory now returns displayName (custom renamed items) and enchantment with full effect list." },
         { "id": "BUG-004", "type": "bug", "status": "complete", "title": "NPC FormID confusion — refId vs baseId", "description": "get_nearby_npcs now returns both refId and baseId. Tool descriptions clarify which to use." },
         { "id": "BUG-005", "type": "bug", "status": "implemented-untested", "title": "Hit events misattributed", "description": "Hit events now include targetRole/attackerRole (player/follower/other) and IsPlayerTeammate check." },
         { "id": "FEAT-140", "type": "feature", "status": "complete", "title": "Blueprint export to file via outputPath", "description": "GetCharacterBlueprint now accepts optional outputPath parameter. Writes full JSON to disk, returns only a summary (counts of spells, perks, shouts, inventory items, active effects). Solves context window overflow for heavily modded characters (695+ active effects, 176+ inventory items). Tested on test_dunmer — 130KB output, clean write." },
@@ -73,13 +74,15 @@
       "phase": 3,
       "name": "World Interaction",
       "priority": "high",
-      "status": "planned",
+      "status": "implemented-untested",
       "items": [
-        { "id": "FEAT-040", "type": "feature", "status": "planned", "title": "Weather control", "description": "Get/set current weather (clear, rain, snow, storm), wind speed/direction." },
-        { "id": "FEAT-041", "type": "feature", "status": "planned", "title": "Cell info query", "description": "Current cell details — interior/exterior, water, lighting, encounter zone." },
-        { "id": "FEAT-042", "type": "feature", "status": "planned", "title": "Object interaction", "description": "Lock/unlock doors, activate objects, read container contents." },
-        { "id": "FEAT-043", "type": "feature", "status": "planned", "title": "Map markers", "description": "Discover/undiscover markers, list discovered locations. MapMarkerFramework integration potential." },
-        { "id": "FEAT-044", "type": "feature", "status": "planned", "title": "Placed object query", "description": "Find specific objects in current cell (chests, crafting stations, NPCs)." }
+        { "id": "FEAT-040", "type": "feature", "status": "implemented-untested", "title": "Weather control", "description": "GetWeather + SetWeather by FormID or name search (snow, rain, clear, storm). Uses Sky::ForceWeather()." },
+        { "id": "FEAT-041", "type": "feature", "status": "implemented-untested", "title": "Cell info query", "description": "GetCellInfo — cell name, interior/exterior, worldspace, exact position + facing angle." },
+        { "id": "FEAT-042A", "type": "feature", "status": "implemented-untested", "title": "Unlock door/container", "description": "UnlockDoor via refId.unlock console command." },
+        { "id": "FEAT-042B", "type": "feature", "status": "implemented-untested", "title": "Lock door/container", "description": "LockDoor with configurable lock level (1-255)." },
+        { "id": "FEAT-042C", "type": "feature", "status": "implemented-untested", "title": "Read container contents", "description": "GetContainerInventory — read any container's items by refId." },
+        { "id": "FEAT-043", "type": "feature", "status": "implemented-untested", "title": "Discover all map markers", "description": "DiscoverAllMapMarkers via tmm 1. Irreversible without save reload." },
+        { "id": "FEAT-044", "type": "feature", "status": "implemented-untested", "title": "Nearby objects query", "description": "GetNearbyObjects — containers, doors, furniture, crafting stations, flora. Filter by type, shows distance + locked status." }
       ]
     },
     {

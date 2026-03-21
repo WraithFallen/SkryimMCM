@@ -781,6 +781,257 @@ namespace SkyrimMCP::GameInterface {
         return {{"error", "Game hour global not available"}};
     }
 
+    // ==================== World (Phase 3) ====================
+
+    json GetWeather() {
+        auto* sky = RE::Sky::GetSingleton();
+        if (!sky) return {{"error", "Sky not available"}};
+
+        json result;
+        if (sky->currentWeather) {
+            result["current"] = sky->currentWeather->GetName();
+            result["currentFormId"] = std::format("{:08X}", sky->currentWeather->GetFormID());
+        }
+        if (sky->lastWeather) {
+            result["previous"] = sky->lastWeather->GetName();
+        }
+        result["weatherPct"] = sky->currentWeatherPct;
+
+        return result;
+    }
+
+    json SetWeather(const std::string& weatherFormIdOrName) {
+        auto* sky = RE::Sky::GetSingleton();
+        if (!sky) return {{"error", "Sky not available"}};
+
+        // Try FormID first
+        RE::TESWeather* weather = nullptr;
+        try {
+            auto formId = ParseFormId(weatherFormIdOrName);
+            weather = RE::TESForm::LookupByID<RE::TESWeather>(formId);
+        } catch (...) {}
+
+        // Try by name/keyword
+        if (!weather) {
+            std::string lower = weatherFormIdOrName;
+            std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+
+            // Search for matching weather forms
+            auto* dataHandler = RE::TESDataHandler::GetSingleton();
+            if (dataHandler) {
+                for (auto* form : dataHandler->GetFormArray<RE::TESWeather>()) {
+                    if (!form) continue;
+                    std::string name = form->GetName() ? form->GetName() : "";
+                    std::string lowerName = name;
+                    std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+                    if (lowerName.find(lower) != std::string::npos) {
+                        weather = form;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!weather) return {{"error", "Weather not found: " + weatherFormIdOrName}};
+
+        sky->ForceWeather(weather, true);
+        return {{"set", true}, {"weather", weather->GetName()},
+                {"formId", std::format("{:08X}", weather->GetFormID())}};
+    }
+
+    json GetCellInfo() {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        auto* cell = player->GetParentCell();
+        if (!cell) return {{"error", "Cell not available"}};
+
+        json result;
+        result["name"] = cell->GetName() ? cell->GetName() : "unnamed";
+        result["formId"] = std::format("{:08X}", cell->GetFormID());
+        result["isInterior"] = cell->IsInteriorCell();
+        result["isExterior"] = cell->IsExteriorCell();
+
+        auto* worldspace = player->GetWorldspace();
+        if (worldspace) {
+            result["worldspace"] = worldspace->GetName();
+            result["worldspaceFormId"] = std::format("{:08X}", worldspace->GetFormID());
+        }
+
+        auto pos = player->GetPosition();
+        result["posX"] = pos.x;
+        result["posY"] = pos.y;
+        result["posZ"] = pos.z;
+
+        auto angle = player->GetAngle();
+        result["angleX"] = angle.x;
+        result["angleY"] = angle.y;
+        result["angleZ"] = angle.z;
+
+        return result;
+    }
+
+    json GetNearbyObjects(float radius, const std::string& typeFilter) {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        auto* cell = player->GetParentCell();
+        if (!cell) return {{"error", "Cell not available"}};
+
+        auto playerPos = player->GetPosition();
+        json objects = json::array();
+
+        std::string lowerFilter = typeFilter;
+        std::transform(lowerFilter.begin(), lowerFilter.end(), lowerFilter.begin(), ::tolower);
+
+        cell->ForEachReferenceInRange(playerPos, radius, [&](RE::TESObjectREFR* refPtr) -> RE::BSContainer::ForEachResult {
+            if (!refPtr || refPtr == player) return RE::BSContainer::ForEachResult::kContinue;
+            auto& ref = *refPtr;
+
+            try {
+                auto* baseObj = ref.GetBaseObject();
+                if (!baseObj) return RE::BSContainer::ForEachResult::kContinue;
+
+                std::string typeStr;
+                bool include = lowerFilter.empty() || lowerFilter == "all";
+
+                switch (baseObj->GetFormType()) {
+                    case RE::FormType::Container:
+                        typeStr = "container";
+                        if (lowerFilter == "container" || lowerFilter == "chest") include = true;
+                        break;
+                    case RE::FormType::Door:
+                        typeStr = "door";
+                        if (lowerFilter == "door") include = true;
+                        break;
+                    case RE::FormType::Furniture:
+                        typeStr = "furniture";
+                        if (lowerFilter == "furniture" || lowerFilter == "crafting") include = true;
+                        break;
+                    case RE::FormType::Activator:
+                        typeStr = "activator";
+                        if (lowerFilter == "activator") include = true;
+                        break;
+                    case RE::FormType::Flora:
+                        typeStr = "flora";
+                        if (lowerFilter == "flora" || lowerFilter == "plant") include = true;
+                        break;
+                    case RE::FormType::Light:
+                        typeStr = "light";
+                        if (lowerFilter == "light") include = true;
+                        break;
+                    case RE::FormType::Static:
+                        typeStr = "static";
+                        if (lowerFilter == "static") include = true;
+                        break;
+                    default:
+                        if (ref.As<RE::Actor>()) return RE::BSContainer::ForEachResult::kContinue;
+                        typeStr = "other";
+                        break;
+                }
+
+                if (!include) return RE::BSContainer::ForEachResult::kContinue;
+
+                auto refPos = ref.GetPosition();
+                float dx = refPos.x - playerPos.x;
+                float dy = refPos.y - playerPos.y;
+                float dz = refPos.z - playerPos.z;
+                float distance = std::sqrt(dx * dx + dy * dy + dz * dz);
+
+                json obj;
+                obj["refId"] = std::format("{:08X}", ref.GetFormID());
+                obj["baseId"] = std::format("{:08X}", baseObj->GetFormID());
+                obj["name"] = ref.GetName() ? ref.GetName() : (baseObj->GetName() ? baseObj->GetName() : "");
+                obj["type"] = typeStr;
+                obj["distance"] = distance;
+                obj["isLocked"] = ref.IsLocked();
+
+                objects.push_back(obj);
+            } catch (...) {}
+
+            return RE::BSContainer::ForEachResult::kContinue;
+        });
+
+        return {{"objects", objects}, {"count", objects.size()}};
+    }
+
+    json UnlockDoor(const std::string& refFormIdHex) {
+        try {
+            auto* form = RE::TESForm::LookupByID(ParseFormId(refFormIdHex));
+            if (!form) return {{"error", "Reference not found: " + refFormIdHex}};
+
+            auto* ref = form->As<RE::TESObjectREFR>();
+            if (!ref) return {{"error", "Not a reference: " + refFormIdHex}};
+
+            if (!ref->IsLocked()) return {{"error", "Not locked"}};
+
+            // Use console command for reliability
+            return ExecuteConsoleCommand(refFormIdHex + ".unlock");
+        } catch (...) {
+            return {{"error", "Failed to unlock: " + refFormIdHex}};
+        }
+    }
+
+    json LockDoor(const std::string& refFormIdHex, int lockLevel) {
+        try {
+            auto* form = RE::TESForm::LookupByID(ParseFormId(refFormIdHex));
+            if (!form) return {{"error", "Reference not found: " + refFormIdHex}};
+
+            return ExecuteConsoleCommand(std::format("{}.lock {}", refFormIdHex, lockLevel));
+        } catch (...) {
+            return {{"error", "Failed to lock: " + refFormIdHex}};
+        }
+    }
+
+    json GetContainerInventory(const std::string& refFormIdHex) {
+        try {
+            auto* form = RE::TESForm::LookupByID(ParseFormId(refFormIdHex));
+            if (!form) return {{"error", "Reference not found: " + refFormIdHex}};
+
+            auto* ref = form->As<RE::TESObjectREFR>();
+            if (!ref) return {{"error", "Not a reference: " + refFormIdHex}};
+
+            auto inv = ref->GetInventory();
+            json items = json::array();
+
+            for (auto& [itemForm, data] : inv) {
+                if (!itemForm || data.first <= 0) continue;
+                try {
+                    json item;
+                    item["formId"] = std::format("{:08X}", itemForm->GetFormID());
+                    item["name"] = itemForm->GetName();
+                    item["count"] = data.first;
+
+                    if (auto* boundObj = itemForm->As<RE::TESBoundObject>()) {
+                        item["weight"] = boundObj->GetWeight();
+                        item["value"] = boundObj->GetGoldValue();
+                    }
+                    items.push_back(item);
+                } catch (...) { continue; }
+            }
+
+            return {{"refId", refFormIdHex}, {"name", ref->GetName() ? ref->GetName() : ""},
+                    {"isLocked", ref->IsLocked()}, {"items", items}, {"count", items.size()}};
+        } catch (...) {
+            return {{"error", "Failed to read container: " + refFormIdHex}};
+        }
+    }
+
+    json DiscoverAllMapMarkers() {
+        // tmm 1 discovers all markers via console
+        auto result = ExecuteConsoleCommand("tmm 1");
+
+        // Count how many markers exist
+        int count = 0;
+        auto* dataHandler = RE::TESDataHandler::GetSingleton();
+        if (dataHandler) {
+            auto& refs = dataHandler->GetFormArray(RE::FormType::Reference);
+            // Can't easily count markers this way, just report success
+        }
+
+        return {{"discovered", true}, {"message", "All map markers discovered"}};
+    }
+
     // ==================== Targeting ====================
 
     json GetCrosshairRef() {

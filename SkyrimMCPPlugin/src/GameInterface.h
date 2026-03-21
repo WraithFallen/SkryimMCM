@@ -53,6 +53,16 @@ namespace SkyrimMCP {
         json GetGameTime();
         json SetGameTime(float hours);
 
+        // World (Phase 3)
+        json GetWeather();
+        json SetWeather(const std::string& weatherFormIdOrName);
+        json GetCellInfo();
+        json GetNearbyObjects(float radius, const std::string& typeFilter);
+        json UnlockDoor(const std::string& refFormIdHex);
+        json LockDoor(const std::string& refFormIdHex, int lockLevel);
+        json GetContainerInventory(const std::string& refFormIdHex);
+        json DiscoverAllMapMarkers();
+
         // Targeting
         json GetCrosshairRef();
         json KillActor(const std::string& refFormIdHex);

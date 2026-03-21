@@ -811,20 +811,28 @@ namespace SkyrimMCP::GameInterface {
             weather = RE::TESForm::LookupByID<RE::TESWeather>(formId);
         } catch (...) {}
 
-        // Try by name/keyword
+        // Try by name or editor ID keyword
         if (!weather) {
             std::string lower = weatherFormIdOrName;
             std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-            // Search for matching weather forms
             auto* dataHandler = RE::TESDataHandler::GetSingleton();
             if (dataHandler) {
                 for (auto* form : dataHandler->GetFormArray<RE::TESWeather>()) {
                     if (!form) continue;
+
+                    // Check display name
                     std::string name = form->GetName() ? form->GetName() : "";
                     std::string lowerName = name;
                     std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
-                    if (lowerName.find(lower) != std::string::npos) {
+
+                    // Check editor ID (most weather forms use editor IDs like "SkyrimClear", "SkyrimSnow")
+                    std::string editorId = form->GetFormEditorID() ? form->GetFormEditorID() : "";
+                    std::string lowerEditorId = editorId;
+                    std::transform(lowerEditorId.begin(), lowerEditorId.end(), lowerEditorId.begin(), ::tolower);
+
+                    if ((!lowerName.empty() && lowerName.find(lower) != std::string::npos) ||
+                        (!lowerEditorId.empty() && lowerEditorId.find(lower) != std::string::npos)) {
                         weather = form;
                         break;
                     }
@@ -837,6 +845,52 @@ namespace SkyrimMCP::GameInterface {
         sky->ForceWeather(weather, true);
         return {{"set", true}, {"weather", weather->GetName()},
                 {"formId", std::format("{:08X}", weather->GetFormID())}};
+    }
+
+    json ListWeathers() {
+        auto* dataHandler = RE::TESDataHandler::GetSingleton();
+        if (!dataHandler) return {{"error", "Data handler not available"}};
+
+        json weathers = json::array();
+
+        for (auto* form : dataHandler->GetFormArray<RE::TESWeather>()) {
+            if (!form) continue;
+            try {
+                std::string name = form->GetName() ? form->GetName() : "";
+                std::string editorId = form->GetFormEditorID() ? form->GetFormEditorID() : "";
+
+                // Skip weather forms with no useful identifier
+                if (name.empty() && editorId.empty()) continue;
+
+                json w;
+                w["formId"] = std::format("{:08X}", form->GetFormID());
+                if (!name.empty()) w["name"] = name;
+                if (!editorId.empty()) w["editorId"] = editorId;
+
+                // Infer weather type from editor ID keywords
+                std::string lowerEditorId = editorId;
+                std::transform(lowerEditorId.begin(), lowerEditorId.end(), lowerEditorId.begin(), ::tolower);
+
+                if (lowerEditorId.find("clear") != std::string::npos) w["category"] = "clear";
+                else if (lowerEditorId.find("snow") != std::string::npos) w["category"] = "snow";
+                else if (lowerEditorId.find("rain") != std::string::npos) w["category"] = "rain";
+                else if (lowerEditorId.find("storm") != std::string::npos || lowerEditorId.find("thunder") != std::string::npos) w["category"] = "storm";
+                else if (lowerEditorId.find("fog") != std::string::npos) w["category"] = "fog";
+                else if (lowerEditorId.find("cloud") != std::string::npos || lowerEditorId.find("overcast") != std::string::npos) w["category"] = "cloudy";
+                else if (lowerEditorId.find("ash") != std::string::npos) w["category"] = "ash";
+                else w["category"] = "other";
+
+                // Get source mod
+                auto* file = form->GetFile(0);
+                if (file) w["mod"] = file->fileName;
+
+                weathers.push_back(w);
+            } catch (...) {
+                continue;
+            }
+        }
+
+        return {{"weathers", weathers}, {"count", weathers.size()}};
     }
 
     json GetCellInfo() {
@@ -963,10 +1017,12 @@ namespace SkyrimMCP::GameInterface {
             auto* ref = form->As<RE::TESObjectREFR>();
             if (!ref) return {{"error", "Not a reference: " + refFormIdHex}};
 
-            if (!ref->IsLocked()) return {{"error", "Not locked"}};
+            auto* lock = ref->GetLock();
+            if (!lock) return {{"error", "Object has no lock"}};
+            if (!lock->IsLocked()) return {{"error", "Already unlocked"}};
 
-            // Use console command for reliability
-            return ExecuteConsoleCommand(refFormIdHex + ".unlock");
+            lock->SetLocked(false);
+            return {{"unlocked", true}, {"refId", refFormIdHex}, {"name", ref->GetName() ? ref->GetName() : ""}};
         } catch (...) {
             return {{"error", "Failed to unlock: " + refFormIdHex}};
         }
@@ -977,7 +1033,15 @@ namespace SkyrimMCP::GameInterface {
             auto* form = RE::TESForm::LookupByID(ParseFormId(refFormIdHex));
             if (!form) return {{"error", "Reference not found: " + refFormIdHex}};
 
-            return ExecuteConsoleCommand(std::format("{}.lock {}", refFormIdHex, lockLevel));
+            auto* ref = form->As<RE::TESObjectREFR>();
+            if (!ref) return {{"error", "Not a reference: " + refFormIdHex}};
+
+            auto* lock = ref->GetLock();
+            if (!lock) return {{"error", "Object has no lock"}};
+
+            lock->SetLocked(true);
+            lock->baseLevel = static_cast<std::int8_t>(lockLevel);
+            return {{"locked", true}, {"refId", refFormIdHex}, {"lockLevel", lockLevel}};
         } catch (...) {
             return {{"error", "Failed to lock: " + refFormIdHex}};
         }

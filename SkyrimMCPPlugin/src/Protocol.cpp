@@ -256,6 +256,9 @@ namespace SkyrimMCP::Protocol {
             else if (action == "get_weather") {
                 result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetWeather(); });
             }
+            else if (action == "list_weathers") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::ListWeathers(); });
+            }
             else if (action == "set_weather") {
                 std::string weather = params.value("weather", "");
                 if (weather.empty()) return MakeResponse(id, false, {}, "Missing 'weather' parameter").dump() + "\n";

@@ -56,6 +56,7 @@ namespace SkyrimMCP {
         // World (Phase 3)
         json GetWeather();
         json SetWeather(const std::string& weatherFormIdOrName);
+        json ListWeathers();
         json GetCellInfo();
         json GetNearbyObjects(float radius, const std::string& typeFilter);
         json UnlockDoor(const std::string& refFormIdHex);

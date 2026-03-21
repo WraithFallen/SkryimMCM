@@ -226,6 +226,16 @@ public class SkyrimTools
     }
 
     [McpServerTool]
+    [McpServerTool]
+    [Description("List all available weather types with FormIDs, editor IDs, categories (clear, snow, rain, storm, fog, cloudy, ash), " +
+        "and which mod they come from. Use the FormID or editor ID with SetWeather to change the weather.")]
+    public async Task<object> ListWeathers()
+    {
+        var data = await _pipe.SendRequestAsync("list_weathers");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
     [Description("Change the weather. Pass a weather FormID or a search term like 'snow', 'rain', 'clear', 'storm', 'fog'. " +
         "The weather transitions naturally over a few seconds.")]
     public async Task<object> SetWeather(string weather)

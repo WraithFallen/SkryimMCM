@@ -59,6 +59,9 @@ namespace SkyrimMCP {
         json GetModFormIdPrefix(const std::string& modName);
         json SaveGame(const std::string& saveName);
 
+        // Notifications
+        json ShowNotification(const std::string& message);
+
         // Search
         json SearchForms(const std::string& query, const std::string& formTypeFilter, int maxResults);
     }

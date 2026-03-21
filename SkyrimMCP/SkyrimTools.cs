@@ -18,6 +18,22 @@ public class SkyrimTools
         _pipe = pipe;
     }
 
+    /// <summary>
+    /// Send an in-game notification to the player's HUD.
+    /// Fire-and-forget — errors are silently ignored.
+    /// </summary>
+    private async Task NotifyInGame(string message)
+    {
+        try
+        {
+            await _pipe.SendRequestAsync("show_notification", new JsonObject
+            {
+                ["message"] = message
+            });
+        }
+        catch { /* notification failure shouldn't break the tool */ }
+    }
+
     [McpServerTool]
     [Description("Check if Skyrim is running and the SKSE MCP plugin is connected")]
     public async Task<object> CheckConnection()
@@ -82,6 +98,7 @@ public class SkyrimTools
         });
 
         var name = data?["name"]?.GetValue<string>() ?? item;
+        await NotifyInGame($"Added {count}x {name}");
         return new { success = true, message = $"Added {count}x {name} (FormID: {formId})" };
     }
 
@@ -100,6 +117,7 @@ public class SkyrimTools
         });
 
         var name = data?["name"]?.GetValue<string>() ?? item;
+        await NotifyInGame($"Removed {count}x {name}");
         return new { success = true, message = $"Removed {count}x {name} (FormID: {formId})" };
     }
 
@@ -126,7 +144,9 @@ public class SkyrimTools
     {
         var data = await _pipe.SendRequestAsync("toggle_god_mode");
         var godMode = data?["godMode"]?.GetValue<bool>() ?? false;
-        return new { success = true, godMode, message = godMode ? "God mode ENABLED" : "God mode DISABLED" };
+        var msg = godMode ? "God Mode On" : "God Mode Off";
+        await NotifyInGame(msg);
+        return new { success = true, godMode, message = msg };
     }
 
     [McpServerTool]
@@ -138,6 +158,7 @@ public class SkyrimTools
             ["attribute"] = "health",
             ["value"] = value
         });
+        await NotifyInGame($"Health set to {value}");
         return new { success = true, message = $"Set health to {value}" };
     }
 
@@ -150,6 +171,7 @@ public class SkyrimTools
             ["attribute"] = "magicka",
             ["value"] = value
         });
+        await NotifyInGame($"Magicka set to {value}");
         return new { success = true, message = $"Set magicka to {value}" };
     }
 
@@ -162,6 +184,7 @@ public class SkyrimTools
             ["attribute"] = "stamina",
             ["value"] = value
         });
+        await NotifyInGame($"Stamina set to {value}");
         return new { success = true, message = $"Set stamina to {value}" };
     }
 
@@ -173,7 +196,9 @@ public class SkyrimTools
     {
         var data = await _pipe.SendRequestAsync("toggle_collision");
         var enabled = data?["collisionEnabled"]?.GetValue<bool>() ?? true;
-        return new { success = true, collisionEnabled = enabled, message = enabled ? "Collision ENABLED" : "Collision DISABLED" };
+        var msg = enabled ? "Collision On" : "No Clip";
+        await NotifyInGame(msg);
+        return new { success = true, collisionEnabled = enabled, message = msg };
     }
 
     [McpServerTool]
@@ -243,6 +268,7 @@ public class SkyrimTools
             ["saveName"] = saveName
         });
 
+        await NotifyInGame($"Game Saved");
         return new { success = true, message = $"Game saved as: {saveName}" };
     }
 
@@ -284,5 +310,18 @@ public class SkyrimTools
             ["maxResults"] = maxResults
         });
         return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Show a notification message on the player's HUD (the same style as quest updates and skill increases). " +
+        "Use this to inform the player about actions you're taking or important information. " +
+        "Keep messages short and natural — they appear briefly in the top-left corner of the screen.")]
+    public async Task<object> ShowNotification(string message)
+    {
+        await _pipe.SendRequestAsync("show_notification", new JsonObject
+        {
+            ["message"] = message
+        });
+        return new { success = true, message };
     }
 }

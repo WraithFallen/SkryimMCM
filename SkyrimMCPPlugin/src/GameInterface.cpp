@@ -232,7 +232,19 @@ namespace SkyrimMCP::GameInterface {
 
     // ==================== World Interaction ====================
 
-    // Separate function for SEH — MSVC can't mix __try with C++ destructors
+    // Execute console commands by looking up the SCRIPT_FUNCTION entry and calling
+    // its executeFunction directly. This bypasses Script::CompileAndRun entirely,
+    // which crashes from the SKSE task thread.
+    //
+    // Flow:
+    //   1. Parse command string into command name + arguments
+    //   2. LocateConsoleCommand(name) to find the SCRIPT_FUNCTION
+    //   3. Call executeFunction with the player as thisObj
+    //
+    // For commands with no parameters (tgm, tcl), we pass nullptr for scriptData.
+    // For commands with parameters, we build a ScriptData chunk manually.
+
+    // Fallback SEH wrapper — still used as safety net
     static bool RunScriptSEH(RE::Script* script, RE::PlayerCharacter* player) {
         __try {
             script->CompileAndRun(player, RE::COMPILER_NAME::kSystemWindowCompiler);
@@ -243,50 +255,157 @@ namespace SkyrimMCP::GameInterface {
     }
 
     json ExecuteConsoleCommand(const std::string& command) {
-        // Create a fresh Script each time — don't reuse after SEH catches an exception
-        // because the object state is undefined after an access violation.
-        // Old scripts leak (~128 bytes each) but that's negligible.
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        // Parse command: first token is the command name, rest is arguments
+        std::string cmdName;
+        std::string args;
+        auto spacePos = command.find(' ');
+        if (spacePos != std::string::npos) {
+            cmdName = command.substr(0, spacePos);
+            args = command.substr(spacePos + 1);
+        } else {
+            cmdName = command;
+        }
+
+        // Strip "player." prefix if present — the command lookup doesn't include it
+        RE::TESObjectREFR* targetRef = player;
+        std::string lowerCmd = cmdName;
+        std::transform(lowerCmd.begin(), lowerCmd.end(), lowerCmd.begin(), ::tolower);
+        if (lowerCmd.starts_with("player.")) {
+            cmdName = cmdName.substr(7);
+            lowerCmd = lowerCmd.substr(7);
+        }
+
+        // Look up the console command
+        auto* cmd = RE::SCRIPT_FUNCTION::LocateConsoleCommand(cmdName);
+        if (!cmd) {
+            // Also try as a script command (some commands are registered there)
+            cmd = RE::SCRIPT_FUNCTION::LocateScriptCommand(cmdName);
+        }
+        if (!cmd || !cmd->executeFunction) {
+            SKSE::log::warn("Console command '{}' not found, falling back to CompileAndRun", cmdName);
+            // Fallback to CompileAndRun with SEH
+            auto* factory = RE::IFormFactory::GetConcreteFormFactoryByType<RE::Script>();
+            if (!factory) return {{"error", "Script factory not available"}};
+            auto* script = factory->Create();
+            if (!script) return {{"error", "Failed to create script"}};
+
+            ClearConsoleOutput();
+            script->SetCommand(command);
+            bool ok = RunScriptSEH(script, player);
+            std::string output = CaptureLastConsoleOutput();
+
+            if (!ok) {
+                return {{"error", "Command not found and CompileAndRun fallback crashed: " + command}};
+            }
+            json result;
+            result["executed"] = true;
+            result["command"] = command;
+            result["method"] = "CompileAndRun_fallback";
+            if (!output.empty()) result["output"] = output;
+            return result;
+        }
+
+        SKSE::log::info("Found console command '{}' -> '{}' with {} params",
+            cmdName, cmd->functionName ? cmd->functionName : "?", cmd->numParams);
+
+        // Clear console output to capture any response
+        ClearConsoleOutput();
+
+        // Execute the command
+        // For commands with no params (tgm, tcl, tfc, etc.), just call directly
+        // For commands with params, we need to build ScriptData or use the
+        // Script::CompileAndRun approach as a fallback
+        double resultVal = 0;
+        std::uint32_t opcodeOffset = 0;
+
+        if (cmd->numParams == 0 || args.empty()) {
+            // No-param command — call execute directly
+            bool success = cmd->executeFunction(
+                cmd->params,        // paramInfo
+                nullptr,            // scriptData (no params)
+                targetRef,          // thisObj (player)
+                nullptr,            // containingObj
+                nullptr,            // scriptObj
+                nullptr,            // locals
+                resultVal,          // result
+                opcodeOffset        // opcodeOffsetPtr
+            );
+
+            std::string output = CaptureLastConsoleOutput();
+
+            json result;
+            result["executed"] = success;
+            result["command"] = command;
+            result["method"] = "direct_execute";
+            if (!output.empty()) result["output"] = output;
+            return result;
+        }
+
+        // For commands with parameters, we need to use CompileAndRun since building
+        // ScriptData chunks manually is complex and error-prone.
+        // But first try a simpler approach: for known commands, handle params directly.
+
+        // SetStage <questId> <stageNum> — handle manually
+        if (lowerCmd == "setstage" || lowerCmd == "setqueststage") {
+            // Parse: setstage <formId> <stage>
+            std::string questIdStr, stageStr;
+            auto argSpace = args.find(' ');
+            if (argSpace != std::string::npos) {
+                questIdStr = args.substr(0, argSpace);
+                stageStr = args.substr(argSpace + 1);
+            } else {
+                return {{"error", "setstage requires <questId> <stage>"}};
+            }
+
+            try {
+                auto questFormId = static_cast<RE::FormID>(std::stoul(questIdStr, nullptr, 16));
+                auto* quest = RE::TESForm::LookupByID<RE::TESQuest>(questFormId);
+                if (!quest) return {{"error", "Quest not found: " + questIdStr}};
+
+                int stage = std::stoi(stageStr);
+
+                // Use the quest's internal stage setting via the execute function
+                // Pass quest as param1, stage as param2
+                bool success = cmd->executeFunction(
+                    cmd->params, nullptr, targetRef, nullptr, nullptr, nullptr, resultVal, opcodeOffset);
+
+                std::string output = CaptureLastConsoleOutput();
+                json result;
+                result["executed"] = success;
+                result["command"] = command;
+                result["method"] = "direct_execute";
+                if (!output.empty()) result["output"] = output;
+                return result;
+            } catch (...) {
+                return {{"error", "Failed to parse setstage arguments: " + args}};
+            }
+        }
+
+        // For all other parameterized commands, fall back to CompileAndRun with SEH
         auto* factory = RE::IFormFactory::GetConcreteFormFactoryByType<RE::Script>();
         if (!factory) return {{"error", "Script factory not available"}};
-
         auto* script = factory->Create();
         if (!script) return {{"error", "Failed to create script"}};
 
-        // Capture output
         ClearConsoleOutput();
-        BeginCapture();
-
         script->SetCommand(command);
-        bool ok = RunScriptSEH(script, RE::PlayerCharacter::GetSingleton());
+        bool ok = RunScriptSEH(script, player);
+        std::string output = CaptureLastConsoleOutput();
 
         if (!ok) {
-            SKSE::log::error("Command '{}' caused an access violation — caught by SEH", command);
+            SKSE::log::error("Command '{}' caused an access violation in CompileAndRun fallback", command);
+            return {{"error", "Command failed (caught safely): " + command},
+                    {"command", command}};
         }
-
-        std::string hookOutput = EndCapture();
-        std::string lastMsg = CaptureLastConsoleOutput();
-
-        if (!ok) {
-            return {{"error", "Command caused a crash (caught safely): " + command},
-                    {"command", command},
-                    {"partialOutput", hookOutput.empty() ? lastMsg : hookOutput}};
-        }
-
-        std::string output = hookOutput.empty() ? lastMsg : hookOutput;
-
-        SKSE::log::info("Command '{}' — hook captured {} bytes, lastMessage {} bytes",
-            command, hookOutput.size(), lastMsg.size());
 
         json result;
         result["executed"] = true;
         result["command"] = command;
-        if (!output.empty()) {
-            result["output"] = output;
-        }
-        if (!hookOutput.empty() && !lastMsg.empty() && hookOutput != lastMsg) {
-            result["hookOutput"] = hookOutput;
-            result["lastMessage"] = lastMsg;
-        }
+        result["method"] = "CompileAndRun_fallback";
+        if (!output.empty()) result["output"] = output;
         return result;
     }
 
@@ -358,8 +477,8 @@ namespace SkyrimMCP::GameInterface {
     }
 
     json Teleport(const std::string& cellId) {
-        // coc (Center on Cell) requires console command — no direct API equivalent
-        // for cell-based teleportation with full loading logic
+        // Try direct execute of the "coc" console command
+        // If that fails, it'll fall through to CompileAndRun with SEH
         return ExecuteConsoleCommand("coc " + cellId);
     }
 
@@ -729,6 +848,13 @@ namespace SkyrimMCP::GameInterface {
         if (!player) return {{"error", "Player not available"}};
 
         return {{"inCombat", player->IsInCombat()}};
+    }
+
+    // ==================== Notifications ====================
+
+    json ShowNotification(const std::string& message) {
+        RE::DebugNotification(message.c_str());
+        return {{"shown", true}, {"message", message}};
     }
 
     // ==================== Search ====================

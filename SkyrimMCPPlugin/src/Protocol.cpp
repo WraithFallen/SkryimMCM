@@ -218,6 +218,12 @@ namespace SkyrimMCP::Protocol {
             else if (action == "is_in_combat") {
                 result = TaskQueue::RunOnGameThread([]() { return GameInterface::IsInCombat(); });
             }
+            // Notifications
+            else if (action == "show_notification") {
+                std::string message = params.value("message", "");
+                if (message.empty()) return MakeResponse(id, false, {}, "Missing 'message' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([message]() { return GameInterface::ShowNotification(message); });
+            }
             // Search
             else if (action == "search_forms") {
                 std::string query = params.value("query", "");

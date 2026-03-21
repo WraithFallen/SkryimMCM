@@ -33,6 +33,11 @@ namespace SkyrimMCP {
         json StartQuest(const std::string& formIdHex);
         json StopQuest(const std::string& formIdHex);
 
+        // Quest Intelligence (Phase 4)
+        json GetQuestStages(const std::string& formIdHex);
+        json GetQuestAliases(const std::string& formIdHex);
+        json GetQuestItems();
+
         // Spells / perks / effects
         json AddSpell(const std::string& formIdHex);
         json RemoveSpell(const std::string& formIdHex);

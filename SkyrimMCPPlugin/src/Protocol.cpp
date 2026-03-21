@@ -156,7 +156,21 @@ namespace SkyrimMCP::Protocol {
                     return GameInterface::GetNearbyNPCs(radius);
                 });
             }
-            // Quest management
+            // Quest Intelligence (Phase 4)
+            else if (action == "get_quest_stages") {
+                std::string formId = params.value("formId", "");
+                if (formId.empty()) return MakeResponse(id, false, {}, "Missing 'formId' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([formId]() { return GameInterface::GetQuestStages(formId); });
+            }
+            else if (action == "get_quest_aliases") {
+                std::string formId = params.value("formId", "");
+                if (formId.empty()) return MakeResponse(id, false, {}, "Missing 'formId' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([formId]() { return GameInterface::GetQuestAliases(formId); });
+            }
+            else if (action == "get_quest_items") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetQuestItems(); });
+            }
+            // Quest management (existing)
             else if (action == "get_quest_stage") {
                 std::string formId = params.value("formId", "");
                 if (formId.empty()) return MakeResponse(id, false, {}, "Missing 'formId' parameter").dump() + "\n";

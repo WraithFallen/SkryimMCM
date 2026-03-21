@@ -226,7 +226,6 @@ public class SkyrimTools
     }
 
     [McpServerTool]
-    [McpServerTool]
     [Description("List all available weather types with FormIDs, editor IDs, categories (clear, snow, rain, storm, fog, cloudy, ash), " +
         "and which mod they come from. Use the FormID or editor ID with SetWeather to change the weather.")]
     public async Task<object> ListWeathers()
@@ -499,6 +498,35 @@ public class SkyrimTools
     public async Task<object> GetCrosshairRef()
     {
         var data = await _pipe.SendRequestAsync("get_crosshair_ref");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("List all stages of a specific quest — executed stages, waiting stages, and objectives with their state. " +
+        "Use this to see quest progression history and what stages have been completed. " +
+        "Get the quest FormID from SearchForms or GetQuestInfo first.")]
+    public async Task<object> GetQuestStages(string formId)
+    {
+        var data = await _pipe.SendRequestAsync("get_quest_stages", new JsonObject { ["formId"] = formId });
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Get all aliases for a quest — resolves to actual NPCs/objects with their reference IDs. " +
+        "Shows if each alias is essential, protected, quest object, alive/dead. " +
+        "Use this to find which NPCs are involved in a quest and their current state.")]
+    public async Task<object> GetQuestAliases(string formId)
+    {
+        var data = await _pipe.SendRequestAsync("get_quest_aliases", new JsonObject { ["formId"] = formId });
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("List all quest items in the player's inventory — items flagged as quest objects that cannot normally be dropped. " +
+        "Shows which items are tied to active quests.")]
+    public async Task<object> GetQuestItems()
+    {
+        var data = await _pipe.SendRequestAsync("get_quest_items");
         return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
     }
 

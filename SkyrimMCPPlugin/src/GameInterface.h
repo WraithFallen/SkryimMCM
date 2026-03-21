@@ -17,6 +17,8 @@ namespace SkyrimMCP {
 
         // World interaction
         json ExecuteConsoleCommand(const std::string& command);
+        json ToggleGodMode();
+        json ToggleCollision();
         json AddItem(const std::string& formIdHex, int count);
         json RemoveItem(const std::string& formIdHex, int count);
         json SetActorValue(const std::string& attribute, float value);
@@ -56,6 +58,9 @@ namespace SkyrimMCP {
         json GetLoadOrder();
         json GetModFormIdPrefix(const std::string& modName);
         json SaveGame(const std::string& saveName);
+
+        // Search
+        json SearchForms(const std::string& query, const std::string& formTypeFilter, int maxResults);
     }
 
 }

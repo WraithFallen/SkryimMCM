@@ -102,6 +102,12 @@ namespace SkyrimMCP::Protocol {
                     return GameInterface::Teleport(cellId);
                 });
             }
+            else if (action == "toggle_god_mode") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::ToggleGodMode(); });
+            }
+            else if (action == "toggle_collision") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::ToggleCollision(); });
+            }
             else if (action == "get_quest_info") {
                 result = TaskQueue::RunOnGameThread([]() {
                     return GameInterface::GetQuestInfo();
@@ -211,6 +217,14 @@ namespace SkyrimMCP::Protocol {
             }
             else if (action == "is_in_combat") {
                 result = TaskQueue::RunOnGameThread([]() { return GameInterface::IsInCombat(); });
+            }
+            // Search
+            else if (action == "search_forms") {
+                std::string query = params.value("query", "");
+                std::string typeFilter = params.value("type", "all");
+                int maxResults = params.value("maxResults", 25);
+                if (query.empty()) return MakeResponse(id, false, {}, "Missing 'query' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([query, typeFilter, maxResults]() { return GameInterface::SearchForms(query, typeFilter, maxResults); });
             }
             // Save game
             else if (action == "save_game") {

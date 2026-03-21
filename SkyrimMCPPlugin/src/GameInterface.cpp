@@ -235,7 +235,7 @@ namespace SkyrimMCP::GameInterface {
     // Separate function for SEH — MSVC can't mix __try with C++ destructors
     static bool RunScriptSEH(RE::Script* script, RE::PlayerCharacter* player) {
         __try {
-            script->CompileAndRun(player, RE::COMPILER_NAME::kDefaultCompiler);
+            script->CompileAndRun(player, RE::COMPILER_NAME::kSystemWindowCompiler);
             return true;
         } __except(EXCEPTION_EXECUTE_HANDLER) {
             return false;
@@ -243,22 +243,21 @@ namespace SkyrimMCP::GameInterface {
     }
 
     json ExecuteConsoleCommand(const std::string& command) {
-        // Reuse a single Script instance — creating and deleting Script objects
-        // via IFormFactory corrupts memory and crashes the game.
-        static RE::Script* cachedScript = nullptr;
-        if (!cachedScript) {
-            auto* factory = RE::IFormFactory::GetConcreteFormFactoryByType<RE::Script>();
-            if (!factory) return {{"error", "Script factory not available"}};
-            cachedScript = factory->Create();
-            if (!cachedScript) return {{"error", "Failed to create script"}};
-        }
+        // Create a fresh Script each time — don't reuse after SEH catches an exception
+        // because the object state is undefined after an access violation.
+        // Old scripts leak (~128 bytes each) but that's negligible.
+        auto* factory = RE::IFormFactory::GetConcreteFormFactoryByType<RE::Script>();
+        if (!factory) return {{"error", "Script factory not available"}};
 
-        // Capture output using both methods
+        auto* script = factory->Create();
+        if (!script) return {{"error", "Failed to create script"}};
+
+        // Capture output
         ClearConsoleOutput();
         BeginCapture();
 
-        cachedScript->SetCommand(command);
-        bool ok = RunScriptSEH(cachedScript, RE::PlayerCharacter::GetSingleton());
+        script->SetCommand(command);
+        bool ok = RunScriptSEH(script, RE::PlayerCharacter::GetSingleton());
 
         if (!ok) {
             SKSE::log::error("Command '{}' caused an access violation — caught by SEH", command);
@@ -273,10 +272,8 @@ namespace SkyrimMCP::GameInterface {
                     {"partialOutput", hookOutput.empty() ? lastMsg : hookOutput}};
         }
 
-        // Use hook output if we got it, otherwise fall back to lastMessage
         std::string output = hookOutput.empty() ? lastMsg : hookOutput;
 
-        // Log both for debugging
         SKSE::log::info("Command '{}' — hook captured {} bytes, lastMessage {} bytes",
             command, hookOutput.size(), lastMsg.size());
 
@@ -286,7 +283,6 @@ namespace SkyrimMCP::GameInterface {
         if (!output.empty()) {
             result["output"] = output;
         }
-        // Include both for diagnostics while we're testing
         if (!hookOutput.empty() && !lastMsg.empty() && hookOutput != lastMsg) {
             result["hookOutput"] = hookOutput;
             result["lastMessage"] = lastMsg;
@@ -344,7 +340,26 @@ namespace SkyrimMCP::GameInterface {
         return {{"set", true}, {"attribute", attribute}, {"value", value}};
     }
 
+    json ToggleGodMode() {
+        // God mode is a static bool — just flip it
+        REL::Relocation<bool*> godMode{ RELOCATION_ID(517711, 404238) };
+        *godMode = !*godMode;
+        return {{"godMode", *godMode}};
+    }
+
+    json ToggleCollision() {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        static bool collisionEnabled = true;
+        collisionEnabled = !collisionEnabled;
+        player->SetCollision(collisionEnabled);
+        return {{"collisionEnabled", collisionEnabled}};
+    }
+
     json Teleport(const std::string& cellId) {
+        // coc (Center on Cell) requires console command — no direct API equivalent
+        // for cell-based teleportation with full loading logic
         return ExecuteConsoleCommand("coc " + cellId);
     }
 
@@ -467,11 +482,27 @@ namespace SkyrimMCP::GameInterface {
     }
 
     json StartQuest(const std::string& formIdHex) {
-        return ExecuteConsoleCommand(std::format("startquest {}", formIdHex));
+        try {
+            auto* quest = RE::TESForm::LookupByID<RE::TESQuest>(ParseFormId(formIdHex));
+            if (!quest) return {{"error", "Quest not found: " + formIdHex}};
+
+            bool started = quest->Start();
+            return {{"started", started}, {"formId", formIdHex}, {"name", quest->GetName() ? quest->GetName() : ""}};
+        } catch (...) {
+            return {{"error", "Failed to start quest: " + formIdHex}};
+        }
     }
 
     json StopQuest(const std::string& formIdHex) {
-        return ExecuteConsoleCommand(std::format("stopquest {}", formIdHex));
+        try {
+            auto* quest = RE::TESForm::LookupByID<RE::TESQuest>(ParseFormId(formIdHex));
+            if (!quest) return {{"error", "Quest not found: " + formIdHex}};
+
+            quest->Stop();
+            return {{"stopped", true}, {"formId", formIdHex}, {"name", quest->GetName() ? quest->GetName() : ""}};
+        } catch (...) {
+            return {{"error", "Failed to stop quest: " + formIdHex}};
+        }
     }
 
     // ==================== Spells / Perks ====================
@@ -581,9 +612,39 @@ namespace SkyrimMCP::GameInterface {
     }
 
     json MoveActorTo(const std::string& actorFormIdHex, const std::string& targetCellOrRefId) {
-        // Use console commands for reliability
-        ExecuteConsoleCommand(std::format("prid {}", actorFormIdHex));
-        return ExecuteConsoleCommand(std::format("moveto player"));
+        try {
+            auto* form = RE::TESForm::LookupByID(ParseFormId(actorFormIdHex));
+            if (!form) return {{"error", "Actor not found: " + actorFormIdHex}};
+
+            auto* actor = form->As<RE::Actor>();
+            if (!actor) return {{"error", "Not an actor: " + actorFormIdHex}};
+
+            // Default: move to player
+            auto* player = RE::PlayerCharacter::GetSingleton();
+            if (!player) return {{"error", "Player not available"}};
+
+            if (targetCellOrRefId.empty() || targetCellOrRefId == "player") {
+                actor->MoveTo(player);
+            } else {
+                // Try to look up target as a reference
+                auto* targetForm = RE::TESForm::LookupByID(ParseFormId(targetCellOrRefId));
+                if (targetForm) {
+                    auto* targetRef = targetForm->As<RE::TESObjectREFR>();
+                    if (targetRef) {
+                        actor->MoveTo(targetRef);
+                    } else {
+                        return {{"error", "Target is not a reference: " + targetCellOrRefId}};
+                    }
+                } else {
+                    // Move to player as fallback
+                    actor->MoveTo(player);
+                }
+            }
+
+            return {{"moved", true}, {"actor", actorFormIdHex}, {"name", actor->GetName()}};
+        } catch (...) {
+            return {{"error", "Failed to move actor: " + actorFormIdHex}};
+        }
     }
 
     json SetRelationshipRank(const std::string& actorFormIdHex, int rank) {
@@ -652,7 +713,15 @@ namespace SkyrimMCP::GameInterface {
     }
 
     json SetGameTime(float hours) {
-        return ExecuteConsoleCommand(std::format("set gamehour to {:.1f}", hours));
+        auto* calendar = RE::Calendar::GetSingleton();
+        if (!calendar) return {{"error", "Calendar not available"}};
+
+        // gameHour is a TESGlobal — set its value directly
+        if (calendar->gameHour) {
+            calendar->gameHour->value = hours;
+            return {{"set", true}, {"gameHour", hours}};
+        }
+        return {{"error", "Game hour global not available"}};
     }
 
     json IsInCombat() {
@@ -662,10 +731,147 @@ namespace SkyrimMCP::GameInterface {
         return {{"inCombat", player->IsInCombat()}};
     }
 
+    // ==================== Search ====================
+
+    // Replaces the "help" console command with a direct form database search.
+    // Searches by name (case-insensitive substring match) with optional type filter.
+    json SearchForms(const std::string& query, const std::string& formTypeFilter, int maxResults) {
+        auto* dataHandler = RE::TESDataHandler::GetSingleton();
+        if (!dataHandler) return {{"error", "Data handler not available"}};
+
+        // Lowercase the query for case-insensitive matching
+        std::string lowerQuery = query;
+        std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(), ::tolower);
+
+        // Map filter string to FormTypes to search
+        struct FormTypeEntry {
+            RE::FormType type;
+            const char* label;
+        };
+
+        std::vector<FormTypeEntry> typesToSearch;
+
+        std::string lowerFilter = formTypeFilter;
+        std::transform(lowerFilter.begin(), lowerFilter.end(), lowerFilter.begin(), ::tolower);
+
+        if (lowerFilter.empty() || lowerFilter == "all") {
+            typesToSearch = {
+                {RE::FormType::Weapon, "weapon"}, {RE::FormType::Armor, "armor"},
+                {RE::FormType::AlchemyItem, "potion"}, {RE::FormType::Ingredient, "ingredient"},
+                {RE::FormType::Book, "book"}, {RE::FormType::Misc, "misc"},
+                {RE::FormType::Ammo, "ammo"}, {RE::FormType::SoulGem, "soulgem"},
+                {RE::FormType::KeyMaster, "key"}, {RE::FormType::Scroll, "scroll"},
+                {RE::FormType::Spell, "spell"}, {RE::FormType::Perk, "perk"},
+                {RE::FormType::Quest, "quest"}, {RE::FormType::NPC, "npc"},
+                {RE::FormType::Race, "race"}, {RE::FormType::Enchantment, "enchantment"},
+                {RE::FormType::Shout, "shout"}, {RE::FormType::WordOfPower, "wordofpower"},
+                {RE::FormType::Location, "location"},
+            };
+        } else if (lowerFilter == "weapon" || lowerFilter == "weap") {
+            typesToSearch = {{RE::FormType::Weapon, "weapon"}};
+        } else if (lowerFilter == "armor" || lowerFilter == "armo") {
+            typesToSearch = {{RE::FormType::Armor, "armor"}};
+        } else if (lowerFilter == "potion" || lowerFilter == "alch") {
+            typesToSearch = {{RE::FormType::AlchemyItem, "potion"}};
+        } else if (lowerFilter == "book") {
+            typesToSearch = {{RE::FormType::Book, "book"}};
+        } else if (lowerFilter == "misc") {
+            typesToSearch = {{RE::FormType::Misc, "misc"}};
+        } else if (lowerFilter == "ingredient" || lowerFilter == "ingr") {
+            typesToSearch = {{RE::FormType::Ingredient, "ingredient"}};
+        } else if (lowerFilter == "ammo") {
+            typesToSearch = {{RE::FormType::Ammo, "ammo"}};
+        } else if (lowerFilter == "key") {
+            typesToSearch = {{RE::FormType::KeyMaster, "key"}};
+        } else if (lowerFilter == "spell" || lowerFilter == "spel") {
+            typesToSearch = {{RE::FormType::Spell, "spell"}};
+        } else if (lowerFilter == "perk") {
+            typesToSearch = {{RE::FormType::Perk, "perk"}};
+        } else if (lowerFilter == "quest" || lowerFilter == "qust") {
+            typesToSearch = {{RE::FormType::Quest, "quest"}};
+        } else if (lowerFilter == "npc" || lowerFilter == "npc_") {
+            typesToSearch = {{RE::FormType::NPC, "npc"}};
+        } else if (lowerFilter == "enchantment" || lowerFilter == "ench") {
+            typesToSearch = {{RE::FormType::Enchantment, "enchantment"}};
+        } else if (lowerFilter == "shout" || lowerFilter == "shou") {
+            typesToSearch = {{RE::FormType::Shout, "shout"}};
+        } else if (lowerFilter == "location" || lowerFilter == "lctn") {
+            typesToSearch = {{RE::FormType::Location, "location"}};
+        } else if (lowerFilter == "scroll" || lowerFilter == "scrl") {
+            typesToSearch = {{RE::FormType::Scroll, "scroll"}};
+        } else if (lowerFilter == "soulgem" || lowerFilter == "slgm") {
+            typesToSearch = {{RE::FormType::SoulGem, "soulgem"}};
+        } else {
+            // Default to searching common types
+            typesToSearch = {
+                {RE::FormType::Weapon, "weapon"}, {RE::FormType::Armor, "armor"},
+                {RE::FormType::AlchemyItem, "potion"}, {RE::FormType::Book, "book"},
+                {RE::FormType::Misc, "misc"}, {RE::FormType::Quest, "quest"},
+                {RE::FormType::NPC, "npc"}, {RE::FormType::Spell, "spell"},
+            };
+        }
+
+        json results = json::array();
+        int count = 0;
+
+        for (auto& [formType, label] : typesToSearch) {
+            if (count >= maxResults) break;
+
+            try {
+                auto& forms = dataHandler->GetFormArray(formType);
+                for (auto* form : forms) {
+                    if (count >= maxResults) break;
+                    if (!form) continue;
+
+                    try {
+                        const char* name = form->GetName();
+                        const char* editorId = form->GetFormEditorID();
+
+                        // Match against name or editor ID
+                        bool matched = false;
+                        if (name && name[0]) {
+                            std::string lowerName(name);
+                            std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+                            if (lowerName.find(lowerQuery) != std::string::npos) matched = true;
+                        }
+                        if (!matched && editorId && editorId[0]) {
+                            std::string lowerEditorId(editorId);
+                            std::transform(lowerEditorId.begin(), lowerEditorId.end(), lowerEditorId.begin(), ::tolower);
+                            if (lowerEditorId.find(lowerQuery) != std::string::npos) matched = true;
+                        }
+
+                        if (matched) {
+                            json r;
+                            r["formId"] = std::format("{:08X}", form->GetFormID());
+                            r["name"] = name ? name : "";
+                            r["editorId"] = editorId ? editorId : "";
+                            r["type"] = label;
+                            results.push_back(r);
+                            count++;
+                        }
+                    } catch (...) {
+                        continue;
+                    }
+                }
+            } catch (...) {
+                continue;
+            }
+        }
+
+        return {{"results", results}, {"count", count}, {"query", query}};
+    }
+
     // ==================== Load Order ====================
 
     json SaveGame(const std::string& saveName) {
-        return ExecuteConsoleCommand("save " + saveName);
+        auto* saveLoadManager = RE::BGSSaveLoadManager::GetSingleton();
+        if (!saveLoadManager) {
+            // Fallback to console command
+            return ExecuteConsoleCommand("save " + saveName);
+        }
+
+        saveLoadManager->Save(saveName.c_str());
+        return {{"saved", true}, {"saveName", saveName}};
     }
 
     json GetLoadOrder() {

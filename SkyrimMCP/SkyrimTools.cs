@@ -121,14 +121,12 @@ public class SkyrimTools
     }
 
     [McpServerTool]
-    [Description("Toggle god mode (invincibility) for the player")]
+    [Description("Toggle god mode (invincibility) for the player. Uses direct engine API — no console command.")]
     public async Task<object> ToggleGodMode()
     {
-        await _pipe.SendRequestAsync("execute_command", new JsonObject
-        {
-            ["command"] = "tgm"
-        });
-        return new { success = true, message = "Toggled god mode" };
+        var data = await _pipe.SendRequestAsync("toggle_god_mode");
+        var godMode = data?["godMode"]?.GetValue<bool>() ?? false;
+        return new { success = true, godMode, message = godMode ? "God mode ENABLED" : "God mode DISABLED" };
     }
 
     [McpServerTool]
@@ -168,16 +166,14 @@ public class SkyrimTools
     }
 
     [McpServerTool]
-    [Description("Toggle collision to walk through walls. " +
+    [Description("Toggle collision to walk through walls. Uses direct engine API — no console command. " +
         "CAUTION: Disabling collision can cause the player to fall through the world. " +
         "Remind the user to save before using and to re-enable collision when done.")]
     public async Task<object> ToggleCollision()
     {
-        await _pipe.SendRequestAsync("execute_command", new JsonObject
-        {
-            ["command"] = "tcl"
-        });
-        return new { success = true, message = "Toggled collision" };
+        var data = await _pipe.SendRequestAsync("toggle_collision");
+        var enabled = data?["collisionEnabled"]?.GetValue<bool>() ?? true;
+        return new { success = true, collisionEnabled = enabled, message = enabled ? "Collision ENABLED" : "Collision DISABLED" };
     }
 
     [McpServerTool]
@@ -269,6 +265,23 @@ public class SkyrimTools
         var data = await _pipe.SendRequestAsync("get_mod_formid_prefix", new JsonObject
         {
             ["modName"] = modName
+        });
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Search for forms (items, NPCs, quests, spells, etc.) by name or editor ID. " +
+        "This is the equivalent of the 'help' console command but safe and returns structured data. " +
+        "Use this to find FormIDs for items, NPCs, quests, or any game record from any mod in the load order. " +
+        "Optionally filter by type: weapon, armor, potion, book, misc, spell, perk, quest, npc, enchantment, shout, key, ammo, ingredient, soulgem, scroll, location. " +
+        "Returns up to maxResults matches (default 25).")]
+    public async Task<object> SearchForms(string query, string type = "all", int maxResults = 25)
+    {
+        var data = await _pipe.SendRequestAsync("search_forms", new JsonObject
+        {
+            ["query"] = query,
+            ["type"] = type,
+            ["maxResults"] = maxResults
         });
         return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
     }

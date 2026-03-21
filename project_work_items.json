@@ -2,11 +2,11 @@
   "projectName": "Skyrim MCP",
   "lastUpdated": "2026-03-21",
   "summary": {
-    "totalItems": 72,
+    "totalItems": 74,
     "completed": 28,
     "implementedUntested": 7,
     "inProgress": 0,
-    "planned": 33,
+    "planned": 35,
     "bugs": 6
   },
   "phases": [
@@ -31,7 +31,9 @@
         { "id": "BUG-001", "type": "bug", "status": "complete", "title": "Event system noise filtering", "description": "Hardcoded suppression of framework quests (FEBD3801, 000F9075). Poll filters: eventTypes, excludeTypes." },
         { "id": "BUG-002", "type": "bug", "status": "resolved-workaround", "title": "prid doesn't persist between calls", "description": "Workaround: use dot-notation (refId.command). Tool descriptions updated to guide AI to correct pattern." },
         { "id": "BUG-003", "type": "bug", "status": "complete", "title": "Save game timeout", "description": "Fixed via async save — responds immediately, save completes in background." },
-        { "id": "FEAT-013", "type": "feature", "status": "planned", "title": "Teleport via direct API", "description": "Currently works via coc console command. No clean direct API found yet." }
+        { "id": "FEAT-013", "type": "feature", "status": "planned", "title": "Teleport via direct API", "description": "Currently works via coc console command. No clean direct API found yet." },
+        { "id": "FEAT-014", "type": "feature", "status": "planned", "title": "Force load save via MCP", "description": "BGSSaveLoadManager::Load() to load a save directly without going through main menu. Bypasses death-handling mods that can hang the menu transition. Could accept save name or 'most recent'." },
+        { "id": "FEAT-015", "type": "feature", "status": "planned", "title": "Force new game via MCP", "description": "Trigger new game initialization directly, bypassing main menu. Useful when death mods interfere with menu transitions or for automated testing workflows." }
       ]
     },
     {

@@ -53,7 +53,10 @@ public class SkyrimTools
     }
 
     [McpServerTool]
-    [Description("Execute a console command in Skyrim (e.g., 'tgm', 'player.additem 0000000f 1000')")]
+    [Description("Execute a console command in Skyrim (e.g., 'tgm', 'player.additem 0000000f 1000'). " +
+        "CAUTION: Commands referencing invalid FormIDs will crash the game. Always verify FormIDs before use. " +
+        "Avoid running commands during loading screens, combat, or scripted events. " +
+        "Prefer dedicated tools (AddItem, Teleport, etc.) over raw console commands when available.")]
     public async Task<object> ExecuteConsoleCommand(string command)
     {
         var data = await _pipe.SendRequestAsync("execute_command", new JsonObject
@@ -64,7 +67,9 @@ public class SkyrimTools
     }
 
     [McpServerTool]
-    [Description("Add an item to player inventory by name or FormID")]
+    [Description("Add an item to player inventory by name or FormID. " +
+        "CAUTION: Invalid FormIDs that don't exist in the current load order will crash the game. " +
+        "Use ListKnownItems for safe FormIDs, or verify the FormID exists before adding.")]
     public async Task<object> AddItem(string item, int count = 1)
     {
         // Resolve friendly name to FormID
@@ -81,7 +86,9 @@ public class SkyrimTools
     }
 
     [McpServerTool]
-    [Description("Remove an item from player inventory by name or FormID")]
+    [Description("Remove an item from player inventory by name or FormID. " +
+        "CAUTION: Removing quest items can break quest progression and may be irreversible. " +
+        "Confirm with the user before removing items you're not sure about.")]
     public async Task<object> RemoveItem(string item, int count = 1)
     {
         var formId = SkyrimOffsets.GetItemFormId(item) ?? item;
@@ -97,7 +104,10 @@ public class SkyrimTools
     }
 
     [McpServerTool]
-    [Description("Teleport player to a location (e.g., 'whiterun', 'riverwood', 'solitude')")]
+    [Description("Teleport player to a location (e.g., 'whiterun', 'riverwood', 'solitude'). " +
+        "CAUTION: Teleporting during combat, scripted scenes, or dialogue can crash the game. " +
+        "Ask the user to confirm they are in a safe state before teleporting. " +
+        "Invalid cell IDs will crash the game — use known locations from ListKnownItems or verify the cell ID first.")]
     public async Task<object> Teleport(string location)
     {
         var cellId = SkyrimOffsets.GetLocationCellId(location) ?? location.ToLower();
@@ -158,7 +168,9 @@ public class SkyrimTools
     }
 
     [McpServerTool]
-    [Description("Toggle collision to walk through walls")]
+    [Description("Toggle collision to walk through walls. " +
+        "CAUTION: Disabling collision can cause the player to fall through the world. " +
+        "Remind the user to save before using and to re-enable collision when done.")]
     public async Task<object> ToggleCollision()
     {
         await _pipe.SendRequestAsync("execute_command", new JsonObject
@@ -181,7 +193,9 @@ public class SkyrimTools
     }
 
     [McpServerTool]
-    [Description("Get information about active quests including objectives and completion status")]
+    [Description("Get information about active quests including objectives and completion status. " +
+        "Note: In heavily modded games this may return a large number of quests. " +
+        "For a specific quest, use ExecuteConsoleCommand with 'getqueststage <questID>' instead.")]
     public async Task<object> GetQuestInfo()
     {
         var data = await _pipe.SendRequestAsync("get_quest_info");
@@ -195,6 +209,66 @@ public class SkyrimTools
         var data = await _pipe.SendRequestAsync("get_nearby_npcs", new JsonObject
         {
             ["radius"] = radius
+        });
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Save the game. Automatically generates a descriptive save name from player name, level, and location. " +
+        "Creates both .ess and .skse co-save files. You can provide a custom save name or leave it blank for auto-naming. " +
+        "CAUTION: Always save before performing risky operations like quest stage manipulation or teleporting.")]
+    public async Task<object> SaveGame(string? saveName = null)
+    {
+        // If no name provided, build one from player info
+        if (string.IsNullOrWhiteSpace(saveName))
+        {
+            try
+            {
+                var playerData = await _pipe.SendRequestAsync("get_player_info");
+                var name = playerData?["name"]?.GetValue<string>() ?? "Player";
+                var level = playerData?["level"]?.GetValue<int>() ?? 0;
+                var cell = playerData?["cellName"]?.GetValue<string>() ?? "Unknown";
+                var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+
+                // Clean invalid filename characters
+                name = string.Join("_", name.Split(Path.GetInvalidFileNameChars()));
+                cell = string.Join("_", cell.Split(Path.GetInvalidFileNameChars()));
+
+                saveName = $"MCP_{name}_Lv{level}_{cell}_{timestamp}";
+            }
+            catch
+            {
+                saveName = $"MCP_Save_{DateTime.Now:yyyyMMdd-HHmmss}";
+            }
+        }
+
+        await _pipe.SendRequestAsync("save_game", new JsonObject
+        {
+            ["saveName"] = saveName
+        });
+
+        return new { success = true, message = $"Game saved as: {saveName}" };
+    }
+
+    [McpServerTool]
+    [Description("Get the full load order of all active plugins (ESP, ESM, ESL) with their FormID prefixes. " +
+        "Use this to determine the correct FormID prefix for items from a specific mod.")]
+    public async Task<object> GetLoadOrder()
+    {
+        var data = await _pipe.SendRequestAsync("get_load_order");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Look up the FormID prefix for a specific mod/plugin by filename (e.g., 'HLIORemi.esp'). " +
+        "Returns the hex prefix needed to construct valid FormIDs for that mod's records. " +
+        "For regular plugins, the prefix is 2 hex digits (e.g., '3A'). " +
+        "For light plugins (ESL/ESPFE), the prefix is 'FE' followed by 3 hex digits (e.g., 'FE01A').")]
+    public async Task<object> GetModFormIdPrefix(string modName)
+    {
+        var data = await _pipe.SendRequestAsync("get_mod_formid_prefix", new JsonObject
+        {
+            ["modName"] = modName
         });
         return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
     }

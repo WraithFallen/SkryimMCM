@@ -53,6 +53,9 @@ namespace SkyrimMCP {
 
         // Utility
         json IsInCombat();
+        json GetLoadOrder();
+        json GetModFormIdPrefix(const std::string& modName);
+        json SaveGame(const std::string& saveName);
     }
 
 }

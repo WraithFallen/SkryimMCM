@@ -212,6 +212,20 @@ namespace SkyrimMCP::Protocol {
             else if (action == "is_in_combat") {
                 result = TaskQueue::RunOnGameThread([]() { return GameInterface::IsInCombat(); });
             }
+            // Save game
+            else if (action == "save_game") {
+                std::string saveName = params.value("saveName", "MCPSave");
+                result = TaskQueue::RunOnGameThread([saveName]() { return GameInterface::SaveGame(saveName); });
+            }
+            // Load order
+            else if (action == "get_load_order") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetLoadOrder(); });
+            }
+            else if (action == "get_mod_formid_prefix") {
+                std::string modName = params.value("modName", "");
+                if (modName.empty()) return MakeResponse(id, false, {}, "Missing 'modName' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([modName]() { return GameInterface::GetModFormIdPrefix(modName); });
+            }
             else {
                 return MakeResponse(id, false, {}, "Unknown action: " + action).dump() + "\n";
             }

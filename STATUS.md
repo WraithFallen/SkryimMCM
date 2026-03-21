@@ -1,7 +1,7 @@
 # Skyrim MCP Server - Development Status
 
-**Last Updated:** March 18, 2026
-**Status:** Phase 2 Implementation Complete — Ready for Build & Test
+**Last Updated:** March 21, 2026
+**Status:** Phase 2 — Direct Engine API Working, Console Commands Broken
 
 ## Architecture
 
@@ -10,72 +10,99 @@ Claude Desktop <--stdio/MCP--> C# MCP Server <--named pipe--> SKSE Plugin (insid
 ```
 
 Two components:
-1. **SKSE Plugin** (`SkyrimMCPPlugin/`) — C++ DLL loaded by SKSE into Skyrim's process. Uses CommonLibSSE-NG for typed engine access. Exposes game state over named pipe `\\.\pipe\SkyrimMCP`.
+1. **SKSE Plugin** (`SkyrimMCPPlugin/`) — C++ DLL loaded by SKSE into Skyrim's process. Uses CommonLibSSE-NG for typed engine access. Exposes game state over named pipe `\\.\pipe\SkyrimMCP`. Statically linked (x64-windows-static).
 2. **C# MCP Server** (`SkyrimMCP/`) — .NET 8 app relaying between Claude Desktop (stdio MCP) and the SKSE plugin (named pipe).
 
-## What's Been Completed
+## Working Tools (Direct Engine API)
 
-### Phase 1: Console Command Injection (replaced)
-- Original keyboard-simulation approach has been removed
-- Was fragile due to Windows focus-stealing restrictions
+| Tool | Action | Method |
+|------|--------|--------|
+| CheckConnection | `ping` | Pipe connectivity check |
+| GetPlayerInfo | `get_player_info` | `PlayerCharacter::GetSingleton()`, `AsActorValueOwner()` |
+| GetInventory | `get_inventory` | `Player::GetInventory()` |
+| GetGoldCount | `get_gold_count` | Inventory filter by gold FormID |
+| AddItem | `add_item` | `AddObjectToContainer()` |
+| RemoveItem | `remove_item` | `RemoveItem()` |
+| SetHealth/Magicka/Stamina | `set_actor_value` | `AsActorValueOwner()->SetActorValue()` |
+| ToggleGodMode | `toggle_god_mode` | Direct static bool flip via `RELOCATION_ID(517711, 404238)` |
+| ToggleCollision | `toggle_collision` | `TESObjectREFR::SetCollision()` |
+| GetQuestInfo | `get_quest_info` | `TESDataHandler::GetFormArray<TESQuest>()` |
+| GetNearbyNPCs | `get_nearby_npcs` | `ProcessLists::highActorHandles` |
+| SearchForms | `search_forms` | Direct form database search (replaces `help` command) |
+| GetLoadOrder | `get_load_order` | `TESDataHandler::GetLoadedMods/LightMods()` |
+| GetModFormIdPrefix | `get_mod_formid_prefix` | `GetLoadedModIndex()` / `GetLoadedLightModIndex()` |
+| SaveGame | `save_game` | `BGSSaveLoadManager::Save()` |
+| StartQuest | `start_quest` | `TESQuest::Start()` |
+| StopQuest | `stop_quest` | `TESQuest::Stop()` |
+| ListKnownItems | local | C# FormID database |
+| GetActiveEffects | `get_active_effects` | `AsMagicTarget()->GetActiveEffectList()` |
+| GetActorInfo | `get_actor_info` | Actor lookup by FormID |
+| MoveActorTo | `move_actor_to` | `Actor::MoveTo()` |
+| AddSpell | `add_spell` | `PlayerCharacter::AddSpell()` |
+| AddPerk | `add_perk` | `PlayerCharacter::AddPerk()` |
+| EquipItem | `equip_item` | `ActorEquipManager::EquipObject()` |
+| UnequipItem | `unequip_item` | `ActorEquipManager::UnequipObject()` |
+| GetGameTime | `get_game_time` | `Calendar::GetSingleton()` |
+| SetGameTime | `set_game_time` | `Calendar::gameHour->value` direct write |
+| IsInCombat | `is_in_combat` | `PlayerCharacter::IsInCombat()` |
 
-### Phase 2: SKSE Plugin + Named Pipe Architecture
-- **SKSE Plugin** — Full implementation with:
-  - Plugin entry point with SKSE messaging and logging
-  - Named pipe server on background thread (auto-reconnect)
-  - Thread-safe game-thread dispatch via SKSE task interface
-  - JSON protocol for all requests/responses
-  - Game interface functions: player info, inventory, gold, console commands, add/remove items, actor values, teleport, quests, nearby NPCs
-  - CommonLibSSE-NG for SE 1.5.97 + AE 1.6.x compatibility from one DLL
+## Broken Tools (Depend on CompileAndRun)
 
-- **C# MCP Server** — Rewritten with:
-  - PipeClient for named pipe communication
-  - 15 MCP tools (up from 10)
-  - Removed: ConsoleInjector.cs, MemoryReader.cs, WindowsAPI.cs
+| Tool | Issue |
+|------|-------|
+| ExecuteConsoleCommand | `Script::CompileAndRun()` crashes with access violation on every call from SKSE task thread |
+| Teleport | Uses `coc` console command internally |
+| SetQuestStage | Uses `setstage` console command |
+| CompleteQuest | Uses `completeallobjectives` console command |
 
-## MCP Tools (15 total)
+**Root Cause:** `CompileAndRun` is fundamentally incompatible with being called from the SKSE task interface thread. Even the simplest command (`tgm`) crashes. SEH catches the access violation safely (no game crash), but the command doesn't execute.
 
-| Tool | Description |
-|------|-------------|
-| CheckConnection | Ping SKSE plugin |
-| GetPlayerInfo | Name, race, level, stats, location |
-| GetInventory | Full item list with metadata |
-| GetGoldCount | Current gold count |
-| ExecuteConsoleCommand | Run any console command |
-| AddItem | Add items by name/FormID |
-| RemoveItem | Remove items by name/FormID |
-| Teleport | Move to locations by name |
-| ToggleGodMode | Toggle invincibility |
-| SetHealth | Set health value |
-| SetMagicka | Set magicka value |
-| SetStamina | Set stamina value |
-| ToggleCollision | Walk through walls |
-| ListKnownItems | Show known FormIDs |
-| GetQuestInfo | Active quest details |
-| GetNearbyNPCs | NPCs in range |
+**Potential Fixes:**
+- Find the game's internal console command queue and post directly to it
+- Hook the console input handler to inject commands
+- Implement remaining actions as direct engine API calls (no `coc` equivalent found yet)
 
-## What Needs To Happen Next
+## Build Requirements
 
-### Build & Test
-1. **Build the SKSE plugin** — requires VS2022 C++, CMake, vcpkg
-2. **Build the C# MCP server** — `dotnet build` in SkyrimMCP/
-3. **Deploy plugin** — copy DLL to `<Skyrim>/Data/SKSE/Plugins/`
-4. **Test** — launch Skyrim via SKSE, start Claude Desktop, verify tools work
-
-### Prerequisites
 - Visual Studio 2022 with C++ Desktop workload
 - CMake 3.21+
-- vcpkg with VCPKG_ROOT set
-- SKSE64 installed in Skyrim
-- Address Library for SKSE (matching game version)
+- vcpkg (`C:\vcpkg`, `VCPKG_ROOT` env var set)
+- .NET 8 SDK
+- SKSE64 + Address Library for SKSE in Skyrim
 
-### Future Enhancements
-- [ ] Weather control and time-of-day manipulation
-- [ ] NPC interaction (dialogue, follow, dismiss)
-- [ ] Spell/power management
-- [ ] Save game management
-- [ ] Map marker discovery
-- [ ] Configuration file for pipe name, logging level
+### Build Commands
+
+```powershell
+# Set vcpkg (VS Dev PowerShell uses its own copy otherwise)
+$env:VCPKG_ROOT = "C:\vcpkg"
+
+# C++ plugin (only need --preset default on first build or CMakeLists changes)
+cmake --preset default                                    # first time only
+cmake --build X:\_work\skyrim_mcp\SkyrimMCPPlugin\build --config Release
+
+# C# MCP server
+dotnet build X:\_work\skyrim_mcp\SkyrimMCP
+
+# Deploy
+copy X:\_work\skyrim_mcp\SkyrimMCPPlugin\output\SkyrimMCPPlugin.dll "C:\Steam\steamapps\common\Skyrim Special Edition\Data\SKSE\Plugins\" -Force
+```
+
+### Build Notes
+- Must use `x64-windows-static` vcpkg triplet — dynamic linking causes SKSE load failure (0000007E)
+- CommonLibSSE-NG cloned locally to `extern/` with `--depth 1` (don't use FetchContent — it does full clone with no progress)
+- CommonLibSSE-NG headers must be included BEFORE any Windows API headers
+- `SKSEPluginInfo()` / `SKSEPluginLoad()` macros — don't use old `constinit SKSEPlugin_Version` pattern
+- Actor values accessed via `AsActorValueOwner()`, not directly on Actor
+- `GetBaseActorValue()` not `GetPermanentActorValue()`
+- Quest objectives use `state` field not `IsCompleted()`
+
+## Key Crash Fixes Applied
+
+1. **Static linking** — `x64-windows-static` triplet eliminates external DLL dependencies
+2. **SEH crash protection** — `__try/__except` around `CompileAndRun` catches access violations
+3. **Script object management** — Fresh Script per call (old one leaked but corruption-free)
+4. **Quest iteration safety** — try/catch around each quest in `GetQuestInfo` for modded game stability
+5. **God mode / collision** — Direct engine API, no console commands needed
 
 ## Project Structure
 
@@ -85,20 +112,28 @@ skyrim_mcp/
 │   ├── CMakeLists.txt
 │   ├── CMakePresets.json
 │   ├── vcpkg.json
+│   ├── extern/CommonLibSSE-NG/  # git clone --depth 1 (not tracked)
 │   └── src/
 │       ├── Main.cpp          # SKSE entry point
 │       ├── PipeServer.h/cpp  # Named pipe server
-│       ├── Protocol.h/cpp    # JSON protocol
-│       ├── GameInterface.h/cpp # Game state access
+│       ├── Protocol.h/cpp    # JSON protocol (~30 actions)
+│       ├── GameInterface.h/cpp # Engine API calls
 │       └── TaskQueue.h/cpp   # Game thread dispatch
 ├── SkyrimMCP/                # C# MCP server
 │   ├── Program.cs            # Host setup
-│   ├── SkyrimTools.cs        # MCP tool definitions
+│   ├── SkyrimTools.cs        # ~20 MCP tool definitions
 │   ├── PipeClient.cs         # Named pipe client
 │   ├── SkyrimOffsets.cs      # FormID database
 │   └── SkyrimMCP.csproj
-├── src/                      # Old Node.js prototype (can be deleted)
+├── src/                      # Legacy Node.js prototype (deprecated)
 ├── CLAUDE.md
+├── ROADMAP.md
 ├── STATUS.md
 └── README.md
 ```
+
+## Repository
+
+- GitHub: `github.com:jarvann/SkryimMCM.git`
+- Branch: `develop` (all active work)
+- `main` branch: README + .gitignore only

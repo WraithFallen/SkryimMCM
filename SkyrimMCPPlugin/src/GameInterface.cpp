@@ -900,37 +900,37 @@ namespace SkyrimMCP::GameInterface {
         auto* player = RE::PlayerCharacter::GetSingleton();
         if (!player) return {{"error", "Player not available"}};
 
-        auto* base = player->GetActorBase();
-        if (!base) return {{"error", "Actor base not available"}};
-
-        auto* spellData = base->GetSpellList();
-        if (!spellData) return {{"error", "Spell list not available"}};
-
         json spells = json::array();
 
-        for (std::uint32_t i = 0; i < spellData->numSpells; i++) {
-            auto* spell = spellData->spells[i];
-            if (!spell) continue;
+        // Use VisitSpells to get ALL known spells (base + runtime-learned)
+        class SpellCollector : public RE::Actor::ForEachSpellVisitor {
+        public:
+            json& spells;
+            SpellCollector(json& s) : spells(s) {}
 
-            try {
-                json s;
-                s["formId"] = std::format("{:08X}", spell->GetFormID());
-                s["name"] = spell->GetName();
-                s["type"] = SpellTypeToString(spell->GetSpellType());
+            RE::BSContainer::ForEachResult Visit(RE::SpellItem* spell) override {
+                if (!spell) return RE::BSContainer::ForEachResult::kContinue;
+                try {
+                    json s;
+                    s["formId"] = std::format("{:08X}", spell->GetFormID());
+                    s["name"] = spell->GetName();
+                    s["type"] = SpellTypeToString(spell->GetSpellType());
 
-                // Get school from the costliest effect
-                auto* costliestEffect = spell->GetCostliestEffectItem();
-                if (costliestEffect && costliestEffect->baseEffect) {
-                    s["school"] = ActorValueToSchool(costliestEffect->baseEffect->GetMagickSkill());
-                    s["magnitude"] = costliestEffect->effectItem.magnitude;
-                    s["duration"] = costliestEffect->effectItem.duration;
-                }
+                    auto* costliestEffect = spell->GetCostliestEffectItem();
+                    if (costliestEffect && costliestEffect->baseEffect) {
+                        s["school"] = ActorValueToSchool(costliestEffect->baseEffect->GetMagickSkill());
+                        s["magnitude"] = costliestEffect->effectItem.magnitude;
+                        s["duration"] = costliestEffect->effectItem.duration;
+                    }
 
-                spells.push_back(s);
-            } catch (...) {
-                continue;
+                    spells.push_back(s);
+                } catch (...) {}
+                return RE::BSContainer::ForEachResult::kContinue;
             }
-        }
+        };
+
+        SpellCollector collector(spells);
+        player->VisitSpells(collector);
 
         return {{"spells", spells}, {"count", spells.size()}};
     }
@@ -1034,8 +1034,28 @@ namespace SkyrimMCP::GameInterface {
 
         json perks = json::array();
 
-        // Access addedPerks via the player's perk array
-        // The member is behind a macro, so use the TESNPC base's perk list
+        // Get runtime-added perks (everything gained during gameplay)
+        try {
+            auto& runtimeData = player->GetPlayerRuntimeData();
+            for (auto* perkData : runtimeData.addedPerks) {
+                if (!perkData || !perkData->perk) continue;
+                try {
+                    json p;
+                    p["formId"] = std::format("{:08X}", perkData->perk->GetFormID());
+                    p["name"] = perkData->perk->GetName();
+                    p["rank"] = perkData->currentRank;
+                    p["source"] = "runtime";
+                    perks.push_back(p);
+                } catch (...) {
+                    continue;
+                }
+            }
+        } catch (...) {
+            // Fallback: try base TESNPC perk list if runtime data access fails
+            SKSE::log::warn("Failed to access runtime perks, falling back to base perks");
+        }
+
+        // Also get base perks from TESNPC (starting perks from race/class)
         auto* base = player->GetActorBase();
         if (base) {
             auto* perkArray = base->As<RE::BGSPerkRankArray>();
@@ -1043,12 +1063,23 @@ namespace SkyrimMCP::GameInterface {
                 for (std::uint32_t i = 0; i < perkArray->perkCount; i++) {
                     auto& perkData = perkArray->perks[i];
                     if (!perkData.perk) continue;
-
                     try {
+                        // Check for duplicates (already in runtime list)
+                        std::string formIdStr = std::format("{:08X}", perkData.perk->GetFormID());
+                        bool duplicate = false;
+                        for (auto& existing : perks) {
+                            if (existing.value("formId", "") == formIdStr) {
+                                duplicate = true;
+                                break;
+                            }
+                        }
+                        if (duplicate) continue;
+
                         json p;
-                        p["formId"] = std::format("{:08X}", perkData.perk->GetFormID());
+                        p["formId"] = formIdStr;
                         p["name"] = perkData.perk->GetName();
                         p["rank"] = perkData.currentRank;
+                        p["source"] = "base";
                         perks.push_back(p);
                     } catch (...) {
                         continue;

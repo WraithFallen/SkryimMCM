@@ -284,13 +284,105 @@ public class SkyrimTools
     }
 
     [McpServerTool]
+    [Description("Add multiple items to player inventory in a single call. " +
+        "Pass a JSON array of items, each with 'formId' (or 'name') and optional 'count' (default 1). " +
+        "Example: [{\"formId\":\"0000000F\",\"count\":1000},{\"name\":\"iron_sword\",\"count\":5}] " +
+        "Items that fail are skipped and reported in the errors list. " +
+        "Use this for bulk operations like applying a character blueprint's inventory.")]
+    public async Task<object> BulkAddItems(string items)
+    {
+        List<object> results = new();
+        List<object> errors = new();
+        int successCount = 0;
+
+        try
+        {
+            var itemArray = JsonNode.Parse(items)?.AsArray();
+            if (itemArray == null) return new { error = "Invalid JSON array" };
+
+            foreach (var item in itemArray)
+            {
+                try
+                {
+                    var formId = item?["formId"]?.GetValue<string>();
+                    var name = item?["name"]?.GetValue<string>();
+                    var count = item?["count"]?.GetValue<int>() ?? 1;
+
+                    var resolvedId = formId ?? SkyrimOffsets.GetItemFormId(name ?? "") ?? name;
+                    if (string.IsNullOrEmpty(resolvedId))
+                    {
+                        errors.Add(new { item = name ?? formId, error = "Could not resolve FormID" });
+                        continue;
+                    }
+
+                    await _pipe.SendRequestAsync("add_item", new JsonObject
+                    {
+                        ["formId"] = resolvedId,
+                        ["count"] = count
+                    });
+                    successCount++;
+                }
+                catch (Exception ex)
+                {
+                    errors.Add(new { item = item?.ToJsonString(), error = ex.Message });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            return new { error = $"Failed to parse items: {ex.Message}" };
+        }
+
+        await NotifyInGame($"Added {successCount} items");
+        return new { success = true, added = successCount, failed = errors.Count, errors };
+    }
+
+    [McpServerTool]
     [Description("Export a complete character blueprint as JSON. Includes player info, all 18 skills, perks, " +
         "known spells, known shouts, equipped items, full inventory, gold, and active effects. " +
         "Use this to save a character template that can be re-applied to a new character. " +
-        "Returns all data in a single call for efficiency.")]
-    public async Task<object> GetCharacterBlueprint()
+        "IMPORTANT: Pass an outputPath to write the blueprint directly to a file on disk — the data is too large " +
+        "for the MCP response. Example outputPath: 'C:\\Users\\cory\\Downloads\\blueprint.json'")]
+    public async Task<object> GetCharacterBlueprint(string? outputPath = null)
     {
         var data = await _pipe.SendRequestAsync("get_character_blueprint");
+
+        if (!string.IsNullOrEmpty(outputPath) && data != null)
+        {
+            try
+            {
+                var jsonString = data.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
+                await File.WriteAllTextAsync(outputPath, jsonString);
+                await NotifyInGame("Blueprint exported");
+
+                // Return summary instead of full data
+                var spellCount = data["spells"]?["count"]?.GetValue<int>() ?? 0;
+                var perkCount = data["perks"]?["count"]?.GetValue<int>() ?? 0;
+                var shoutCount = data["shouts"]?["count"]?.GetValue<int>() ?? 0;
+                var itemCount = data["inventory"]?["items"]?.AsArray()?.Count ?? 0;
+                var effectCount = data["activeEffects"]?["effects"]?.AsArray()?.Count ?? 0;
+
+                return new
+                {
+                    success = true,
+                    outputPath,
+                    message = $"Blueprint saved to {outputPath}",
+                    summary = new
+                    {
+                        spells = spellCount,
+                        perks = perkCount,
+                        shouts = shoutCount,
+                        inventoryItems = itemCount,
+                        activeEffects = effectCount
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                return new { error = $"Failed to write blueprint: {ex.Message}" };
+            }
+        }
+
         return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
     }
 

@@ -971,8 +971,14 @@ namespace SkyrimMCP::GameInterface {
                     std::string lowerEditorId = editorId;
                     std::transform(lowerEditorId.begin(), lowerEditorId.end(), lowerEditorId.begin(), ::tolower);
 
+                    // Also check FormID as string
+                    std::string formIdStr = std::format("{:08X}", form->GetFormID());
+                    std::string lowerFormId = formIdStr;
+                    std::transform(lowerFormId.begin(), lowerFormId.end(), lowerFormId.begin(), ::tolower);
+
                     if ((!lowerName.empty() && lowerName.find(lower) != std::string::npos) ||
-                        (!lowerEditorId.empty() && lowerEditorId.find(lower) != std::string::npos)) {
+                        (!lowerEditorId.empty() && lowerEditorId.find(lower) != std::string::npos) ||
+                        lowerFormId.find(lower) != std::string::npos) {
                         weather = form;
                         break;
                     }
@@ -993,14 +999,14 @@ namespace SkyrimMCP::GameInterface {
 
         json weathers = json::array();
 
-        for (auto* form : dataHandler->GetFormArray<RE::TESWeather>()) {
+        auto& weatherArray = dataHandler->GetFormArray<RE::TESWeather>();
+        SKSE::log::info("ListWeathers: GetFormArray returned {} entries", weatherArray.size());
+
+        for (auto* form : weatherArray) {
             if (!form) continue;
             try {
                 std::string name = form->GetName() ? form->GetName() : "";
                 std::string editorId = form->GetFormEditorID() ? form->GetFormEditorID() : "";
-
-                // Skip weather forms with no useful identifier
-                if (name.empty() && editorId.empty()) continue;
 
                 json w;
                 w["formId"] = std::format("{:08X}", form->GetFormID());

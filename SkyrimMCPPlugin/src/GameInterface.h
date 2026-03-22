@@ -50,6 +50,13 @@ namespace SkyrimMCP {
         json MoveActorTo(const std::string& actorFormIdHex, const std::string& targetCellOrRefId);
         json SetRelationshipRank(const std::string& actorFormIdHex, int rank);
 
+        // NPC & Faction (Phase 5)
+        json GetPlayerFactions();
+        json GetNPCDetailedInfo(const std::string& refFormIdHex);
+        json GetNPCInventory(const std::string& refFormIdHex);
+        json GetFollowers();
+        json GetDetectionLevel(const std::string& refFormIdHex);
+
         // Equipment
         json EquipItem(const std::string& formIdHex);
         json UnequipItem(const std::string& formIdHex);

@@ -14,72 +14,40 @@ namespace SkyrimMCP::GameInterface {
 
     // ==================== Console Output Capture ====================
     //
-    // Two capture mechanisms:
-    // 1. VPrint hook — intercepts every Print() call, captures full multi-line output
-    // 2. lastMessage fallback — reads the 1024-byte buffer for the last line only
-    //
-    // The hook is installed once. During command execution, output is appended
-    // to a thread-safe buffer. If anything goes wrong, we fall back to lastMessage.
+    // Captures console output using both lastMessage (last print) and
+    // the BSString buffer member on ConsoleLog.
 
-    static std::mutex s_captureMutex;
-    static std::string s_captureBuffer;
-    static bool s_capturing = false;
-    static bool s_hookInstalled = false;
-
-    // Trampoline storage for original VPrint
-    static REL::Relocation<decltype(&RE::ConsoleLog::VPrint)> s_originalVPrint;
-
-    // Our VPrint hook — captures output when s_capturing is true
-    static void Hook_VPrint(RE::ConsoleLog* a_this, const char* a_fmt, std::va_list a_args) {
-        if (s_capturing) {
-            try {
-                char buf[4096];
-                int len = vsnprintf(buf, sizeof(buf), a_fmt, a_args);
-                if (len > 0) {
-                    std::lock_guard lock(s_captureMutex);
-                    s_captureBuffer.append(buf, std::min(len, (int)sizeof(buf) - 1));
-                    s_captureBuffer += "\n";
-                }
-            } catch (...) {
-                // Silently ignore capture errors — never crash the game for logging
-            }
-        }
-
-        // Always call original so console UI still works
-        s_originalVPrint(a_this, a_fmt, a_args);
-    }
-
-    // lastMessage fallback
-    static std::string CaptureLastConsoleOutput() {
+    static std::string CaptureConsoleOutput() {
         auto* console = RE::ConsoleLog::GetSingleton();
         if (!console) return "";
-        return std::string(console->lastMessage);
+
+        // Try the BSString buffer first — may contain more than lastMessage
+        std::string bufferStr;
+        try {
+            if (console->buffer.size() > 0) {
+                bufferStr = std::string(console->buffer.c_str(), console->buffer.size());
+            }
+        } catch (...) {}
+
+        // Also get lastMessage
+        std::string lastMsg(console->lastMessage);
+
+        // Return whichever has more content
+        if (bufferStr.size() > lastMsg.size()) {
+            return bufferStr;
+        }
+        return lastMsg;
     }
 
     static void ClearConsoleOutput() {
         auto* console = RE::ConsoleLog::GetSingleton();
         if (console) {
             std::memset(console->lastMessage, 0, sizeof(console->lastMessage));
+            // Clear the BSString buffer too
+            try {
+                console->buffer = "";
+            } catch (...) {}
         }
-    }
-
-    static void BeginCapture() {
-        std::lock_guard lock(s_captureMutex);
-        s_captureBuffer.clear();
-        // Cap buffer to prevent unbounded growth
-        s_captureBuffer.reserve(65536);
-        s_capturing = true;
-    }
-
-    static std::string EndCapture() {
-        std::lock_guard lock(s_captureMutex);
-        s_capturing = false;
-        // Truncate if absurdly large (safety rail)
-        if (s_captureBuffer.size() > 65536) {
-            s_captureBuffer.resize(65536);
-            s_captureBuffer += "\n... [output truncated at 64KB]";
-        }
-        return std::move(s_captureBuffer);
     }
 
     // --- Helpers ---
@@ -326,7 +294,7 @@ namespace SkyrimMCP::GameInterface {
         script->SetCommand(command);
         bool ok = RunScriptSEH(script, player);
 
-        std::string output = CaptureLastConsoleOutput();
+        std::string output = CaptureConsoleOutput();
 
         if (!ok) {
             SKSE::log::error("Command '{}' caused an access violation — caught by SEH", command);
@@ -847,6 +815,255 @@ namespace SkyrimMCP::GameInterface {
     json SetRelationshipRank(const std::string& actorFormIdHex, int rank) {
         return ExecuteConsoleCommand(
             std::format("setrelationshiprank {} {}", actorFormIdHex, rank));
+    }
+
+    // ==================== NPC & Faction (Phase 5) ====================
+
+    json GetPlayerFactions() {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        json factions = json::array();
+
+        player->VisitFactions([&](RE::TESFaction* faction, std::int8_t rank) -> bool {
+            if (!faction) return true;
+            try {
+                json f;
+                f["formId"] = std::format("{:08X}", faction->GetFormID());
+                f["name"] = faction->GetName() ? faction->GetName() : "";
+                f["editorId"] = faction->GetFormEditorID() ? faction->GetFormEditorID() : "";
+                f["rank"] = rank;
+                factions.push_back(f);
+            } catch (...) {}
+            return true;  // continue visiting
+        });
+
+        return {{"factions", factions}, {"count", factions.size()}};
+    }
+
+    json GetNPCDetailedInfo(const std::string& refFormIdHex) {
+        try {
+            auto* form = RE::TESForm::LookupByID(ParseFormId(refFormIdHex));
+            if (!form) return {{"error", "Reference not found: " + refFormIdHex}};
+
+            auto* actor = form->As<RE::Actor>();
+            if (!actor) return {{"error", "Not an actor: " + refFormIdHex}};
+
+            auto* base = actor->GetActorBase();
+            auto* avo = actor->AsActorValueOwner();
+            auto pos = actor->GetPosition();
+
+            json result;
+            result["refId"] = refFormIdHex;
+            result["baseId"] = base ? std::format("{:08X}", base->GetFormID()) : "";
+            result["name"] = actor->GetName();
+
+            // Basic info
+            result["race"] = base && base->GetRace() ? base->GetRace()->GetName() : "unknown";
+            result["sex"] = base ? (base->GetSex() == RE::SEX::kMale ? "male" : "female") : "unknown";
+            result["level"] = actor->GetLevel();
+
+            // Class
+            if (base && base->npcClass) {
+                result["class"] = base->npcClass->GetName();
+                result["classFormId"] = std::format("{:08X}", base->npcClass->GetFormID());
+            }
+
+            // Combat style
+            if (base && base->combatStyle) {
+                result["combatStyle"] = base->combatStyle->GetName() ? base->combatStyle->GetName() : "";
+                result["combatStyleFormId"] = std::format("{:08X}", base->combatStyle->GetFormID());
+            }
+
+            // Outfit
+            if (base && base->defaultOutfit) {
+                result["outfit"] = base->defaultOutfit->GetName() ? base->defaultOutfit->GetName() : "";
+                result["outfitFormId"] = std::format("{:08X}", base->defaultOutfit->GetFormID());
+            }
+
+            // Stats
+            if (avo) {
+                result["health"] = avo->GetActorValue(RE::ActorValue::kHealth);
+                result["healthMax"] = avo->GetBaseActorValue(RE::ActorValue::kHealth);
+                result["magicka"] = avo->GetActorValue(RE::ActorValue::kMagicka);
+                result["stamina"] = avo->GetActorValue(RE::ActorValue::kStamina);
+            }
+
+            // State flags
+            result["isDead"] = actor->IsDead();
+            result["isEssential"] = actor->IsEssential();
+            result["isProtected"] = actor->IsProtected();
+            result["isGhost"] = actor->IsGhost();
+            result["isChild"] = actor->IsChild();
+            result["isPlayerTeammate"] = actor->IsPlayerTeammate();
+            result["isCommandedActor"] = actor->IsCommandedActor();
+            result["isInCombat"] = actor->IsInCombat();
+
+            // Position
+            result["posX"] = pos.x;
+            result["posY"] = pos.y;
+            result["posZ"] = pos.z;
+
+            auto* cell = actor->GetParentCell();
+            result["cellName"] = cell ? cell->GetName() : "unknown";
+
+            // Hostility
+            auto* player = RE::PlayerCharacter::GetSingleton();
+            if (player) {
+                result["isHostile"] = actor->IsHostileToActor(player);
+            }
+
+            // Factions
+            json factions = json::array();
+            actor->VisitFactions([&](RE::TESFaction* faction, std::int8_t rank) -> bool {
+                if (!faction) return true;
+                try {
+                    json f;
+                    f["name"] = faction->GetName() ? faction->GetName() : "";
+                    f["rank"] = rank;
+                    factions.push_back(f);
+                } catch (...) {}
+                return true;
+            });
+            result["factions"] = factions;
+
+            return result;
+        } catch (...) {
+            return {{"error", "Failed to get NPC info: " + refFormIdHex}};
+        }
+    }
+
+    json GetNPCInventory(const std::string& refFormIdHex) {
+        try {
+            auto* form = RE::TESForm::LookupByID(ParseFormId(refFormIdHex));
+            if (!form) return {{"error", "Reference not found: " + refFormIdHex}};
+
+            auto* ref = form->As<RE::TESObjectREFR>();
+            if (!ref) return {{"error", "Not a reference: " + refFormIdHex}};
+
+            auto inv = ref->GetInventory();
+            json items = json::array();
+
+            for (auto& [itemForm, data] : inv) {
+                if (!itemForm || data.first <= 0) continue;
+                try {
+                    json item;
+                    item["formId"] = std::format("{:08X}", itemForm->GetFormID());
+                    item["name"] = itemForm->GetName();
+                    item["count"] = data.first;
+
+                    switch (itemForm->GetFormType()) {
+                        case RE::FormType::Weapon: item["type"] = "weapon"; break;
+                        case RE::FormType::Armor: item["type"] = "armor"; break;
+                        case RE::FormType::AlchemyItem: item["type"] = "potion"; break;
+                        case RE::FormType::Misc: item["type"] = "misc"; break;
+                        case RE::FormType::Ammo: item["type"] = "ammo"; break;
+                        default: item["type"] = "other"; break;
+                    }
+
+                    if (auto* boundObj = itemForm->As<RE::TESBoundObject>()) {
+                        item["value"] = boundObj->GetGoldValue();
+                    }
+
+                    items.push_back(item);
+                } catch (...) { continue; }
+            }
+
+            return {{"refId", refFormIdHex},
+                    {"name", ref->GetName() ? ref->GetName() : ""},
+                    {"items", items}, {"count", items.size()}};
+        } catch (...) {
+            return {{"error", "Failed to get NPC inventory: " + refFormIdHex}};
+        }
+    }
+
+    json GetFollowers() {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        auto* processLists = RE::ProcessLists::GetSingleton();
+        if (!processLists) return {{"error", "Process lists not available"}};
+
+        json followers = json::array();
+
+        for (auto& actorHandle : processLists->highActorHandles) {
+            auto actorPtr = actorHandle.get();
+            if (!actorPtr) continue;
+
+            auto* actor = actorPtr.get();
+            if (!actor || actor == player) continue;
+
+            if (!actor->IsPlayerTeammate()) continue;
+
+            try {
+                auto* base = actor->GetActorBase();
+                auto* avo = actor->AsActorValueOwner();
+                auto actorPos = actor->GetPosition();
+                auto playerPos = player->GetPosition();
+
+                float dx = actorPos.x - playerPos.x;
+                float dy = actorPos.y - playerPos.y;
+                float dz = actorPos.z - playerPos.z;
+                float distance = std::sqrt(dx * dx + dy * dy + dz * dz);
+
+                json f;
+                f["refId"] = std::format("{:08X}", actor->GetFormID());
+                f["baseId"] = base ? std::format("{:08X}", base->GetFormID()) : "";
+                f["name"] = actor->GetName();
+                f["race"] = base && base->GetRace() ? base->GetRace()->GetName() : "unknown";
+                f["level"] = actor->GetLevel();
+                f["distance"] = distance;
+                f["isDead"] = actor->IsDead();
+                f["isEssential"] = actor->IsEssential();
+                f["isInCombat"] = actor->IsInCombat();
+
+                if (avo) {
+                    f["health"] = avo->GetActorValue(RE::ActorValue::kHealth);
+                    f["healthMax"] = avo->GetBaseActorValue(RE::ActorValue::kHealth);
+                }
+
+                // Class
+                if (base && base->npcClass) {
+                    f["class"] = base->npcClass->GetName();
+                }
+
+                followers.push_back(f);
+            } catch (...) {
+                continue;
+            }
+        }
+
+        return {{"followers", followers}, {"count", followers.size()}};
+    }
+
+    json GetDetectionLevel(const std::string& refFormIdHex) {
+        try {
+            auto* player = RE::PlayerCharacter::GetSingleton();
+            if (!player) return {{"error", "Player not available"}};
+
+            auto* form = RE::TESForm::LookupByID(ParseFormId(refFormIdHex));
+            if (!form) return {{"error", "Reference not found: " + refFormIdHex}};
+
+            auto* actor = form->As<RE::Actor>();
+            if (!actor) return {{"error", "Not an actor: " + refFormIdHex}};
+
+            // Request detection level — returns 0-100 where:
+            // -1000 = undetected, 0 = lost, 1-99 = suspicious, 100 = fully detected
+            auto level = actor->RequestDetectionLevel(player);
+
+            std::string state;
+            if (level <= -1) state = "undetected";
+            else if (level == 0) state = "lost";
+            else if (level < 100) state = "suspicious";
+            else state = "detected";
+
+            return {{"refId", refFormIdHex},
+                    {"name", actor->GetName()},
+                    {"detectionLevel", level},
+                    {"state", state}};
+        } catch (...) {
+            return {{"error", "Failed to get detection level: " + refFormIdHex}};
+        }
     }
 
     // ==================== Equipment ====================

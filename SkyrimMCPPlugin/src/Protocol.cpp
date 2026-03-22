@@ -247,6 +247,28 @@ namespace SkyrimMCP::Protocol {
                 if (actorId.empty()) return MakeResponse(id, false, {}, "Missing 'actorFormId' parameter").dump() + "\n";
                 result = TaskQueue::RunOnGameThread([actorId, rank]() { return GameInterface::SetRelationshipRank(actorId, rank); });
             }
+            // NPC & Faction (Phase 5)
+            else if (action == "get_player_factions") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetPlayerFactions(); });
+            }
+            else if (action == "get_npc_detailed_info") {
+                std::string refId = params.value("refId", "");
+                if (refId.empty()) return MakeResponse(id, false, {}, "Missing 'refId' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([refId]() { return GameInterface::GetNPCDetailedInfo(refId); });
+            }
+            else if (action == "get_npc_inventory") {
+                std::string refId = params.value("refId", "");
+                if (refId.empty()) return MakeResponse(id, false, {}, "Missing 'refId' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([refId]() { return GameInterface::GetNPCInventory(refId); });
+            }
+            else if (action == "get_followers") {
+                result = TaskQueue::RunOnGameThread([]() { return GameInterface::GetFollowers(); });
+            }
+            else if (action == "get_detection_level") {
+                std::string refId = params.value("refId", "");
+                if (refId.empty()) return MakeResponse(id, false, {}, "Missing 'refId' parameter").dump() + "\n";
+                result = TaskQueue::RunOnGameThread([refId]() { return GameInterface::GetDetectionLevel(refId); });
+            }
             // Equipment
             else if (action == "equip_item") {
                 std::string formId = params.value("formId", "");

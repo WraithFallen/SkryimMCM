@@ -305,6 +305,51 @@ public class SkyrimTools
     }
 
     [McpServerTool]
+    [Description("Get all factions the player belongs to, with rank for each.")]
+    public async Task<object> GetPlayerFactions()
+    {
+        var data = await _pipe.SendRequestAsync("get_player_factions");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Get detailed info about an NPC by reference ID — class, combat style, outfit, factions, stats, " +
+        "state flags (essential, protected, ghost, child, follower, commanded), position, and hostility. " +
+        "Much more detailed than GetActorInfo.")]
+    public async Task<object> GetNPCDetailedInfo(string refId)
+    {
+        var data = await _pipe.SendRequestAsync("get_npc_detailed_info", new JsonObject { ["refId"] = refId });
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Read an NPC's inventory by reference ID. Shows what items they're carrying — " +
+        "weapons, armor, potions, misc items with FormIDs, counts, and values.")]
+    public async Task<object> GetNPCInventory(string refId)
+    {
+        var data = await _pipe.SendRequestAsync("get_npc_inventory", new JsonObject { ["refId"] = refId });
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("List all current followers/teammates — NPCs flagged as player teammates. " +
+        "Shows name, race, level, class, health, distance, combat state, and essential status.")]
+    public async Task<object> GetFollowers()
+    {
+        var data = await _pipe.SendRequestAsync("get_followers");
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
+    [Description("Check if an NPC has detected the player. Returns detection level (0-100) and state " +
+        "(undetected, lost, suspicious, detected). Use with GetNearbyNPCs to check stealth status.")]
+    public async Task<object> GetDetectionLevel(string refId)
+    {
+        var data = await _pipe.SendRequestAsync("get_detection_level", new JsonObject { ["refId"] = refId });
+        return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    [McpServerTool]
     [Description("Kill an actor by reference ID. Removes essential/protected flags first. " +
         "Use GetCrosshairRef or GetNearbyNPCs to get the refId. " +
         "CAUTION: Killing essential NPCs can break quests. Confirm with user first.")]

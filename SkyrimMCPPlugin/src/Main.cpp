@@ -15,12 +15,9 @@ namespace {
             case SKSE::MessagingInterface::kDataLoaded:
                 SKSE::log::info("Game data loaded, starting systems...");
 
-                // Install console output hook (late — after engine is initialized)
-                try {
-                    SkyrimMCP::Helpers::InstallConsoleHook();
-                } catch (...) {
-                    SKSE::log::warn("Console output hook failed to install — output capture disabled");
-                }
+                // VPrint hook disabled — trampoline produces invalid original function pointer.
+                // Console output capture uses lastMessage fallback only.
+                // TODO: try vtable swap or polling approach instead.
 
                 SkyrimMCP::EventSystem::GetSingleton().Register();
                 SKSE::log::info("Event system registered");

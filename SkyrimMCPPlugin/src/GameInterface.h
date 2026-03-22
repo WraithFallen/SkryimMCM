@@ -42,6 +42,7 @@ namespace SkyrimMCP {
         inline json IsInCombat() { return PlayerQueries::IsInCombat(); }
         inline json GetMagicResistances() { return PlayerQueries::GetMagicResistances(); }
         inline json GetDiseaseStatus() { return PlayerQueries::GetDiseaseStatus(); }
+        inline json GetSpellDetails(const std::string& formIdHex) { return PlayerQueries::GetSpellDetails(formIdHex); }
 
         // === Inventory (InventoryManager) ===
         inline json AddItem(const std::string& formIdHex, int count) { return InventoryManager::AddItem(formIdHex, count); }

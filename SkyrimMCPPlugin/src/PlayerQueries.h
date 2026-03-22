@@ -23,6 +23,7 @@ namespace SkyrimMCP {
         json IsInCombat();
         json GetMagicResistances();
         json GetDiseaseStatus();
+        json GetSpellDetails(const std::string& formIdHex);
     }
 
 }

@@ -709,6 +709,64 @@ namespace SkyrimMCP::PlayerQueries {
         }
     }
 
+    json GetPowers() {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        json powers = json::array();
+        json lesserPowers = json::array();
+        json abilities = json::array();
+
+        class PowerCollector : public RE::Actor::ForEachSpellVisitor {
+        public:
+            json& powers;
+            json& lesserPowers;
+            json& abilities;
+            PowerCollector(json& p, json& lp, json& a) : powers(p), lesserPowers(lp), abilities(a) {}
+
+            RE::BSContainer::ForEachResult Visit(RE::SpellItem* spell) override {
+                if (!spell) return RE::BSContainer::ForEachResult::kContinue;
+                try {
+                    auto type = spell->GetSpellType();
+                    json s;
+                    s["formId"] = std::format("{:08X}", spell->GetFormID());
+                    s["name"] = spell->GetName();
+
+                    auto* costliest = spell->GetCostliestEffectItem();
+                    if (costliest && costliest->baseEffect) {
+                        s["school"] = Helpers::ActorValueToSchool(costliest->baseEffect->GetMagickSkill());
+                        s["effectName"] = costliest->baseEffect->GetName();
+                    }
+
+                    if (type == RE::MagicSystem::SpellType::kPower) {
+                        s["type"] = "power";
+                        powers.push_back(s);
+                    } else if (type == RE::MagicSystem::SpellType::kLesserPower) {
+                        s["type"] = "lesserPower";
+                        lesserPowers.push_back(s);
+                    } else if (type == RE::MagicSystem::SpellType::kAbility) {
+                        s["type"] = "ability";
+                        abilities.push_back(s);
+                    }
+                } catch (...) {}
+                return RE::BSContainer::ForEachResult::kContinue;
+            }
+        };
+
+        PowerCollector collector(powers, lesserPowers, abilities);
+        player->VisitSpells(collector);
+
+        json result;
+        result["powers"] = powers;
+        result["lesserPowers"] = lesserPowers;
+        result["abilities"] = abilities;
+        result["powerCount"] = powers.size();
+        result["lesserPowerCount"] = lesserPowers.size();
+        result["abilityCount"] = abilities.size();
+
+        return result;
+    }
+
     json GetDiseaseStatus() {
         auto* player = RE::PlayerCharacter::GetSingleton();
         if (!player) return {{"error", "Player not available"}};

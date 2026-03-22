@@ -5,6 +5,7 @@
 #include <SKSE/SKSE.h>
 
 #include <format>
+#include <unordered_set>
 
 namespace SkyrimMCP::PlayerQueries {
 
@@ -176,37 +177,53 @@ namespace SkyrimMCP::PlayerQueries {
         if (!player) return {{"error", "Player not available"}};
 
         json equipped = json::array();
+        std::unordered_set<RE::FormID> seen;  // avoid duplicates (items span multiple slots)
 
-        // Check all biped slots
-        auto* inv = player->GetInventoryChanges();
-        if (!inv) return {{"error", "Inventory not available"}};
-
-        // Iterate equipped items
-        auto armor = player->GetWornArmor(RE::BGSBipedObjectForm::BipedObjectSlot::kHead);
-        auto addSlot = [&](const char* slot, RE::BGSBipedObjectForm::BipedObjectSlot bipedSlot) {
-            auto* item = player->GetWornArmor(bipedSlot);
-            if (item) {
-                json e;
-                e["slot"] = slot;
-                e["formId"] = std::format("{:08X}", item->GetFormID());
-                e["name"] = item->GetName();
-                equipped.push_back(e);
-            }
+        // Named slots for human-readable output
+        static const std::pair<const char*, RE::BGSBipedObjectForm::BipedObjectSlot> namedSlots[] = {
+            {"head",      RE::BGSBipedObjectForm::BipedObjectSlot::kHead},
+            {"hair",      RE::BGSBipedObjectForm::BipedObjectSlot::kHair},
+            {"body",      RE::BGSBipedObjectForm::BipedObjectSlot::kBody},
+            {"hands",     RE::BGSBipedObjectForm::BipedObjectSlot::kHands},
+            {"forearms",  RE::BGSBipedObjectForm::BipedObjectSlot::kForearms},
+            {"amulet",    RE::BGSBipedObjectForm::BipedObjectSlot::kAmulet},
+            {"ring",      RE::BGSBipedObjectForm::BipedObjectSlot::kRing},
+            {"feet",      RE::BGSBipedObjectForm::BipedObjectSlot::kFeet},
+            {"calves",    RE::BGSBipedObjectForm::BipedObjectSlot::kCalves},
+            {"shield",    RE::BGSBipedObjectForm::BipedObjectSlot::kShield},
+            {"tail",      RE::BGSBipedObjectForm::BipedObjectSlot::kTail},
+            {"circlet",   RE::BGSBipedObjectForm::BipedObjectSlot::kCirclet},
         };
 
-        addSlot("head", RE::BGSBipedObjectForm::BipedObjectSlot::kHead);
-        addSlot("hair", RE::BGSBipedObjectForm::BipedObjectSlot::kHair);
-        addSlot("body", RE::BGSBipedObjectForm::BipedObjectSlot::kBody);
-        addSlot("hands", RE::BGSBipedObjectForm::BipedObjectSlot::kHands);
-        addSlot("forearms", RE::BGSBipedObjectForm::BipedObjectSlot::kForearms);
-        addSlot("feet", RE::BGSBipedObjectForm::BipedObjectSlot::kFeet);
-        addSlot("calves", RE::BGSBipedObjectForm::BipedObjectSlot::kCalves);
-        addSlot("shield", RE::BGSBipedObjectForm::BipedObjectSlot::kShield);
-        addSlot("circlet", RE::BGSBipedObjectForm::BipedObjectSlot::kCirclet);
-        addSlot("amulet", RE::BGSBipedObjectForm::BipedObjectSlot::kAmulet);
-        addSlot("ring", RE::BGSBipedObjectForm::BipedObjectSlot::kRing);
+        auto addItem = [&](const char* slotName, RE::TESObjectARMO* item) {
+            if (!item || seen.count(item->GetFormID())) return;
+            seen.insert(item->GetFormID());
+            json e;
+            e["slot"] = slotName;
+            e["slotMask"] = static_cast<uint32_t>(item->GetSlotMask());
+            e["formId"] = std::format("{:08X}", item->GetFormID());
+            e["name"] = item->GetName();
+            equipped.push_back(e);
+        };
 
-        // Get wielded weapons
+        // Check all named slots
+        for (auto& [name, slot] : namedSlots) {
+            auto* item = player->GetWornArmor(slot);
+            addItem(name, item);
+        }
+
+        // Check all 32 unnamed/mod slots (bits 11-31)
+        for (int bit = 11; bit < 32; bit++) {
+            if (bit == 12) continue;  // kCirclet already checked
+            auto slot = static_cast<RE::BGSBipedObjectForm::BipedObjectSlot>(1 << bit);
+            auto* item = player->GetWornArmor(slot);
+            if (item) {
+                std::string slotName = std::format("slot{}", 30 + bit);  // Skyrim slot numbering: bit 0 = slot 30
+                addItem(slotName.c_str(), item);
+            }
+        }
+
+        // Wielded weapons/spells
         auto* rightHand = player->GetEquippedObject(false);
         if (rightHand) {
             json e;

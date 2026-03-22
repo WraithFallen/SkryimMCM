@@ -3,6 +3,7 @@
 
 #include <spdlog/sinks/basic_file_sink.h>
 
+#include "Helpers.h"
 #include "PipeServer.h"
 #include "EventSystem.h"
 
@@ -56,6 +57,9 @@ SKSEPluginLoad(const SKSE::LoadInterface* a_skse) {
     SKSE::log::info("SkyrimMCPPlugin v1.0.0 loading...");
 
     SKSE::Init(a_skse);
+
+    // Install console output capture hook
+    SkyrimMCP::Helpers::InstallConsoleHook();
 
     auto messaging = SKSE::GetMessagingInterface();
     if (!messaging->RegisterListener(MessageCallback)) {

@@ -146,6 +146,16 @@ public class PlayerTools : ToolBase
     }
 
     [McpServerTool]
+    [Description("Get all powers, lesser powers, and abilities — separated by type. " +
+        "Powers are daily-use abilities (e.g., racial powers). Lesser powers can be used freely. " +
+        "Abilities are passive permanent effects. Includes school and primary effect name.")]
+    public async Task<object> GetPowers()
+    {
+        var data = await _pipe.SendRequestAsync("get_powers");
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
     [Description("Check for diseases, vampirism, and lycanthropy. Returns vampire/werewolf status, " +
         "active diseases with names and effects, and the player's current race.")]
     public async Task<object> GetDiseaseStatus()

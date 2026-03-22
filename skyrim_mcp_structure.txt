@@ -1,0 +1,4379 @@
+Folder PATH listing for volume RamDisk-X
+Volume serial number is 6639-BE71
+X:\_WORK\SKYRIM_MCP
+¦   .gitignore
+¦   CHARACTER_BLUEPRINT_SPEC.json
+¦   CLAUDE.md
+¦   package.json
+¦   project_dashboard.html
+¦   project_work_items.json
+¦   README.md
+¦   ROADMAP.md
+¦   skyrim_mcp.sln
+¦   skyrim_mcp.zip
+¦   skyrim_mcp_structure.txt
+¦   tsconfig.json
+¦   
++---.claude
+¦       settings.local.json
+¦       
++---.git
+¦   ¦   COMMIT_EDITMSG
+¦   ¦   config
+¦   ¦   description
+¦   ¦   FETCH_HEAD
+¦   ¦   HEAD
+¦   ¦   index
+¦   ¦   ORIG_HEAD
+¦   ¦   packed-refs
+¦   ¦   REBASE_HEAD
+¦   ¦   
+¦   +---branches
+¦   +---gk
+¦   ¦       config
+¦   ¦       
+¦   +---hooks
+¦   ¦       applypatch-msg.sample
+¦   ¦       commit-msg.sample
+¦   ¦       fsmonitor-watchman.sample
+¦   ¦       post-update.sample
+¦   ¦       pre-applypatch.sample
+¦   ¦       pre-commit.sample
+¦   ¦       pre-merge-commit.sample
+¦   ¦       pre-push.sample
+¦   ¦       pre-rebase.sample
+¦   ¦       pre-receive.sample
+¦   ¦       prepare-commit-msg.sample
+¦   ¦       push-to-checkout.sample
+¦   ¦       sendemail-validate.sample
+¦   ¦       update.sample
+¦   ¦       
+¦   +---info
+¦   ¦       exclude
+¦   ¦       
+¦   +---logs
+¦   ¦   ¦   HEAD
+¦   ¦   ¦   
+¦   ¦   +---refs
+¦   ¦       ¦   stash
+¦   ¦       ¦   
+¦   ¦       +---heads
+¦   ¦       ¦   ¦   develop
+¦   ¦       ¦   ¦   main
+¦   ¦       ¦   ¦   
+¦   ¦       ¦   +---bugfix
+¦   ¦       ¦   ¦       006-console-output-capture
+¦   ¦       ¦   ¦       006-console-output-open-console
+¦   ¦       ¦   ¦       006-revert-console-open
+¦   ¦       ¦   ¦       008-player-factions
+¦   ¦       ¦   ¦       009-weather-names
+¦   ¦       ¦   ¦       
+¦   ¦       ¦   +---feature
+¦   ¦       ¦           080-disease-cure
+¦   ¦       ¦           081-enchantment-info
+¦   ¦       ¦           082-magic-resistance
+¦   ¦       ¦           083-spell-details
+¦   ¦       ¦           084-power-management
+¦   ¦       ¦           090-merchant-detection
+¦   ¦       ¦           100-combat-state
+¦   ¦       ¦           
+¦   ¦       +---remotes
+¦   ¦           +---origin
+¦   ¦               ¦   develop
+¦   ¦               ¦   main
+¦   ¦               ¦   
+¦   ¦               +---bugfix
+¦   ¦               ¦       006-console-output-capture
+¦   ¦               ¦       008-player-factions
+¦   ¦               ¦       009-weather-names
+¦   ¦               ¦       
+¦   ¦               +---feature
+¦   ¦                       080-disease-cure
+¦   ¦                       081-enchantment-info
+¦   ¦                       082-magic-resistance
+¦   ¦                       083-spell-details
+¦   ¦                       084-power-management
+¦   ¦                       
+¦   +---objects
+¦   ¦   +---00
+¦   ¦   ¦       e5110251e6023ccb3c6b88692fa0d521d83b39
+¦   ¦   ¦       
+¦   ¦   +---01
+¦   ¦   ¦       4e94bc20df533f96c79769ba8654556a98c535
+¦   ¦   ¦       
+¦   ¦   +---02
+¦   ¦   ¦       6cd9cbe7ab6c31dbf9e1e25eb4d36e985b768e
+¦   ¦   ¦       88caa1962cc9653c49a50eacdf4f97f0d1911a
+¦   ¦   ¦       9c9e865bd28bcb9fb801faa2da94719675dd29
+¦   ¦   ¦       
+¦   ¦   +---03
+¦   ¦   ¦       8e7232468e19b100bb7855ae595e84d13f1325
+¦   ¦   ¦       
+¦   ¦   +---05
+¦   ¦   ¦       1e8f5458eb2a97895204aabcfe7aad920e418b
+¦   ¦   ¦       385fdc40bb6b3f6e7b4b7e93155fc691aecb5b
+¦   ¦   ¦       84309d27d155cedc09c9e9113172d37dca4ba7
+¦   ¦   ¦       
+¦   ¦   +---07
+¦   ¦   ¦       32e91e86d2c4537d1278ba6c2307f9c927e37c
+¦   ¦   ¦       b3fc4766aee80d5912b5832c5b5838fcd166b1
+¦   ¦   ¦       bbe9e329bb1196dcb6ee5321f3a64e74e00aa7
+¦   ¦   ¦       
+¦   ¦   +---08
+¦   ¦   ¦       6930640ad9da67fc5590b5e4e43ad72f1481f4
+¦   ¦   ¦       950fa9e7a903ec5d0d8ef1bb581b2b946a2dff
+¦   ¦   ¦       b4032bb6bd3e86f5da078611900964a69089df
+¦   ¦   ¦       c304dee359b6a09259fb40d14aa9201e2f1c20
+¦   ¦   ¦       
+¦   ¦   +---0a
+¦   ¦   ¦       26555109e8b3da21e4fdf2127fb1edbccbdfe5
+¦   ¦   ¦       2ea1ad0a7d92b12af022eb7d6bb108b1b1c50c
+¦   ¦   ¦       
+¦   ¦   +---0e
+¦   ¦   ¦       12a48ff121f8b6a04c1cc6dfb56d371a83c580
+¦   ¦   ¦       6ae7907c8c3b39d7151f7cabf8185b18c38537
+¦   ¦   ¦       e817ced6ffc77801aaa970c658b257d6fac57d
+¦   ¦   ¦       
+¦   ¦   +---0f
+¦   ¦   ¦       37a635abe24c6178aea9299c06dc6df442d219
+¦   ¦   ¦       5bd9608b723d1c9bc26337a50a8112d95bc64f
+¦   ¦   ¦       ab72aff0ebe4c62514581db0bff4d7b111753a
+¦   ¦   ¦       
+¦   ¦   +---11
+¦   ¦   ¦       76571999f84f8ed7f8355cdc1c3395d7000a7f
+¦   ¦   ¦       c78b4cb98346c195093e2ef5aacf852f3ba7b7
+¦   ¦   ¦       
+¦   ¦   +---12
+¦   ¦   ¦       01908606abe8103ec50ad4826ba819119b5f2a
+¦   ¦   ¦       30f66efb4bce12de54ffd4042bbe56d915166c
+¦   ¦   ¦       
+¦   ¦   +---13
+¦   ¦   ¦       5f94dd72b8be2f26703b833fb09442e68f0238
+¦   ¦   ¦       90489790e05062694a319bfd4a723fd5e9b034
+¦   ¦   ¦       
+¦   ¦   +---15
+¦   ¦   ¦       6b6d5ef4ae0e0022e221556765ae180ec7b4e7
+¦   ¦   ¦       
+¦   ¦   +---16
+¦   ¦   ¦       0f4568880beb189ec576a939c54e04c616fda7
+¦   ¦   ¦       b408b83377e3f4519ee4bfcccd0472a984024e
+¦   ¦   ¦       
+¦   ¦   +---17
+¦   ¦   ¦       5a3318441b11cf8228097275dba316051e8220
+¦   ¦   ¦       94870f742cca9914468e11ddae38d2e5a286aa
+¦   ¦   ¦       
+¦   ¦   +---1a
+¦   ¦   ¦       419e3929dc07d414d8fba82ede82eeebf6622d
+¦   ¦   ¦       6b7e110230b6fbf61d4b54c2f22f3e1b829472
+¦   ¦   ¦       6d08f3d7024f7d232a9a80484baed54b5c7872
+¦   ¦   ¦       e33bcf907529462acfa23b319ea786118abd9e
+¦   ¦   ¦       
+¦   ¦   +---1d
+¦   ¦   ¦       0dc666b2acc36767fbda76f8322a0f22946dab
+¦   ¦   ¦       72ff2989a4af5de0a89bd697a5608ab37fecea
+¦   ¦   ¦       accf09e8bdc4b7995c7b13ee21cddd2459546b
+¦   ¦   ¦       
+¦   ¦   +---1e
+¦   ¦   ¦       b6cb0b89fa4510b363071f7ade9b39cd17fdb0
+¦   ¦   ¦       f76ae7b66a1c3553c36b1c9f340cbd8e45d5da
+¦   ¦   ¦       
+¦   ¦   +---1f
+¦   ¦   ¦       a50a60bb014a19a48557eeb85c218d548d135a
+¦   ¦   ¦       d66a66811b92dbab40550d28495c48d81eebc4
+¦   ¦   ¦       e8266b0918cad1e37e3b52ab7ad5203d184ca6
+¦   ¦   ¦       f0d3cfeb8101dfe8c549d0ca028f412721d453
+¦   ¦   ¦       
+¦   ¦   +---21
+¦   ¦   ¦       487132dc05897cc4bd29b021630c130c857823
+¦   ¦   ¦       dbb143f7498038044f17f7587c434fc21f26e0
+¦   ¦   ¦       
+¦   ¦   +---22
+¦   ¦   ¦       0205b437993988b033d8956bd86c2f5c6059d5
+¦   ¦   ¦       829c546808990582e152eb6b9e07c541c5f6bf
+¦   ¦   ¦       
+¦   ¦   +---23
+¦   ¦   ¦       8e734702ebfb1a93d93fcc0b73e40c6c09e01a
+¦   ¦   ¦       
+¦   ¦   +---24
+¦   ¦   ¦       d38ce4eaf951d60f9b66cd1c021f566a5eae94
+¦   ¦   ¦       
+¦   ¦   +---25
+¦   ¦   ¦       cf5619cf9d97e4004d6d4200b8741f7197d1e7
+¦   ¦   ¦       
+¦   ¦   +---27
+¦   ¦   ¦       844c5560e434b80c20feefc23dd81030a02812
+¦   ¦   ¦       
+¦   ¦   +---28
+¦   ¦   ¦       ea8b01d3e410daec58c2b5a745210dd6c3509b
+¦   ¦   ¦       
+¦   ¦   +---29
+¦   ¦   ¦       a3deca28770c5ab444a28fd9240c0b66b12eb4
+¦   ¦   ¦       
+¦   ¦   +---2a
+¦   ¦   ¦       d004a68d7aa4e1af3470359b2d79f404abfecb
+¦   ¦   ¦       
+¦   ¦   +---2b
+¦   ¦   ¦       1c2f4e49f4450145b9f05a6229b8431da4673a
+¦   ¦   ¦       8b882b75c002fdb82c4eccc9c1a68dd5c77591
+¦   ¦   ¦       cb5695929852b619a85c4b66601833d7293c1e
+¦   ¦   ¦       
+¦   ¦   +---2d
+¦   ¦   ¦       9e25cc0d552e43fb008c1cea47e7c2a7731261
+¦   ¦   ¦       d1b5a8dd063efdd88a4eb715c287f8bac0b855
+¦   ¦   ¦       
+¦   ¦   +---2e
+¦   ¦   ¦       2f282b605629e261a928b78a6b5b66f4bcd7d6
+¦   ¦   ¦       7a34c20bbc8336e5b1d3850ed07504a8a9cbfc
+¦   ¦   ¦       ab766234d5d1c46fe23a7ab918385291f3acb5
+¦   ¦   ¦       
+¦   ¦   +---2f
+¦   ¦   ¦       339a5f4fd8002e335a249b964e2fefefaf930e
+¦   ¦   ¦       62d0466d371ea1c295c5421590ab0d0c2984e0
+¦   ¦   ¦       798e0a5a795e91c2aa93d7accf78a1c8f98783
+¦   ¦   ¦       94b785232089c6f556c2944496542a1633fd4d
+¦   ¦   ¦       d6e2278920fd764033bbadc002cea4888a5603
+¦   ¦   ¦       f59cd0ed41204fadfe8ea5179c531dec82f8e9
+¦   ¦   ¦       
+¦   ¦   +---30
+¦   ¦   ¦       281931184697e75d5cb448e77019cc4ad9fe5f
+¦   ¦   ¦       
+¦   ¦   +---31
+¦   ¦   ¦       00d9a88f0555502e9fbe52b3d3984625fee637
+¦   ¦   ¦       
+¦   ¦   +---33
+¦   ¦   ¦       2f5639196dc8dbeddfdeaf1a82e1291d0fa15c
+¦   ¦   ¦       611e1a9a9a1691541ebf88cee32ad37a716951
+¦   ¦   ¦       a4f6224ded06cd29380e8fa221ea07997aa9ed
+¦   ¦   ¦       b02a93176de0eb02e48b01caa22d6fedd76562
+¦   ¦   ¦       
+¦   ¦   +---34
+¦   ¦   ¦       d8e4a2568487a9270dce9113dfdbd73c071c28
+¦   ¦   ¦       
+¦   ¦   +---35
+¦   ¦   ¦       7fbcfa02bde708877d99809e1f5d54b6ce31af
+¦   ¦   ¦       e593db18e1f8f0562a43c81b71190e5ac80686
+¦   ¦   ¦       
+¦   ¦   +---37
+¦   ¦   ¦       3b85d7ca78d66249c8605e998ea16035e53e49
+¦   ¦   ¦       4c94faeb9a6ebb45241948cab96d54f760f45d
+¦   ¦   ¦       
+¦   ¦   +---38
+¦   ¦   ¦       48ca21e2d09c321133bc75a176c5f1cd133c0c
+¦   ¦   ¦       b1e87a27c68f34355dd9a046ae93f759d0a0f3
+¦   ¦   ¦       
+¦   ¦   +---39
+¦   ¦   ¦       35f5932fc8bc6437725dc38bfb9d753753bb1f
+¦   ¦   ¦       
+¦   ¦   +---3b
+¦   ¦   ¦       95d1fd8b37643b1cedfd22c79dffa447de8521
+¦   ¦   ¦       
+¦   ¦   +---3d
+¦   ¦   ¦       25eeba19f1d7c13302f25ef48eef42eb400872
+¦   ¦   ¦       2f55cacc73a215817f00caedcc1a0dff8c2c6e
+¦   ¦   ¦       
+¦   ¦   +---3f
+¦   ¦   ¦       25a6f5e07340f7bbc6eeb025051338bf85ca10
+¦   ¦   ¦       fd31d256d62eabac2f615437d3304d3f12fb9c
+¦   ¦   ¦       
+¦   ¦   +---40
+¦   ¦   ¦       0d7f756ed13eb063b301130108123b0bda2d04
+¦   ¦   ¦       2061cadf94f1105f441cc161c9362ee83711f9
+¦   ¦   ¦       2a6d01ed567dfabc4fd21642a446a88dec62ce
+¦   ¦   ¦       9f8ea15f94f28d07d4acd0031e35a309ce3b3c
+¦   ¦   ¦       
+¦   ¦   +---42
+¦   ¦   ¦       dc6679398be2774ac1115ed7dd867f652dbe31
+¦   ¦   ¦       
+¦   ¦   +---43
+¦   ¦   ¦       dc12d7b720ecb497abf260569d6f1b9c78a666
+¦   ¦   ¦       
+¦   ¦   +---44
+¦   ¦   ¦       14ffa39434ce8de703988f03169808cf4dab98
+¦   ¦   ¦       694baf993ccf4a0e1cb0f58f20ca1ca1de17e0
+¦   ¦   ¦       
+¦   ¦   +---45
+¦   ¦   ¦       181c786d56234fc974887a0878447d44551d69
+¦   ¦   ¦       24426f5f5f1fff0c9c80d0893ae3d88f72423c
+¦   ¦   ¦       
+¦   ¦   +---46
+¦   ¦   ¦       81c5bfef1055b225001e092fac6f8f7e8f58fe
+¦   ¦   ¦       c4a2903e16282b2a7115c453b0f5542dcee856
+¦   ¦   ¦       
+¦   ¦   +---48
+¦   ¦   ¦       4bf26d3d6c37d3ff46ecb550c13287a95649c5
+¦   ¦   ¦       69072a5ed1683d9066daf67c21d45600718420
+¦   ¦   ¦       cb3bbf7c9633ce6ce4638aff1edbdd7f77b8d8
+¦   ¦   ¦       
+¦   ¦   +---49
+¦   ¦   ¦       d02b2c9b6e4d45324a0d4e029bc5a6ece2d741
+¦   ¦   ¦       
+¦   ¦   +---4a
+¦   ¦   ¦       18312ad97708bfc1c1257cd0fb3558bf697c2c
+¦   ¦   ¦       cd5ba94c91b937b27103389d4aea59d0df179b
+¦   ¦   ¦       e2870b0a36d76d55b65467103e11e719d66de1
+¦   ¦   ¦       fcc1ce8bb7607316d6914f8f6248c7e5462b4f
+¦   ¦   ¦       
+¦   ¦   +---4b
+¦   ¦   ¦       02135a31667b39bbf60b7daee341ca019eeb06
+¦   ¦   ¦       4810ca69bef8f315576d58780376f972bc5b4d
+¦   ¦   ¦       7fc4b3046ac983cc78955bfa50f3ea7ada98f1
+¦   ¦   ¦       
+¦   ¦   +---4c
+¦   ¦   ¦       be2ac308d156c0eaccaa2c874ac347a7243151
+¦   ¦   ¦       dbc19da1e90cce541dc340c921f2e84f218e9d
+¦   ¦   ¦       
+¦   ¦   +---4e
+¦   ¦   ¦       a732da3fd9d74f84dd447ab549e9c3e047282f
+¦   ¦   ¦       
+¦   ¦   +---4f
+¦   ¦   ¦       7df745f1d2254839b4fbfbcd0550318c7bb18e
+¦   ¦   ¦       98ef293852041a19269b78bfb8c924d51846c7
+¦   ¦   ¦       d01bbdfecb99745393ae7af8c0ab7e7bcca9af
+¦   ¦   ¦       
+¦   ¦   +---50
+¦   ¦   ¦       099d77f7612be01108ef0ade4f7b0934088d60
+¦   ¦   ¦       3cee25cca18caf47addee7b06ef10e24c68828
+¦   ¦   ¦       
+¦   ¦   +---51
+¦   ¦   ¦       1e91e7cb2c0ea11b5ece10e98af924280d6e20
+¦   ¦   ¦       474d2c0a817394c21b1b7470526e303082fcc8
+¦   ¦   ¦       
+¦   ¦   +---52
+¦   ¦   ¦       20a4ee166d43db08d5f72ec614f8a9f45ef1f6
+¦   ¦   ¦       407d7e9419730031f43c35db7a0eb8654cbefd
+¦   ¦   ¦       d3f8c0a69531b1af574e27f63e91481100179b
+¦   ¦   ¦       d8587b3d99f17efeb4d95e0bf654b30c057e55
+¦   ¦   ¦       dbd9a2248bb46578e99a61f1941de438c7db43
+¦   ¦   ¦       
+¦   ¦   +---53
+¦   ¦   ¦       03ef0f9ace4323a5e4487553fc82adfdc74086
+¦   ¦   ¦       
+¦   ¦   +---54
+¦   ¦   ¦       7cfe724e49998b29080aaa8d40af3a5525d540
+¦   ¦   ¦       
+¦   ¦   +---55
+¦   ¦   ¦       0db8a3543eff365e2d8ad9677985ef3291432a
+¦   ¦   ¦       
+¦   ¦   +---57
+¦   ¦   ¦       636ab5e137b9ae649d029ee1a6267ac06a8e14
+¦   ¦   ¦       af26035a2318a3abf1cf5ec8736d9fad7c00ff
+¦   ¦   ¦       c85a5ba48c85ab51b7c1cd9a250f5f4badb536
+¦   ¦   ¦       
+¦   ¦   +---58
+¦   ¦   ¦       16a0b4d88e75eed011a73a8a1d3f6b75def191
+¦   ¦   ¦       
+¦   ¦   +---59
+¦   ¦   ¦       316fd0bd86da8669ecbd3b12f78bb3219f4e14
+¦   ¦   ¦       66d44249d94aa0adf0b39e8bedd73b52e66d0e
+¦   ¦   ¦       87dc1a460201e1dd8da47e9f9e5b73653bd4e8
+¦   ¦   ¦       
+¦   ¦   +---5a
+¦   ¦   ¦       5e7e9a1a9eaf80441bc7e174c6e0343b64d642
+¦   ¦   ¦       
+¦   ¦   +---5b
+¦   ¦   ¦       0fb2bb3f3582c1cb2af2602805b3708ab1bdc5
+¦   ¦   ¦       ac4ab05bb22795976e3ad6e4b187af11a0018e
+¦   ¦   ¦       
+¦   ¦   +---5c
+¦   ¦   ¦       887b035d1f432df7c92ace41728281367ed0d8
+¦   ¦   ¦       
+¦   ¦   +---5d
+¦   ¦   ¦       c402e826a9561767eeee82f0a4faf7cacf377f
+¦   ¦   ¦       
+¦   ¦   +---60
+¦   ¦   ¦       332a746cdb5a1f1aa6258ff24b95e61f092997
+¦   ¦   ¦       715113b5726d038ae3362716bc25222b7d7fec
+¦   ¦   ¦       d1e6da50483c8834dedb1394c4a76e0df284d5
+¦   ¦   ¦       
+¦   ¦   +---61
+¦   ¦   ¦       71cf6cc7e376770b55afd39e4b0f26a7ec55c4
+¦   ¦   ¦       ed1b6bda1f25f787f20d34515ad738caf4cbe7
+¦   ¦   ¦       fb7d3fd89b20df255abf0a98269065c19c30e6
+¦   ¦   ¦       
+¦   ¦   +---63
+¦   ¦   ¦       34894d8f5547d0e612eaadfbbc4737e2d472d8
+¦   ¦   ¦       8bc76f992bc2407a42c0bfc68af8d2b60ca98e
+¦   ¦   ¦       
+¦   ¦   +---64
+¦   ¦   ¦       55199bc0d54dd1eb811667bb5d1fcb11cbc251
+¦   ¦   ¦       ab538961ff4867aad31de0b84bcc03ac9a9575
+¦   ¦   ¦       
+¦   ¦   +---65
+¦   ¦   ¦       75e54bdc92fc56473f3631ccddc5504845751b
+¦   ¦   ¦       d2f00eb087d17c47aa3b3eae14165c0ec8517c
+¦   ¦   ¦       
+¦   ¦   +---66
+¦   ¦   ¦       c6fe8a07be5cdaf5e3c4aa6785df45709cc45a
+¦   ¦   ¦       
+¦   ¦   +---68
+¦   ¦   ¦       3aa63199fe4bbe0e8cf6842fc2732bc586d66c
+¦   ¦   ¦       71e8f373bcca550dfb30e6286d47daf7d5dc6f
+¦   ¦   ¦       bdcedec9c5ad1047461f071cd81a0ed227d918
+¦   ¦   ¦       c576f95dd724d9f596f22d3eb2a8ff4ba4e7dd
+¦   ¦   ¦       dc170765c7300b510a1d49e1ed72552aff39a0
+¦   ¦   ¦       e815c1d06e303d5b25a201a2de40fbe0d65ae9
+¦   ¦   ¦       
+¦   ¦   +---6b
+¦   ¦   ¦       7e807a6e71134b471e733d1483b6af01db2d8c
+¦   ¦   ¦       
+¦   ¦   +---6d
+¦   ¦   ¦       03cd224dc1278bbf6c3526f887bc5394339d94
+¦   ¦   ¦       
+¦   ¦   +---6e
+¦   ¦   ¦       001a8de01f677db310717ce4cd53bbc3d35c23
+¦   ¦   ¦       1289d7fa0656dc1502760f232e9cc1d3b084d7
+¦   ¦   ¦       fd64c167aa998dd5496dc0849c459c77aa4fb8
+¦   ¦   ¦       
+¦   ¦   +---6f
+¦   ¦   ¦       398b5af29c701fd413ee59e0b7c106f3f921da
+¦   ¦   ¦       
+¦   ¦   +---71
+¦   ¦   ¦       7180e2b59bc533c0845ea61c6c85d9a096c94d
+¦   ¦   ¦       
+¦   ¦   +---73
+¦   ¦   ¦       334ff7410cbad6f224fd4e2332a81d85e8a7a9
+¦   ¦   ¦       f7ebe5ea8b51351def61f28079e8e17edf883f
+¦   ¦   ¦       
+¦   ¦   +---74
+¦   ¦   ¦       36fc8e61ef16ffa2ac3e0f65cfe753ba7fc3ca
+¦   ¦   ¦       6db55a3c7375fd7a1f334ebc53105c85bfb326
+¦   ¦   ¦       885ae4c98ad7c4a6a7e98ab8648db04453b9c2
+¦   ¦   ¦       
+¦   ¦   +---76
+¦   ¦   ¦       61f0b798e835123b7b995e6e5d2fdbe6e92621
+¦   ¦   ¦       
+¦   ¦   +---77
+¦   ¦   ¦       2a32ba8cf856019bde76717e30f12b90c94879
+¦   ¦   ¦       5ba858bc3b40b0bcb3a58f7f1af6ecd15e38cf
+¦   ¦   ¦       
+¦   ¦   +---78
+¦   ¦   ¦       212a78e49b8220cc1eb2fc623a3b136b4a0aba
+¦   ¦   ¦       54aa54e03396c6ac4fa98a0deab87ad639de79
+¦   ¦   ¦       
+¦   ¦   +---7b
+¦   ¦   ¦       5467e63319e510bda93a286232805af0bd53c7
+¦   ¦   ¦       78a366746ebc6016aa2b2783bb03b291b80881
+¦   ¦   ¦       
+¦   ¦   +---7c
+¦   ¦   ¦       1551ca615be6332f127c323604396dcd6d3542
+¦   ¦   ¦       793f9bf791519d0d98e67f8092c2a4ebaa0da7
+¦   ¦   ¦       c62356d6d19ce3a9f02a2ffb6dd059026cc2c0
+¦   ¦   ¦       f7338d8d59519a61e5a740644efc5aa72edb01
+¦   ¦   ¦       
+¦   ¦   +---7e
+¦   ¦   ¦       31babd8f70e80ce9378133b298d567cd9355e6
+¦   ¦   ¦       35b4ae61a475f3a17b2613404b5b1c1cd78b0a
+¦   ¦   ¦       dab991c2d25c05b69b13c1e5ed4fc3d78d000f
+¦   ¦   ¦       
+¦   ¦   +---7f
+¦   ¦   ¦       884477e68139484130a78f85217d671839686f
+¦   ¦   ¦       
+¦   ¦   +---82
+¦   ¦   ¦       663e6549b730dae9f1c99bf69bb012e5b08d4d
+¦   ¦   ¦       738a0af6e9852369a77543aef527c4a257dd6f
+¦   ¦   ¦       
+¦   ¦   +---83
+¦   ¦   ¦       442774976db4a5d4bfd6f91db2256de3b4f871
+¦   ¦   ¦       532571eda716b9c98d325046dd4a6a75bbd6ec
+¦   ¦   ¦       
+¦   ¦   +---85
+¦   ¦   ¦       601adfa268e5a16291949a47a82355c9f3e17d
+¦   ¦   ¦       9fdd8c164ea06eadd389b34a9230a70f8e31c0
+¦   ¦   ¦       af9e30d06a84fc2f4e26365365244b990c7544
+¦   ¦   ¦       
+¦   ¦   +---86
+¦   ¦   ¦       09789ac201f19a472a036aabc88108e8341fe7
+¦   ¦   ¦       49d73ebc6e0864d8bc510f32524dc4f32ff8c1
+¦   ¦   ¦       4f667e270b9db5b047e18ce468af4fb8cb6eb9
+¦   ¦   ¦       c073f177a8caa2821047f114e43d41cf371664
+¦   ¦   ¦       
+¦   ¦   +---88
+¦   ¦   ¦       04296daed2eb0803202cbf01af0296fad15323
+¦   ¦   ¦       e2444a900ae36b3025bc5f42367a835af4de24
+¦   ¦   ¦       e73e3cc58db355dcc9c7efc287fc74867ce753
+¦   ¦   ¦       
+¦   ¦   +---89
+¦   ¦   ¦       0224dbc21f99f51611c59a53ebcf1f62471a9f
+¦   ¦   ¦       630b86af2f73da0fa4c7a2622590f9fb8d6da6
+¦   ¦   ¦       81d94e7d8241e3d283632d2c4ca91bcbce1194
+¦   ¦   ¦       b263226912b2a816a4dadc325bea757296c873
+¦   ¦   ¦       e7a58bd83081fdf2fa43b9ed943db768f5c41f
+¦   ¦   ¦       
+¦   ¦   +---8d
+¦   ¦   ¦       6df345929aec681befc751507c677fbc7dc413
+¦   ¦   ¦       
+¦   ¦   +---8f
+¦   ¦   ¦       fb4ce811528d02881049dff03e71cac477dd86
+¦   ¦   ¦       
+¦   ¦   +---91
+¦   ¦   ¦       97b224ccfddf1b25039222bffd7d4625ccafb7
+¦   ¦   ¦       992ebd0e89dc5007c804e9cb68c24d77ff9efd
+¦   ¦   ¦       e90a46bb8946487733bf68e2cff8f45804fecc
+¦   ¦   ¦       
+¦   ¦   +---92
+¦   ¦   ¦       a026919d29af7bd29d6c3ed645ce5259e6f9dc
+¦   ¦   ¦       
+¦   ¦   +---93
+¦   ¦   ¦       9b063c5a2f0d81f6a215ab3cf01cef80531fcc
+¦   ¦   ¦       
+¦   ¦   +---94
+¦   ¦   ¦       4e0c0c6afa6d540af0b79d536cc0ee4f5a7fd2
+¦   ¦   ¦       70dd2b049db60815d458d4d1b5e633793ac6d0
+¦   ¦   ¦       
+¦   ¦   +---95
+¦   ¦   ¦       6e7245fc95a507472262b6bca52488942fc4ea
+¦   ¦   ¦       
+¦   ¦   +---97
+¦   ¦   ¦       a2cb1743cebec8c670fe9a92e70c207f7bd944
+¦   ¦   ¦       
+¦   ¦   +---99
+¦   ¦   ¦       05f5a0cf051b9c0dc8894658e73c293cb14754
+¦   ¦   ¦       431bff992fb2466dbe387f91b4251332c96f07
+¦   ¦   ¦       be7fa92c55346213fced1611079770cdced7c7
+¦   ¦   ¦       
+¦   ¦   +---9b
+¦   ¦   ¦       9185d711d72cd13f8e731e40a9634d73866445
+¦   ¦   ¦       
+¦   ¦   +---9c
+¦   ¦   ¦       250aba67d4a66b142e31f3d1f2bd9f85a9e0ce
+¦   ¦   ¦       
+¦   ¦   +---9d
+¦   ¦   ¦       921ed7b56dc055484f9d7a287aa965229f504a
+¦   ¦   ¦       
+¦   ¦   +---9e
+¦   ¦   ¦       2dd0a76e78cb31a3fcb07c9aabde854814d388
+¦   ¦   ¦       
+¦   ¦   +---9f
+¦   ¦   ¦       3348278e90b7b4810e8ec1cd15ed3a35d64a39
+¦   ¦   ¦       842dcba3eab6b82f7015dcf55b9e229ed8f771
+¦   ¦   ¦       c79f4d879a7d5ae21994d6f572446c3016eb6b
+¦   ¦   ¦       
+¦   ¦   +---a0
+¦   ¦   ¦       243b49daf4211d4912783771af91d74e874db7
+¦   ¦   ¦       2874a045c8cb540e1c1d4f63910f0f7ab6d61f
+¦   ¦   ¦       
+¦   ¦   +---a1
+¦   ¦   ¦       a78cee448791387878fcd30172c9a6fc94d35c
+¦   ¦   ¦       
+¦   ¦   +---a3
+¦   ¦   ¦       eedc22e28b61d08331bfb446462af3cb617903
+¦   ¦   ¦       
+¦   ¦   +---a4
+¦   ¦   ¦       7d15140e75ab0a6e976ab9d07360926d8937d3
+¦   ¦   ¦       85a0920cc20a47320834b3db2eb6d80f742442
+¦   ¦   ¦       d13e257471bc598f21e8e6485fe15709ff5aed
+¦   ¦   ¦       
+¦   ¦   +---a5
+¦   ¦   ¦       017f4bfcaadba9e33b55cf69bc74ff052213d8
+¦   ¦   ¦       bb6f3b83aa79e85db2217c64988fb0b27b1d9a
+¦   ¦   ¦       
+¦   ¦   +---a6
+¦   ¦   ¦       5463b608e22974053ca3e2bd515d4a2c3d532e
+¦   ¦   ¦       637ebd93094290093b0c6a01a0ff6da12a6556
+¦   ¦   ¦       be81ace32f7558c88d927743855990a426940a
+¦   ¦   ¦       
+¦   ¦   +---a7
+¦   ¦   ¦       6097e61f9e6460010831a8587b44c8c517f45e
+¦   ¦   ¦       
+¦   ¦   +---a8
+¦   ¦   ¦       4e68764070981ce1c0ef2b79c801bdad0af928
+¦   ¦   ¦       d7b18d0997d5ab4307aa8feee1097fbf776103
+¦   ¦   ¦       
+¦   ¦   +---a9
+¦   ¦   ¦       5f7dcf9ba4c9cccba7de5a7e2d7e49210d181f
+¦   ¦   ¦       
+¦   ¦   +---aa
+¦   ¦   ¦       3750645532dca1de513a1a6d4488ac6469184f
+¦   ¦   ¦       da6726ec2b9041d27315893c667c7df34ebb28
+¦   ¦   ¦       
+¦   ¦   +---ab
+¦   ¦   ¦       f395c339df76b6ebe8b18e35aa1513d8d64b53
+¦   ¦   ¦       
+¦   ¦   +---ac
+¦   ¦   ¦       ff68e92bd262c41750990bd3ad6aa22d6b295f
+¦   ¦   ¦       
+¦   ¦   +---af
+¦   ¦   ¦       41c223a986509e6aafe45a28678201969fed98
+¦   ¦   ¦       5f51e953ba53b743cfe0ee9eb5e1fd32be86e7
+¦   ¦   ¦       9dab8f2aa45f920ccae09183bec2bc7a2da88a
+¦   ¦   ¦       
+¦   ¦   +---b0
+¦   ¦   ¦       3e6b1b22eb8c2ce07ad41a50eb81fb5acebb95
+¦   ¦   ¦       a274a7692f4bacaa06d0fd939872a4f4c8c79a
+¦   ¦   ¦       aac908d8e61b27edc3ac3bed3f379d90e4534b
+¦   ¦   ¦       ad39f2816ff152228dc75af7f3e24f7d5b2f8d
+¦   ¦   ¦       
+¦   ¦   +---b1
+¦   ¦   ¦       3591246336a878d3c9baaf3f3bd1dc7d03460a
+¦   ¦   ¦       
+¦   ¦   +---b2
+¦   ¦   ¦       be0e72b4987bd911339351450630a098dfbeaa
+¦   ¦   ¦       d58489b918c0f84be329b711f23c5a3ff7d7ef
+¦   ¦   ¦       fc90191b14f6f6e7a963b82b7a487c906b3fa6
+¦   ¦   ¦       
+¦   ¦   +---b3
+¦   ¦   ¦       06ae0d65eabc9faba5f0b3bda7e17e54b2a9dc
+¦   ¦   ¦       cdc7a0ce876ff37d40fb5b9152215cf04da753
+¦   ¦   ¦       
+¦   ¦   +---b4
+¦   ¦   ¦       0c41a445d077809ac9ed5508a0187bf21769e5
+¦   ¦   ¦       3e0229b4dfb65fbee1fc6e5c22eadbbb046cca
+¦   ¦   ¦       9e9480796acbe1ec8a75319e28912376db4195
+¦   ¦   ¦       
+¦   ¦   +---b5
+¦   ¦   ¦       0e3039a56a92c8ae4ecea57ca948b5cb289b21
+¦   ¦   ¦       9ab3600713f974d71673ba7445c4e95b55fc06
+¦   ¦   ¦       
+¦   ¦   +---b6
+¦   ¦   ¦       956375f42b865ee1cb2da2a28acc9d7af067f3
+¦   ¦   ¦       
+¦   ¦   +---b8
+¦   ¦   ¦       6544a00080bf4cd4f47f62c6b3b023c6590667
+¦   ¦   ¦       
+¦   ¦   +---b9
+¦   ¦   ¦       34ec3b423f43346bfbf888e8d900996e91ce69
+¦   ¦   ¦       979175ef6527c69eed3cda53557e93ac18287b
+¦   ¦   ¦       c4865f331dd21e06759bea6923b0665fcf1900
+¦   ¦   ¦       dd75598244d3845cc09da06086ee49e55cf34a
+¦   ¦   ¦       
+¦   ¦   +---bb
+¦   ¦   ¦       55a93b93b5b3f482575e8794cf64530f1cb96c
+¦   ¦   ¦       5fe4a7518520c672ba29ee8003ebd53caac478
+¦   ¦   ¦       e16ca3a7d294da41b2015e765c61d44e16c1dd
+¦   ¦   ¦       
+¦   ¦   +---bc
+¦   ¦   ¦       34a0e3acf79e04c3213357711c6a6581f7a7e8
+¦   ¦   ¦       
+¦   ¦   +---bd
+¦   ¦   ¦       16046bed487546d025d3e56d093e9a033c9d76
+¦   ¦   ¦       
+¦   ¦   +---be
+¦   ¦   ¦       c5bc2e48bb56677c7c4232222d26850212df6a
+¦   ¦   ¦       
+¦   ¦   +---bf
+¦   ¦   ¦       08cfb4db76629c967d5eeefc7f2dce304f27cf
+¦   ¦   ¦       33b3b005f8f876e794f39fc3c8bacb605a09a1
+¦   ¦   ¦       9914b0d799dc20c6f5e30a97c5d17caab7af41
+¦   ¦   ¦       
+¦   ¦   +---c0
+¦   ¦   ¦       45a94f5ec00a2ba290bc4ec4c5fc90f48c2473
+¦   ¦   ¦       72e60c27fae2f75eb04c9a64a3076be4b9b17b
+¦   ¦   ¦       8ebad2d08a3db9a2efd8cc4657668ade1811d4
+¦   ¦   ¦       
+¦   ¦   +---c1
+¦   ¦   ¦       a878acfcb7b996583a02866f157cdd36da3137
+¦   ¦   ¦       bb2e87f08bc246b39959a2beec36b498fd9464
+¦   ¦   ¦       
+¦   ¦   +---c2
+¦   ¦   ¦       b7923c37097747352542799abb97266e1f28fe
+¦   ¦   ¦       c3ec449487a81a3d45f0809e4e1374f9fa0d2d
+¦   ¦   ¦       
+¦   ¦   +---c3
+¦   ¦   ¦       0c6ad98f94cb350475cc089ac2efb6c44ce8e7
+¦   ¦   ¦       16b7570b2c52e6496000be499963e75fc6a2f5
+¦   ¦   ¦       
+¦   ¦   +---c4
+¦   ¦   ¦       3a68f26d93a0e542558cc0f6ac92f8e6bdcffe
+¦   ¦   ¦       
+¦   ¦   +---c5
+¦   ¦   ¦       04bcffe8f697b2342a1b10d00e53ed370aef21
+¦   ¦   ¦       
+¦   ¦   +---c6
+¦   ¦   ¦       a83388451c97045bcd21a04d3ce085fa355534
+¦   ¦   ¦       e49873c074cb856bc5dc2195f879e9b1e200fd
+¦   ¦   ¦       
+¦   ¦   +---c8
+¦   ¦   ¦       821fbb4fd5044124fd7e6789c03a11e09c67e4
+¦   ¦   ¦       
+¦   ¦   +---c9
+¦   ¦   ¦       055c817cf2a5f8f79a1fe650ca155637bb9614
+¦   ¦   ¦       4dd03503cc553cf9a119faa879d7034da2a464
+¦   ¦   ¦       73e9a09c906c7cbe0b4b71abdc274247ac320a
+¦   ¦   ¦       
+¦   ¦   +---ca
+¦   ¦   ¦       5b2a401c5870e5593d58980c27a4d86f0aed18
+¦   ¦   ¦       
+¦   ¦   +---cb
+¦   ¦   ¦       b915e6562f1d2fb93d980def4ca282b57ee3be
+¦   ¦   ¦       d474843646bbe319a926e8037c2ea7e8911315
+¦   ¦   ¦       
+¦   ¦   +---cc
+¦   ¦   ¦       0409287baf5e61fdec554113fd5ba7f594d41a
+¦   ¦   ¦       27bd2b1c8e3b41c56efcbb18b0eb7994b45690
+¦   ¦   ¦       
+¦   ¦   +---cd
+¦   ¦   ¦       16b36d25091ed9a23dc175ee2c0df7d408ae44
+¦   ¦   ¦       310d9209b8ed66d8413ba6995db67a252db17b
+¦   ¦   ¦       437f0debb5ea2fb4974c2ab120ba64095dd828
+¦   ¦   ¦       74bc7cd326be8e98871c98496524666c91b5cd
+¦   ¦   ¦       75ee2a32c043fd973f670e521b22c8ba0b3cc6
+¦   ¦   ¦       
+¦   ¦   +---ce
+¦   ¦   ¦       3284cf43ad813b8e2a90bd2c927bb39bbdbe84
+¦   ¦   ¦       a58616932f7b294ba3005e2f7001947b6f3d3e
+¦   ¦   ¦       
+¦   ¦   +---cf
+¦   ¦   ¦       0042007f718f327cda463bcee6a00e7baf2cb1
+¦   ¦   ¦       
+¦   ¦   +---d1
+¦   ¦   ¦       60fca3c91a7792742ccd1970864e6d46566d47
+¦   ¦   ¦       c64d5b8841fcc2787d1446d11ffe66c857af32
+¦   ¦   ¦       
+¦   ¦   +---d3
+¦   ¦   ¦       a5bf6b828675eeaa3d0b8d3cb7d52371c79885
+¦   ¦   ¦       
+¦   ¦   +---d4
+¦   ¦   ¦       2cc11134045dd713e58b6917ad945d22e18e83
+¦   ¦   ¦       53a264d751bf2774ece1c270223387b014e15e
+¦   ¦   ¦       6e29818a6cb559852ee1d5d6c0599e1eb8ab4e
+¦   ¦   ¦       
+¦   ¦   +---d5
+¦   ¦   ¦       3b236e1ee79a3d9268d6b7403c6bd28b5c4375
+¦   ¦   ¦       
+¦   ¦   +---d6
+¦   ¦   ¦       bb47975ea1565f051db03ac689222821d5fc67
+¦   ¦   ¦       
+¦   ¦   +---da
+¦   ¦   ¦       46efa79268a642e0d7c46633bcce5d83d80736
+¦   ¦   ¦       
+¦   ¦   +---db
+¦   ¦   ¦       08afbcb2faafd85d4c054ff2a63cd15dc75740
+¦   ¦   ¦       1f27cfc21332a37f6468e39d8f3288ae3d00b4
+¦   ¦   ¦       a1025ba729775b2be282550c4cfe14eb90499e
+¦   ¦   ¦       eedbef5194ff9707e6d85a33719bcc60ba4a01
+¦   ¦   ¦       
+¦   ¦   +---dc
+¦   ¦   ¦       438f9768da855c09cf8b4f51008fa91cf3b659
+¦   ¦   ¦       52caf40d3d3cf6da078fbb52e89d079b723fbf
+¦   ¦   ¦       6ae5d3d4e835d03af6e6f6e99c3a4c120bdc20
+¦   ¦   ¦       9438329e1d1fdbd24205bbd54170bbb1281138
+¦   ¦   ¦       b2f53eafb8dde8725fcbe0d84f2b349806c904
+¦   ¦   ¦       
+¦   ¦   +---dd
+¦   ¦   ¦       195499f434cac414f742180159044900b695c4
+¦   ¦   ¦       70c7f0c97b96e419e0c0b664726d544b19ac53
+¦   ¦   ¦       
+¦   ¦   +---de
+¦   ¦   ¦       0670e430fa8591db012a992f5a6cea36854842
+¦   ¦   ¦       
+¦   ¦   +---df
+¦   ¦   ¦       6a9711a7d8eb53106d053ea46a4f6295272b75
+¦   ¦   ¦       7461df26c5647f67eef988ccdf49fa17b8817b
+¦   ¦   ¦       
+¦   ¦   +---e0
+¦   ¦   ¦       32967cd42b74af053fab89cb1048f6ee187017
+¦   ¦   ¦       
+¦   ¦   +---e2
+¦   ¦   ¦       0e52b05d1636d472e3fb4963a8d301d3264b6a
+¦   ¦   ¦       1e5a09626caa6837bb5a7278e8e04b12e551f1
+¦   ¦   ¦       a567ce290e4b10eda2b2fdbb860f7ad0dac723
+¦   ¦   ¦       afc1e7e77d02b28739fe794d7a53f0f2d00e94
+¦   ¦   ¦       
+¦   ¦   +---e3
+¦   ¦   ¦       533ee0a89b9cec0049a38b5a0caf1cfe151046
+¦   ¦   ¦       6534d0f53194a84895d34e08444631a0bba613
+¦   ¦   ¦       db965fa54f8a95132e51cdb646d90677e3f477
+¦   ¦   ¦       dea8286eacfd1717f078288d2ca3379751ccac
+¦   ¦   ¦       
+¦   ¦   +---e4
+¦   ¦   ¦       4c27057788cc412d6411e0306bb4effabaccb6
+¦   ¦   ¦       
+¦   ¦   +---e8
+¦   ¦   ¦       1b724754cf48556cedd8a7491615b7644a695f
+¦   ¦   ¦       efe802bc2c6bbfa04c93612eb4f254801fa32a
+¦   ¦   ¦       
+¦   ¦   +---e9
+¦   ¦   ¦       504677220f5ca6cc11d98a73a47bcb0b18a97c
+¦   ¦   ¦       
+¦   ¦   +---ea
+¦   ¦   ¦       e7d159a9df076f3a78867ef70425937d3c741a
+¦   ¦   ¦       f13e6babe138462afcf6a339a90877374a7db4
+¦   ¦   ¦       
+¦   ¦   +---eb
+¦   ¦   ¦       24e3f1d22e30e5be070c6198bc58119861c3a8
+¦   ¦   ¦       7d70b85d354fdd7beacbe5825822ac921a16fd
+¦   ¦   ¦       b1e59c3bf63e1001fa8b1e79ab3a329f1e9eed
+¦   ¦   ¦       baab93c830a73c4e5fa303560b3b7a237b1ecf
+¦   ¦   ¦       fc7151182190c35637fcf161e2185f034ed75c
+¦   ¦   ¦       
+¦   ¦   +---ec
+¦   ¦   ¦       18bca21b8bd2b803e67715bc4ba96b40d608ee
+¦   ¦   ¦       66edba97ed4f6a4706b0d4825b2beec23cb231
+¦   ¦   ¦       f6c3dcd27226c4678356afc54852b254c0aa6d
+¦   ¦   ¦       
+¦   ¦   +---ef
+¦   ¦   ¦       19e9475bf495da8302d4245e20807f3bb27ec8
+¦   ¦   ¦       
+¦   ¦   +---f1
+¦   ¦   ¦       718c4d76e0f86405150362da2683ae2376cf0e
+¦   ¦   ¦       
+¦   ¦   +---f4
+¦   ¦   ¦       0d83aa4a8319e7ce216b6d7e55295cd6cceee3
+¦   ¦   ¦       
+¦   ¦   +---f5
+¦   ¦   ¦       db3d4d6e3155b7fdf7796aa8af0b91fc822566
+¦   ¦   ¦       
+¦   ¦   +---f6
+¦   ¦   ¦       2976d9781d406fef18e8dafe37e1288856fbb7
+¦   ¦   ¦       50b9b436350f1ec7a37da8e7ff8b0164244e91
+¦   ¦   ¦       
+¦   ¦   +---f7
+¦   ¦   ¦       0aa93af967271ecb2d8a4babc42700fda936fa
+¦   ¦   ¦       
+¦   ¦   +---f8
+¦   ¦   ¦       3fc279d9b17e345abebbcfeff2785b7806a3b5
+¦   ¦   ¦       5a9de912fa8d5741f305ee47792ced5f5e4406
+¦   ¦   ¦       a8bb380ce0b1d3f505f9196795771a3e0b3dc4
+¦   ¦   ¦       
+¦   ¦   +---fa
+¦   ¦   ¦       b99a7a662f003eed694ae8585ea68655b15b90
+¦   ¦   ¦       
+¦   ¦   +---fb
+¦   ¦   ¦       abdfa53e80cd6d5f913cd7d9ae2eb00a631aca
+¦   ¦   ¦       
+¦   ¦   +---fc
+¦   ¦   ¦       a7fd5f40302ecb536aea8e4033eba02137db0b
+¦   ¦   ¦       
+¦   ¦   +---fd
+¦   ¦   ¦       98afb24929433adf948892e384fa71b1daefdc
+¦   ¦   ¦       
+¦   ¦   +---fe
+¦   ¦   ¦       7db1c7e2faa04b4897beceed8db4f6e5d25aec
+¦   ¦   ¦       
+¦   ¦   +---info
+¦   ¦   +---pack
+¦   +---refs
+¦       ¦   stash
+¦       ¦   
+¦       +---heads
+¦       ¦   ¦   develop
+¦       ¦   ¦   main
+¦       ¦   ¦   
+¦       ¦   +---bugfix
+¦       ¦   ¦       006-console-output-capture
+¦       ¦   ¦       006-console-output-open-console
+¦       ¦   ¦       006-revert-console-open
+¦       ¦   ¦       008-player-factions
+¦       ¦   ¦       009-weather-names
+¦       ¦   ¦       
+¦       ¦   +---feature
+¦       ¦           080-disease-cure
+¦       ¦           081-enchantment-info
+¦       ¦           082-magic-resistance
+¦       ¦           083-spell-details
+¦       ¦           084-power-management
+¦       ¦           090-merchant-detection
+¦       ¦           100-combat-state
+¦       ¦           
+¦       +---remotes
+¦       ¦   +---origin
+¦       ¦       ¦   develop
+¦       ¦       ¦   main
+¦       ¦       ¦   
+¦       ¦       +---bugfix
+¦       ¦       ¦       006-console-output-capture
+¦       ¦       ¦       008-player-factions
+¦       ¦       ¦       009-weather-names
+¦       ¦       ¦       
+¦       ¦       +---feature
+¦       ¦               080-disease-cure
+¦       ¦               081-enchantment-info
+¦       ¦               082-magic-resistance
+¦       ¦               083-spell-details
+¦       ¦               084-power-management
+¦       ¦               
+¦       +---tags
++---.idea
+¦   +---.idea.skyrim_mcp
+¦       +---.idea
+¦               .gitignore
+¦               encodings.xml
+¦               indexLayout.xml
+¦               projectSettingsUpdater.xml
+¦               vcs.xml
+¦               workspace.xml
+¦               
++---node_modules
++---SkyrimMCP
+¦   ¦   IPipeClient.cs
+¦   ¦   PipeClient.cs
+¦   ¦   Program.cs
+¦   ¦   SkyrimMCP.csproj
+¦   ¦   SkyrimOffsets.cs
+¦   ¦   
+¦   +---bin
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   ¦           ¦   Microsoft.Extensions.AI.Abstractions.dll
+¦   ¦           ¦   Microsoft.Extensions.Configuration.Abstractions.dll
+¦   ¦           ¦   Microsoft.Extensions.Configuration.Binder.dll
+¦   ¦           ¦   Microsoft.Extensions.Configuration.CommandLine.dll
+¦   ¦           ¦   Microsoft.Extensions.Configuration.dll
+¦   ¦           ¦   Microsoft.Extensions.Configuration.EnvironmentVariables.dll
+¦   ¦           ¦   Microsoft.Extensions.Configuration.FileExtensions.dll
+¦   ¦           ¦   Microsoft.Extensions.Configuration.Json.dll
+¦   ¦           ¦   Microsoft.Extensions.Configuration.UserSecrets.dll
+¦   ¦           ¦   Microsoft.Extensions.DependencyInjection.Abstractions.dll
+¦   ¦           ¦   Microsoft.Extensions.DependencyInjection.dll
+¦   ¦           ¦   Microsoft.Extensions.Diagnostics.Abstractions.dll
+¦   ¦           ¦   Microsoft.Extensions.Diagnostics.dll
+¦   ¦           ¦   Microsoft.Extensions.FileProviders.Abstractions.dll
+¦   ¦           ¦   Microsoft.Extensions.FileProviders.Physical.dll
+¦   ¦           ¦   Microsoft.Extensions.FileSystemGlobbing.dll
+¦   ¦           ¦   Microsoft.Extensions.Hosting.Abstractions.dll
+¦   ¦           ¦   Microsoft.Extensions.Hosting.dll
+¦   ¦           ¦   Microsoft.Extensions.Logging.Abstractions.dll
+¦   ¦           ¦   Microsoft.Extensions.Logging.Configuration.dll
+¦   ¦           ¦   Microsoft.Extensions.Logging.Console.dll
+¦   ¦           ¦   Microsoft.Extensions.Logging.Debug.dll
+¦   ¦           ¦   Microsoft.Extensions.Logging.dll
+¦   ¦           ¦   Microsoft.Extensions.Logging.EventLog.dll
+¦   ¦           ¦   Microsoft.Extensions.Logging.EventSource.dll
+¦   ¦           ¦   Microsoft.Extensions.Options.ConfigurationExtensions.dll
+¦   ¦           ¦   Microsoft.Extensions.Options.dll
+¦   ¦           ¦   Microsoft.Extensions.Primitives.dll
+¦   ¦           ¦   ModelContextProtocol.Core.dll
+¦   ¦           ¦   ModelContextProtocol.dll
+¦   ¦           ¦   SkyrimMCP
+¦   ¦           ¦   SkyrimMCP.deps.json
+¦   ¦           ¦   SkyrimMCP.dll
+¦   ¦           ¦   SkyrimMCP.exe
+¦   ¦           ¦   SkyrimMCP.pdb
+¦   ¦           ¦   SkyrimMCP.runtimeconfig.json
+¦   ¦           ¦   System.Diagnostics.EventLog.dll
+¦   ¦           ¦   System.IO.Pipelines.dll
+¦   ¦           ¦   System.Net.ServerSentEvents.dll
+¦   ¦           ¦   System.Text.Encodings.Web.dll
+¦   ¦           ¦   System.Text.Json.dll
+¦   ¦           ¦   
+¦   ¦           +---runtimes
+¦   ¦               +---browser
+¦   ¦               ¦   +---lib
+¦   ¦               ¦       +---net8.0
+¦   ¦               ¦               System.Text.Encodings.Web.dll
+¦   ¦               ¦               
+¦   ¦               +---win
+¦   ¦                   +---lib
+¦   ¦                       +---net8.0
+¦   ¦                               System.Diagnostics.EventLog.dll
+¦   ¦                               System.Diagnostics.EventLog.Messages.dll
+¦   ¦                               
+¦   +---obj
+¦   ¦   ¦   project.assets.json
+¦   ¦   ¦   project.nuget.cache
+¦   ¦   ¦   project.packagespec.json
+¦   ¦   ¦   rider.project.model.nuget.info
+¦   ¦   ¦   rider.project.restore.info
+¦   ¦   ¦   SkyrimMCP.csproj.nuget.dgspec.json
+¦   ¦   ¦   SkyrimMCP.csproj.nuget.g.props
+¦   ¦   ¦   SkyrimMCP.csproj.nuget.g.targets
+¦   ¦   ¦   
+¦   ¦   +---Debug
+¦   ¦       +---net8.0
+¦   ¦           ¦   .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+¦   ¦           ¦   apphost
+¦   ¦           ¦   apphost.exe
+¦   ¦           ¦   SkyrimMCP.AssemblyInfo.cs
+¦   ¦           ¦   SkyrimMCP.AssemblyInfoInputs.cache
+¦   ¦           ¦   SkyrimMCP.assets.cache
+¦   ¦           ¦   SkyrimMCP.csproj.AssemblyReference.cache
+¦   ¦           ¦   SkyrimMCP.csproj.CoreCompileInputs.cache
+¦   ¦           ¦   SkyrimMCP.csproj.FileListAbsolute.txt
+¦   ¦           ¦   SkyrimMCP.dll
+¦   ¦           ¦   SkyrimMCP.GeneratedMSBuildEditorConfig.editorconfig
+¦   ¦           ¦   SkyrimMCP.genruntimeconfig.cache
+¦   ¦           ¦   SkyrimMCP.GlobalUsings.g.cs
+¦   ¦           ¦   SkyrimMCP.pdb
+¦   ¦           ¦   SkyrimMCP.sourcelink.json
+¦   ¦           ¦   
+¦   ¦           +---ref
+¦   ¦           ¦       SkyrimMCP.dll
+¦   ¦           ¦       
+¦   ¦           +---refint
+¦   ¦                   SkyrimMCP.dll
+¦   ¦                   
+¦   +---Tools
+¦           InventoryTools.cs
+¦           NPCTools.cs
+¦           PlayerTools.cs
+¦           QuestTools.cs
+¦           ToolBase.cs
+¦           UtilityTools.cs
+¦           WorldTools.cs
+¦           
++---SkyrimMCPPlugin
+¦   ¦   CMakeLists.txt
+¦   ¦   CMakePresets.json
+¦   ¦   vcpkg.json
+¦   ¦   
+¦   +---build
+¦   ¦   ¦   ALL_BUILD.vcxproj
+¦   ¦   ¦   ALL_BUILD.vcxproj.filters
+¦   ¦   ¦   CMakeCache.txt
+¦   ¦   ¦   cmake_install.cmake
+¦   ¦   ¦   INSTALL.vcxproj
+¦   ¦   ¦   INSTALL.vcxproj.filters
+¦   ¦   ¦   SkyrimMCPPlugin.sln
+¦   ¦   ¦   SkyrimMCPPlugin.vcxproj
+¦   ¦   ¦   SkyrimMCPPlugin.vcxproj.filters
+¦   ¦   ¦   vcpkg-manifest-install.log
+¦   ¦   ¦   ZERO_CHECK.vcxproj
+¦   ¦   ¦   ZERO_CHECK.vcxproj.filters
+¦   ¦   ¦   
+¦   ¦   +---ALL_BUILD.dir
+¦   ¦   ¦   +---Debug
+¦   ¦   ¦   +---MinSizeRel
+¦   ¦   ¦   +---Release
+¦   ¦   ¦   +---RelWithDebInfo
+¦   ¦   +---CMakeFiles
+¦   ¦   ¦   ¦   cmake.check_cache
+¦   ¦   ¦   ¦   CMakeConfigureLog.yaml
+¦   ¦   ¦   ¦   generate.stamp
+¦   ¦   ¦   ¦   generate.stamp.depend
+¦   ¦   ¦   ¦   generate.stamp.list
+¦   ¦   ¦   ¦   InstallScripts.json
+¦   ¦   ¦   ¦   TargetDirectories.txt
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---4.2.3
+¦   ¦   ¦   ¦   ¦   CMakeCXXCompiler.cmake
+¦   ¦   ¦   ¦   ¦   CMakeDetermineCompilerABI_CXX.bin
+¦   ¦   ¦   ¦   ¦   CMakeRCCompiler.cmake
+¦   ¦   ¦   ¦   ¦   CMakeSystem.cmake
+¦   ¦   ¦   ¦   ¦   VCTargetsPath.txt
+¦   ¦   ¦   ¦   ¦   VCTargetsPath.vcxproj
+¦   ¦   ¦   ¦   ¦   
+¦   ¦   ¦   ¦   +---CompilerIdCXX
+¦   ¦   ¦   ¦   ¦   ¦   CMakeCXXCompilerId.cpp
+¦   ¦   ¦   ¦   ¦   ¦   CompilerIdCXX.exe
+¦   ¦   ¦   ¦   ¦   ¦   CompilerIdCXX.vcxproj
+¦   ¦   ¦   ¦   ¦   ¦   
+¦   ¦   ¦   ¦   ¦   +---Debug
+¦   ¦   ¦   ¦   ¦   ¦   ¦   CMakeCXXCompilerId.obj
+¦   ¦   ¦   ¦   ¦   ¦   ¦   CompilerIdCXX.exe.recipe
+¦   ¦   ¦   ¦   ¦   ¦   ¦   
+¦   ¦   ¦   ¦   ¦   ¦   +---CompilerIdCXX.tlog
+¦   ¦   ¦   ¦   ¦   ¦           CL.command.1.tlog
+¦   ¦   ¦   ¦   ¦   ¦           Cl.items.tlog
+¦   ¦   ¦   ¦   ¦   ¦           CL.read.1.tlog
+¦   ¦   ¦   ¦   ¦   ¦           CL.write.1.tlog
+¦   ¦   ¦   ¦   ¦   ¦           CompilerIdCXX.lastbuildstate
+¦   ¦   ¦   ¦   ¦   ¦           link.command.1.tlog
+¦   ¦   ¦   ¦   ¦   ¦           link.read.1.tlog
+¦   ¦   ¦   ¦   ¦   ¦           link.secondary.1.tlog
+¦   ¦   ¦   ¦   ¦   ¦           link.write.1.tlog
+¦   ¦   ¦   ¦   ¦   ¦           
+¦   ¦   ¦   ¦   ¦   +---tmp
+¦   ¦   ¦   ¦   +---VCTargetsPath
+¦   ¦   ¦   ¦   ¦   +---x64
+¦   ¦   ¦   ¦   ¦       +---Debug
+¦   ¦   ¦   ¦   ¦           ¦   VCTargetsPath.recipe
+¦   ¦   ¦   ¦   ¦           ¦   
+¦   ¦   ¦   ¦   ¦           +---VCTargetsPath.tlog
+¦   ¦   ¦   ¦   ¦                   VCTargetsPath.lastbuildstate
+¦   ¦   ¦   ¦   ¦                   
+¦   ¦   ¦   ¦   +---x64
+¦   ¦   ¦   ¦       +---Debug
+¦   ¦   ¦   +---7e95923f76bfb7e362cc75455ebc404c
+¦   ¦   ¦   ¦       INSTALL_force.rule
+¦   ¦   ¦   ¦       
+¦   ¦   ¦   +---d1b4bd2bec336dc7bbbed19c98b3093b
+¦   ¦   ¦   ¦       generate.stamp.rule
+¦   ¦   ¦   ¦       INSTALL_force.rule
+¦   ¦   ¦   ¦       
+¦   ¦   ¦   +---pkgRedirects
+¦   ¦   +---extern
+¦   ¦   ¦   +---CommonLibSSE-NG
+¦   ¦   ¦       ¦   ALL_BUILD.vcxproj
+¦   ¦   ¦       ¦   ALL_BUILD.vcxproj.filters
+¦   ¦   ¦       ¦   cmake_install.cmake
+¦   ¦   ¦       ¦   CommonLibSSE.sln
+¦   ¦   ¦       ¦   CommonLibSSE.vcxproj
+¦   ¦   ¦       ¦   CommonLibSSE.vcxproj.filters
+¦   ¦   ¦       ¦   CommonLibSSEConfig.cmake
+¦   ¦   ¦       ¦   INSTALL.vcxproj
+¦   ¦   ¦       ¦   INSTALL.vcxproj.filters
+¦   ¦   ¦       ¦   
+¦   ¦   ¦       +---ALL_BUILD.dir
+¦   ¦   ¦       ¦   +---Debug
+¦   ¦   ¦       ¦   +---MinSizeRel
+¦   ¦   ¦       ¦   +---Release
+¦   ¦   ¦       ¦   +---RelWithDebInfo
+¦   ¦   ¦       +---CMakeFiles
+¦   ¦   ¦       ¦   ¦   generate.stamp
+¦   ¦   ¦       ¦   ¦   generate.stamp.depend
+¦   ¦   ¦       ¦   ¦   
+¦   ¦   ¦       ¦   +---CommonLibSSE.dir
+¦   ¦   ¦       ¦   ¦   ¦   cmake_pch.cxx
+¦   ¦   ¦       ¦   ¦   ¦   
+¦   ¦   ¦       ¦   ¦   +---Debug
+¦   ¦   ¦       ¦   ¦   ¦       cmake_pch.hxx
+¦   ¦   ¦       ¦   ¦   ¦       
+¦   ¦   ¦       ¦   ¦   +---MinSizeRel
+¦   ¦   ¦       ¦   ¦   ¦       cmake_pch.hxx
+¦   ¦   ¦       ¦   ¦   ¦       
+¦   ¦   ¦       ¦   ¦   +---Release
+¦   ¦   ¦       ¦   ¦   ¦       cmake_pch.hxx
+¦   ¦   ¦       ¦   ¦   ¦       
+¦   ¦   ¦       ¦   ¦   +---RelWithDebInfo
+¦   ¦   ¦       ¦   ¦           cmake_pch.hxx
+¦   ¦   ¦       ¦   ¦           
+¦   ¦   ¦       ¦   +---Export
+¦   ¦   ¦       ¦   ¦   +---47cafbac47592a8281263b159a4640f1
+¦   ¦   ¦       ¦   ¦           CommonLibSSE-targets-debug.cmake
+¦   ¦   ¦       ¦   ¦           CommonLibSSE-targets-minsizerel.cmake
+¦   ¦   ¦       ¦   ¦           CommonLibSSE-targets-release.cmake
+¦   ¦   ¦       ¦   ¦           CommonLibSSE-targets-relwithdebinfo.cmake
+¦   ¦   ¦       ¦   ¦           CommonLibSSE-targets.cmake
+¦   ¦   ¦       ¦   ¦           
+¦   ¦   ¦       ¦   +---_CMakeLTOTest-CXX
+¦   ¦   ¦       ¦       +---bin
+¦   ¦   ¦       ¦       ¦   ¦   ALL_BUILD.vcxproj
+¦   ¦   ¦       ¦       ¦   ¦   ALL_BUILD.vcxproj.filters
+¦   ¦   ¦       ¦       ¦   ¦   boo.vcxproj
+¦   ¦   ¦       ¦       ¦   ¦   boo.vcxproj.filters
+¦   ¦   ¦       ¦       ¦   ¦   CMakeCache.txt
+¦   ¦   ¦       ¦       ¦   ¦   cmake_install.cmake
+¦   ¦   ¦       ¦       ¦   ¦   foo.vcxproj
+¦   ¦   ¦       ¦       ¦   ¦   foo.vcxproj.filters
+¦   ¦   ¦       ¦       ¦   ¦   lto-test.sln
+¦   ¦   ¦       ¦       ¦   ¦   ZERO_CHECK.vcxproj
+¦   ¦   ¦       ¦       ¦   ¦   ZERO_CHECK.vcxproj.filters
+¦   ¦   ¦       ¦       ¦   ¦   
+¦   ¦   ¦       ¦       ¦   +---ALL_BUILD.dir
+¦   ¦   ¦       ¦       ¦   ¦   +---Debug
+¦   ¦   ¦       ¦       ¦   ¦   +---MinSizeRel
+¦   ¦   ¦       ¦       ¦   ¦   +---Release
+¦   ¦   ¦       ¦       ¦   ¦   +---RelWithDebInfo
+¦   ¦   ¦       ¦       ¦   +---boo.dir
+¦   ¦   ¦       ¦       ¦   ¦   +---Debug
+¦   ¦   ¦       ¦       ¦   ¦   ¦   ¦   boo.exe.recipe
+¦   ¦   ¦       ¦       ¦   ¦   ¦   ¦   boo.iobj
+¦   ¦   ¦       ¦       ¦   ¦   ¦   ¦   main.obj
+¦   ¦   ¦       ¦       ¦   ¦   ¦   ¦   vc143.pdb
+¦   ¦   ¦       ¦       ¦   ¦   ¦   ¦   
+¦   ¦   ¦       ¦       ¦   ¦   ¦   +---boo.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           boo.lastbuildstate
+¦   ¦   ¦       ¦       ¦   ¦   ¦           CL.command.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           Cl.items.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           CL.read.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           CL.write.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           CustomBuild.command.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           CustomBuild.read.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           CustomBuild.write.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           link.command.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           link.read.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           link.secondary.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           link.write.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           
+¦   ¦   ¦       ¦       ¦   ¦   +---MinSizeRel
+¦   ¦   ¦       ¦       ¦   ¦   +---Release
+¦   ¦   ¦       ¦       ¦   ¦   +---RelWithDebInfo
+¦   ¦   ¦       ¦       ¦   +---CMakeFiles
+¦   ¦   ¦       ¦       ¦   ¦   ¦   cmake.check_cache
+¦   ¦   ¦       ¦       ¦   ¦   ¦   generate.stamp
+¦   ¦   ¦       ¦       ¦   ¦   ¦   generate.stamp.depend
+¦   ¦   ¦       ¦       ¦   ¦   ¦   generate.stamp.list
+¦   ¦   ¦       ¦       ¦   ¦   ¦   InstallScripts.json
+¦   ¦   ¦       ¦       ¦   ¦   ¦   TargetDirectories.txt
+¦   ¦   ¦       ¦       ¦   ¦   ¦   
+¦   ¦   ¦       ¦       ¦   ¦   +---d49cca4c7969bb1a257246024ddf5667
+¦   ¦   ¦       ¦       ¦   ¦   ¦       generate.stamp.rule
+¦   ¦   ¦       ¦       ¦   ¦   ¦       
+¦   ¦   ¦       ¦       ¦   ¦   +---pkgRedirects
+¦   ¦   ¦       ¦       ¦   +---Debug
+¦   ¦   ¦       ¦       ¦   ¦       boo.exe
+¦   ¦   ¦       ¦       ¦   ¦       boo.pdb
+¦   ¦   ¦       ¦       ¦   ¦       foo.lib
+¦   ¦   ¦       ¦       ¦   ¦       foo.pdb
+¦   ¦   ¦       ¦       ¦   ¦       
+¦   ¦   ¦       ¦       ¦   +---foo.dir
+¦   ¦   ¦       ¦       ¦   ¦   +---Debug
+¦   ¦   ¦       ¦       ¦   ¦   ¦   ¦   foo.lib.recipe
+¦   ¦   ¦       ¦       ¦   ¦   ¦   ¦   foo.obj
+¦   ¦   ¦       ¦       ¦   ¦   ¦   ¦   
+¦   ¦   ¦       ¦       ¦   ¦   ¦   +---foo.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           CL.command.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           Cl.items.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           CL.read.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           CL.write.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           CustomBuild.command.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           CustomBuild.read.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           CustomBuild.write.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           foo.lastbuildstate
+¦   ¦   ¦       ¦       ¦   ¦   ¦           Lib-link.read.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           Lib-link.write.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           Lib.command.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦   ¦           
+¦   ¦   ¦       ¦       ¦   ¦   +---MinSizeRel
+¦   ¦   ¦       ¦       ¦   ¦   +---Release
+¦   ¦   ¦       ¦       ¦   ¦   +---RelWithDebInfo
+¦   ¦   ¦       ¦       ¦   +---x64
+¦   ¦   ¦       ¦       ¦   ¦   +---Debug
+¦   ¦   ¦       ¦       ¦   ¦       +---ALL_BUILD
+¦   ¦   ¦       ¦       ¦   ¦       ¦   ¦   ALL_BUILD.recipe
+¦   ¦   ¦       ¦       ¦   ¦       ¦   ¦   
+¦   ¦   ¦       ¦       ¦   ¦       ¦   +---ALL_BUILD.tlog
+¦   ¦   ¦       ¦       ¦   ¦       ¦           ALL_BUILD.lastbuildstate
+¦   ¦   ¦       ¦       ¦   ¦       ¦           CustomBuild.command.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦       ¦           CustomBuild.read.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦       ¦           CustomBuild.write.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦       ¦           
+¦   ¦   ¦       ¦       ¦   ¦       +---ZERO_CHECK
+¦   ¦   ¦       ¦       ¦   ¦           ¦   ZERO_CHECK.recipe
+¦   ¦   ¦       ¦       ¦   ¦           ¦   
+¦   ¦   ¦       ¦       ¦   ¦           +---ZERO_CHECK.tlog
+¦   ¦   ¦       ¦       ¦   ¦                   CustomBuild.command.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦                   CustomBuild.read.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦                   CustomBuild.write.1.tlog
+¦   ¦   ¦       ¦       ¦   ¦                   ZERO_CHECK.lastbuildstate
+¦   ¦   ¦       ¦       ¦   ¦                   
+¦   ¦   ¦       ¦       ¦   +---ZERO_CHECK.dir
+¦   ¦   ¦       ¦       ¦       +---Debug
+¦   ¦   ¦       ¦       ¦       +---MinSizeRel
+¦   ¦   ¦       ¦       ¦       +---Release
+¦   ¦   ¦       ¦       ¦       +---RelWithDebInfo
+¦   ¦   ¦       ¦       +---src
+¦   ¦   ¦       ¦               CMakeLists.txt
+¦   ¦   ¦       ¦               foo.cpp
+¦   ¦   ¦       ¦               main.cpp
+¦   ¦   ¦       ¦               
+¦   ¦   ¦       +---CommonLibSSE.dir
+¦   ¦   ¦       ¦   +---Debug
+¦   ¦   ¦       ¦   +---MinSizeRel
+¦   ¦   ¦       ¦   +---Release
+¦   ¦   ¦       ¦   ¦   ¦   ActiveEffect.obj
+¦   ¦   ¦       ¦   ¦   ¦   ActiveEffectFactory.obj
+¦   ¦   ¦       ¦   ¦   ¦   Actor.obj
+¦   ¦   ¦       ¦   ¦   ¦   ActorEquipManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   ActorKill.obj
+¦   ¦   ¦       ¦   ¦   ¦   ActorValueList.obj
+¦   ¦   ¦       ¦   ¦   ¦   ActorValueOwner.obj
+¦   ¦   ¦       ¦   ¦   ¦   AddCallbackVisitor.obj
+¦   ¦   ¦       ¦   ¦   ¦   ADVAPI32.obj
+¦   ¦   ¦       ¦   ¦   ¦   AIFormulas.obj
+¦   ¦   ¦       ¦   ¦   ¦   AIProcess.obj
+¦   ¦   ¦       ¦   ¦   ¦   API.obj
+¦   ¦   ¦       ¦   ¦   ¦   ArmorRatingVisitor.obj
+¦   ¦   ¦       ¦   ¦   ¦   ArmorRatingVisitorBase.obj
+¦   ¦   ¦       ¦   ¦   ¦   Array.obj
+¦   ¦   ¦       ¦   ¦   ¦   BarterMenu.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSAttackData.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSBaseAlias.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSBipedObjectForm.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSColorForm.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSCreatedObjectManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSDebris.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSDecalNode.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSDefaultObjectManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSEntryPointFunctionDataActivateChoice.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSEntryPointPerkEntry.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSFootstepManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSHeadPart.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSIdleCollection.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSKeywordForm.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSListForm.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSLocation.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSOpenCloseForm.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSPerkEntry.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSPerkRankArray.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSRefAlias.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSSaveLoadManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSSkillPerkTreeNode.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSSoundCategory.obj
+¦   ¦   ¦       ¦   ¦   ¦   BGSStoryTeller.obj
+¦   ¦   ¦       ¦   ¦   ¦   bhkCharProxyController.obj
+¦   ¦   ¦       ¦   ¦   ¦   bhkRigidBody.obj
+¦   ¦   ¦       ¦   ¦   ¦   BipedAnim.obj
+¦   ¦   ¦       ¦   ¦   ¦   BookMenu.obj
+¦   ¦   ¦       ¦   ¦   ¦   BooksRead.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSAtomic.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSAudioManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSDirectInputManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSEffectShaderData.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSExtraData.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSFaceGenNiNode.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSFadeNode.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSFixedString.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSGamepadDevice.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSGeometry.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSHandleRefObject.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSInputDevice.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSInputDeviceFactory.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSInputDeviceManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSInputEventQueue.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSInstanceTriShape.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSKeyboardDevice.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSLightingShaderMaterialBase.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSLightingShaderProperty.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSModelDB.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSMouseDevice.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSMultiBoundNode.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSPCGamepadDeviceDelegate.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSPCGamepadDeviceHandler.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSPCOrbisGamepadDevice.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSPointerHandle.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSResourceNiBinaryStream.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSResponse.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSScaleformManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSScaleformTranslator.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSScriptObjectBindPolicy.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSShaderProperty.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSShaderTextureSet.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSSoundHandle.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSStringPool.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSSystemFileStorage.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSTArray.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSTCreateFactoryManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSVirtualKeyboardDevice.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSVisit.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSWin32GamepadDevice.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSWin32KeyboardDevice.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSWin32MouseDevice.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSWin32SaveDataSystemUtility.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSWin32VirtualKeyboardDevice.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSWindModifier.obj
+¦   ¦   ¦       ¦   ¦   ¦   BSXFlags.obj
+¦   ¦   ¦       ¦   ¦   ¦   Calendar.obj
+¦   ¦   ¦       ¦   ¦   ¦   ChestsLooted.obj
+¦   ¦   ¦       ¦   ¦   ¦   cmake_pch.obj
+¦   ¦   ¦       ¦   ¦   ¦   cmake_pch.pch
+¦   ¦   ¦       ¦   ¦   ¦   Color.obj
+¦   ¦   ¦       ¦   ¦   ¦   ColorUtil.obj
+¦   ¦   ¦       ¦   ¦   ¦   CommandTable.obj
+¦   ¦   ¦       ¦   ¦   ¦   CommonLibSSE.lib.recipe
+¦   ¦   ¦       ¦   ¦   ¦   ConeProjectile.obj
+¦   ¦   ¦       ¦   ¦   ¦   Console.obj
+¦   ¦   ¦       ¦   ¦   ¦   ConsoleLog.obj
+¦   ¦   ¦       ¦   ¦   ¦   ContainerItemExtra.obj
+¦   ¦   ¦       ¦   ¦   ¦   ContainerMenu.obj
+¦   ¦   ¦       ¦   ¦   ¦   ControlMap.obj
+¦   ¦   ¦       ¦   ¦   ¦   CriticalHit.obj
+¦   ¦   ¦       ¦   ¦   ¦   D3D11.obj
+¦   ¦   ¦       ¦   ¦   ¦   D3DCOMPILER.obj
+¦   ¦   ¦       ¦   ¦   ¦   DBGHELP.obj
+¦   ¦   ¦       ¦   ¦   ¦   DisarmedEvent.obj
+¦   ¦   ¦       ¦   ¦   ¦   DragonSoulsGained.obj
+¦   ¦   ¦       ¦   ¦   ¦   DXGI.obj
+¦   ¦   ¦       ¦   ¦   ¦   Effect.obj
+¦   ¦   ¦       ¦   ¦   ¦   EffectArchetypes.obj
+¦   ¦   ¦       ¦   ¦   ¦   EnchantConstructMenu.obj
+¦   ¦   ¦       ¦   ¦   ¦   Explosion.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraAliasInstanceArray.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraAshPileRef.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraCannotWear.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraCanTalkToPlayer.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraCharge.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraContainerChanges.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraCount.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraDataList.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraEnchantment.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraEncounterZone.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraForcedTarget.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraHealth.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraHotkey.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraLevCreaModifier.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraLightData.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraLock.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraMissingLinkedRefIDs.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraNorthRotation.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraOwnership.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraPoison.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraRank.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraReferenceHandle.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraSoul.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraTextDisplayData.obj
+¦   ¦   ¦       ¦   ¦   ¦   ExtraUniqueID.obj
+¦   ¦   ¦       ¦   ¦   ¦   FindMaxMagnitudeVisitor.obj
+¦   ¦   ¦       ¦   ¦   ¦   FormTypes.obj
+¦   ¦   ¦       ¦   ¦   ¦   FxDelegate.obj
+¦   ¦   ¦       ¦   ¦   ¦   FxDelegateArgs.obj
+¦   ¦   ¦       ¦   ¦   ¦   GameSettingCollection.obj
+¦   ¦   ¦       ¦   ¦   ¦   GAtomic.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxLoader.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxLog.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxMovie.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxMovieDataDef.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxMovieDef.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxMovieView.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxRenderConfig.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxResource.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxResourceID.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxResourceKey.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxState.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxStateBag.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxTranslator.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxValue.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxWStringBuffer.obj
+¦   ¦   ¦       ¦   ¦   ¦   GFxWWHelper.obj
+¦   ¦   ¦       ¦   ¦   ¦   GiftMenu.obj
+¦   ¦   ¦       ¦   ¦   ¦   GMemory.obj
+¦   ¦   ¦       ¦   ¦   ¦   GMemoryHeap.obj
+¦   ¦   ¦       ¦   ¦   ¦   GRefCountImpl.obj
+¦   ¦   ¦       ¦   ¦   ¦   GRefCountNTSImpl.obj
+¦   ¦   ¦       ¦   ¦   ¦   GRenderer.obj
+¦   ¦   ¦       ¦   ¦   ¦   GStd.obj
+¦   ¦   ¦       ¦   ¦   ¦   GString.obj
+¦   ¦   ¦       ¦   ¦   ¦   GViewport.obj
+¦   ¦   ¦       ¦   ¦   ¦   Hazard.obj
+¦   ¦   ¦       ¦   ¦   ¦   HeapBlock.obj
+¦   ¦   ¦       ¦   ¦   ¦   hkBaseTypes.obj
+¦   ¦   ¦       ¦   ¦   ¦   hkpBroadPhase.obj
+¦   ¦   ¦       ¦   ¦   ¦   hkpCdBody.obj
+¦   ¦   ¦       ¦   ¦   ¦   hkpCharacterProxyListener.obj
+¦   ¦   ¦       ¦   ¦   ¦   hkpMaterial.obj
+¦   ¦   ¦       ¦   ¦   ¦   hkpWorldObject.obj
+¦   ¦   ¦       ¦   ¦   ¦   hkReferencedObject.obj
+¦   ¦   ¦       ¦   ¦   ¦   hkStringPtr.obj
+¦   ¦   ¦       ¦   ¦   ¦   hkVector4.obj
+¦   ¦   ¦       ¦   ¦   ¦   HUDMeter.obj
+¦   ¦   ¦       ¦   ¦   ¦   HUDObject.obj
+¦   ¦   ¦       ¦   ¦   ¦   IAnimationGraphManagerHolder.obj
+¦   ¦   ¦       ¦   ¦   ¦   IAT.obj
+¦   ¦   ¦       ¦   ¦   ¦   ID.obj
+¦   ¦   ¦       ¦   ¦   ¦   IFormFactory.obj
+¦   ¦   ¦       ¦   ¦   ¦   IFunction.obj
+¦   ¦   ¦       ¦   ¦   ¦   IHandlerFunctor.obj
+¦   ¦   ¦       ¦   ¦   ¦   IMemoryStore.obj
+¦   ¦   ¦       ¦   ¦   ¦   IMenu.obj
+¦   ¦   ¦       ¦   ¦   ¦   IngredientItem.obj
+¦   ¦   ¦       ¦   ¦   ¦   INIPrefSettingCollection.obj
+¦   ¦   ¦       ¦   ¦   ¦   INISettingCollection.obj
+¦   ¦   ¦       ¦   ¦   ¦   InputEvent.obj
+¦   ¦   ¦       ¦   ¦   ¦   InputMap.obj
+¦   ¦   ¦       ¦   ¦   ¦   Interfaces.obj
+¦   ¦   ¦       ¦   ¦   ¦   InterfaceStrings.obj
+¦   ¦   ¦       ¦   ¦   ¦   Inventory.obj
+¦   ¦   ¦       ¦   ¦   ¦   Inventory3DManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   InventoryChanges.obj
+¦   ¦   ¦       ¦   ¦   ¦   InventoryEntryData.obj
+¦   ¦   ¦       ¦   ¦   ¦   IObjectHandlePolicy.obj
+¦   ¦   ¦       ¦   ¦   ¦   IStackCallbackFunctor.obj
+¦   ¦   ¦       ¦   ¦   ¦   ItemCrafted.obj
+¦   ¦   ¦       ¦   ¦   ¦   ItemHarvested.obj
+¦   ¦   ¦       ¦   ¦   ¦   ItemList.obj
+¦   ¦   ¦       ¦   ¦   ¦   ItemsPickpocketed.obj
+¦   ¦   ¦       ¦   ¦   ¦   IVirtualMachine.obj
+¦   ¦   ¦       ¦   ¦   ¦   KERNEL32.obj
+¦   ¦   ¦       ¦   ¦   ¦   LevelIncrease.obj
+¦   ¦   ¦       ¦   ¦   ¦   LocalMapCamera.obj
+¦   ¦   ¦       ¦   ¦   ¦   Location.obj
+¦   ¦   ¦       ¦   ¦   ¦   LocationCleared.obj
+¦   ¦   ¦       ¦   ¦   ¦   LocationDiscovery.obj
+¦   ¦   ¦       ¦   ¦   ¦   LockpickingMenu.obj
+¦   ¦   ¦       ¦   ¦   ¦   Logger.obj
+¦   ¦   ¦       ¦   ¦   ¦   LooseFileStream.obj
+¦   ¦   ¦       ¦   ¦   ¦   MagicCaster.obj
+¦   ¦   ¦       ¦   ¦   ¦   MagicFavorites.obj
+¦   ¦   ¦       ¦   ¦   ¦   MagicFormulas.obj
+¦   ¦   ¦       ¦   ¦   ¦   MagicItem.obj
+¦   ¦   ¦       ¦   ¦   ¦   MagicItemDataCollector.obj
+¦   ¦   ¦       ¦   ¦   ¦   MagicSystem.obj
+¦   ¦   ¦       ¦   ¦   ¦   MagicTarget.obj
+¦   ¦   ¦       ¦   ¦   ¦   MagicUtilities.obj
+¦   ¦   ¦       ¦   ¦   ¦   Main.obj
+¦   ¦   ¦       ¦   ¦   ¦   MaterialIDs.obj
+¦   ¦   ¦       ¦   ¦   ¦   MemoryPage.obj
+¦   ¦   ¦       ¦   ¦   ¦   MenuControls.obj
+¦   ¦   ¦       ¦   ¦   ¦   MenuCursor.obj
+¦   ¦   ¦       ¦   ¦   ¦   MenuEventHandler.obj
+¦   ¦   ¦       ¦   ¦   ¦   Misc.obj
+¦   ¦   ¦       ¦   ¦   ¦   MissileProjectile.obj
+¦   ¦   ¦       ¦   ¦   ¦   Module.obj
+¦   ¦   ¦       ¦   ¦   ¦   NativeFunctionBase.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiAlphaProperty.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiAnimationKey.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiAVObject.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiBinaryStream.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiBooleanExtraData.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiCamera.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiColor.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiColorData.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiColorKey.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiControllerManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiControllerSequence.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiExtraData.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiFloatData.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiFloatExtraData.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiFloatKey.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiFloatsExtraData.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiGeometry.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiIntegerExtraData.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiIntegersExtraData.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiInterpolator.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiMath.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiMatrix3.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiMemManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiNode.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiObject.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiObjectNET.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiPoint2.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiPoint3.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiRefObject.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiSkinInstance.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiStringsExtraData.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiSystem.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiTCollection.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiTexture.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiTimeController.obj
+¦   ¦   ¦       ¦   ¦   ¦   NiTransform.obj
+¦   ¦   ¦       ¦   ¦   ¦   Object.obj
+¦   ¦   ¦       ¦   ¦   ¦   ObjectiveState.obj
+¦   ¦   ¦       ¦   ¦   ¦   ObjectTypeInfo.obj
+¦   ¦   ¦       ¦   ¦   ¦   OLE32.obj
+¦   ¦   ¦       ¦   ¦   ¦   PackedInstructionStream.obj
+¦   ¦   ¦       ¦   ¦   ¦   PackUnpack.obj
+¦   ¦   ¦       ¦   ¦   ¦   PCH.obj
+¦   ¦   ¦       ¦   ¦   ¦   PlayerCamera.obj
+¦   ¦   ¦       ¦   ¦   ¦   PlayerCharacter.obj
+¦   ¦   ¦       ¦   ¦   ¦   PlayerControls.obj
+¦   ¦   ¦       ¦   ¦   ¦   PlayerInputHandler.obj
+¦   ¦   ¦       ¦   ¦   ¦   ProcessLists.obj
+¦   ¦   ¦       ¦   ¦   ¦   Projectile.obj
+¦   ¦   ¦       ¦   ¦   ¦   QuestStatus.obj
+¦   ¦   ¦       ¦   ¦   ¦   RaceSexMenu.obj
+¦   ¦   ¦       ¦   ¦   ¦   ReferenceEffectController.obj
+¦   ¦   ¦       ¦   ¦   ¦   RegistrationSet.obj
+¦   ¦   ¦       ¦   ¦   ¦   RegistrationSetUnique.obj
+¦   ¦   ¦       ¦   ¦   ¦   Relocation.obj
+¦   ¦   ¦       ¦   ¦   ¦   RemoveCallbackVisitor.obj
+¦   ¦   ¦       ¦   ¦   ¦   Renderer.obj
+¦   ¦   ¦       ¦   ¦   ¦   Rumble.obj
+¦   ¦   ¦       ¦   ¦   ¦   ScrapHeap.obj
+¦   ¦   ¦       ¦   ¦   ¦   Script.obj
+¦   ¦   ¦       ¦   ¦   ¦   ScriptEventSourceHolder.obj
+¦   ¦   ¦       ¦   ¦   ¦   SendUIMessage.obj
+¦   ¦   ¦       ¦   ¦   ¦   Setting.obj
+¦   ¦   ¦       ¦   ¦   ¦   SHELL32.obj
+¦   ¦   ¦       ¦   ¦   ¦   ShoutAttack.obj
+¦   ¦   ¦       ¦   ¦   ¦   SkillIncrease.obj
+¦   ¦   ¦       ¦   ¦   ¦   Sky.obj
+¦   ¦   ¦       ¦   ¦   ¦   Skyrim.obj
+¦   ¦   ¦       ¦   ¦   ¦   SkyrimVM.obj
+¦   ¦   ¦       ¦   ¦   ¦   SoulsTrapped.obj
+¦   ¦   ¦       ¦   ¦   ¦   SourceActionMap.obj
+¦   ¦   ¦       ¦   ¦   ¦   SpellsLearned.obj
+¦   ¦   ¦       ¦   ¦   ¦   Stack.obj
+¦   ¦   ¦       ¦   ¦   ¦   StackFrame.obj
+¦   ¦   ¦       ¦   ¦   ¦   Stream.obj
+¦   ¦   ¦       ¦   ¦   ¦   StreamBase.obj
+¦   ¦   ¦       ¦   ¦   ¦   TaskQueueInterface.obj
+¦   ¦   ¦       ¦   ¦   ¦   TES.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESActorBase.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESAIForm.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESAmmo.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESCamera.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESClimate.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESCondition.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESContainer.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESDataHandler.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESDescription.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESFaction.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESFile.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESForm.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESHavokUtilities.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESHitEvent.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESLeveledList.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESNPC.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESObjectARMA.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESObjectARMO.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESObjectBOOK.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESObjectCELL.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESObjectREFR.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESObjectSTAT.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESObjectWEAP.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESQuest.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESRace.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESSpellList.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESTopic.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESTopicInfo.obj
+¦   ¦   ¦       ¦   ¦   ¦   TESWorldSpace.obj
+¦   ¦   ¦       ¦   ¦   ¦   ThumbstickEvent.obj
+¦   ¦   ¦       ¦   ¦   ¦   Trampoline.obj
+¦   ¦   ¦       ¦   ¦   ¦   Translation.obj
+¦   ¦   ¦       ¦   ¦   ¦   TypeInfo.obj
+¦   ¦   ¦       ¦   ¦   ¦   UI.obj
+¦   ¦   ¦       ¦   ¦   ¦   UI3DSceneManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   UIBlurManager.obj
+¦   ¦   ¦       ¦   ¦   ¦   UIMessageQueue.obj
+¦   ¦   ¦       ¦   ¦   ¦   UnlinkedTypes.obj
+¦   ¦   ¦       ¦   ¦   ¦   USER32.obj
+¦   ¦   ¦       ¦   ¦   ¦   UserEvents.obj
+¦   ¦   ¦       ¦   ¦   ¦   Variable.obj
+¦   ¦   ¦       ¦   ¦   ¦   VirtualMachine.obj
+¦   ¦   ¦       ¦   ¦   ¦   ZeroFunctionArguments.obj
+¦   ¦   ¦       ¦   ¦   ¦   
+¦   ¦   ¦       ¦   ¦   +---CommonLibSSE.tlog
+¦   ¦   ¦       ¦   ¦   ¦       CL.command.1.tlog
+¦   ¦   ¦       ¦   ¦   ¦       Cl.items.tlog
+¦   ¦   ¦       ¦   ¦   ¦       CL.read.1.tlog
+¦   ¦   ¦       ¦   ¦   ¦       CL.write.1.tlog
+¦   ¦   ¦       ¦   ¦   ¦       CommonLibSSE.lastbuildstate
+¦   ¦   ¦       ¦   ¦   ¦       CustomBuild.command.1.tlog
+¦   ¦   ¦       ¦   ¦   ¦       CustomBuild.read.1.tlog
+¦   ¦   ¦       ¦   ¦   ¦       CustomBuild.write.1.tlog
+¦   ¦   ¦       ¦   ¦   ¦       Lib-link.read.1.tlog
+¦   ¦   ¦       ¦   ¦   ¦       Lib-link.write.1.tlog
+¦   ¦   ¦       ¦   ¦   ¦       Lib.command.1.tlog
+¦   ¦   ¦       ¦   ¦   ¦       
+¦   ¦   ¦       ¦   ¦   +---CommonLibSSE_MD.tlog
+¦   ¦   ¦       ¦   ¦   +---microsoft
+¦   ¦   ¦       ¦   ¦   ¦   +---STL
+¦   ¦   ¦       ¦   ¦   +---src
+¦   ¦   ¦       ¦   ¦       +---REL
+¦   ¦   ¦       ¦   ¦       ¦       Version.cpp.obj
+¦   ¦   ¦       ¦   ¦       ¦       
+¦   ¦   ¦       ¦   ¦       +---REX
+¦   ¦   ¦       ¦   ¦           +---W32
+¦   ¦   ¦       ¦   ¦                   VERSION.cpp.obj
+¦   ¦   ¦       ¦   ¦                   
+¦   ¦   ¦       ¦   +---RelWithDebInfo
+¦   ¦   ¦       +---INSTALL.dir
+¦   ¦   ¦       ¦   +---Debug
+¦   ¦   ¦       ¦   +---MinSizeRel
+¦   ¦   ¦       ¦   +---Release
+¦   ¦   ¦       ¦   +---RelWithDebInfo
+¦   ¦   ¦       +---Release
+¦   ¦   ¦               CommonLibSSE.lib
+¦   ¦   ¦               
+¦   ¦   +---INSTALL.dir
+¦   ¦   ¦   +---Debug
+¦   ¦   ¦   +---MinSizeRel
+¦   ¦   ¦   +---Release
+¦   ¦   ¦   +---RelWithDebInfo
+¦   ¦   +---Release
+¦   ¦   ¦       SkyrimMCPPlugin.dll
+¦   ¦   ¦       SkyrimMCPPlugin.exp
+¦   ¦   ¦       SkyrimMCPPlugin.lib
+¦   ¦   ¦       
+¦   ¦   +---SkyrimMCPPlugin.dir
+¦   ¦   ¦   +---Debug
+¦   ¦   ¦   +---MinSizeRel
+¦   ¦   ¦   +---Release
+¦   ¦   ¦   ¦   ¦   EventSystem.obj
+¦   ¦   ¦   ¦   ¦   GameInterface.obj
+¦   ¦   ¦   ¦   ¦   InventoryManager.obj
+¦   ¦   ¦   ¦   ¦   Main.obj
+¦   ¦   ¦   ¦   ¦   NPCManager.obj
+¦   ¦   ¦   ¦   ¦   PipeServer.obj
+¦   ¦   ¦   ¦   ¦   PlayerQueries.obj
+¦   ¦   ¦   ¦   ¦   Protocol.obj
+¦   ¦   ¦   ¦   ¦   QuestManager.obj
+¦   ¦   ¦   ¦   ¦   SkyrimMCPPlugin.dll.recipe
+¦   ¦   ¦   ¦   ¦   TaskQueue.obj
+¦   ¦   ¦   ¦   ¦   UtilityManager.obj
+¦   ¦   ¦   ¦   ¦   WorldManager.obj
+¦   ¦   ¦   ¦   ¦   
+¦   ¦   ¦   ¦   +---microsoft
+¦   ¦   ¦   ¦   ¦   +---STL
+¦   ¦   ¦   ¦   +---SkyrimMCPPlugin.tlog
+¦   ¦   ¦   ¦   ¦       CL.command.1.tlog
+¦   ¦   ¦   ¦   ¦       Cl.items.tlog
+¦   ¦   ¦   ¦   ¦       CL.read.1.tlog
+¦   ¦   ¦   ¦   ¦       CL.write.1.tlog
+¦   ¦   ¦   ¦   ¦       CustomBuild.command.1.tlog
+¦   ¦   ¦   ¦   ¦       CustomBuild.read.1.tlog
+¦   ¦   ¦   ¦   ¦       CustomBuild.write.1.tlog
+¦   ¦   ¦   ¦   ¦       link.command.1.tlog
+¦   ¦   ¦   ¦   ¦       link.read.1.tlog
+¦   ¦   ¦   ¦   ¦       link.secondary.1.tlog
+¦   ¦   ¦   ¦   ¦       link.write.1.tlog
+¦   ¦   ¦   ¦   ¦       SkyrimMCPPlugin.lastbuildstate
+¦   ¦   ¦   ¦   ¦       
+¦   ¦   ¦   ¦   +---SkyrimMCPPlugin_MD.tlog
+¦   ¦   ¦   +---RelWithDebInfo
+¦   ¦   +---vcpkg_installed
+¦   ¦   ¦   +---vcpkg
+¦   ¦   ¦   ¦   ¦   compiler-file-hash-cache.json
+¦   ¦   ¦   ¦   ¦   manifest-info.json
+¦   ¦   ¦   ¦   ¦   status
+¦   ¦   ¦   ¦   ¦   
+¦   ¦   ¦   ¦   +---info
+¦   ¦   ¦   ¦   ¦       fmt_12.1.0_x64-windows-static.list
+¦   ¦   ¦   ¦   ¦       nlohmann-json_3.12.0_x64-windows-static.list
+¦   ¦   ¦   ¦   ¦       rapidcsv_8.90_x64-windows-static.list
+¦   ¦   ¦   ¦   ¦       spdlog_1.17.0_x64-windows-static.list
+¦   ¦   ¦   ¦   ¦       vcpkg-cmake-config_2024-05-23_x64-windows.list
+¦   ¦   ¦   ¦   ¦       vcpkg-cmake_2024-04-23_x64-windows.list
+¦   ¦   ¦   ¦   ¦       
+¦   ¦   ¦   ¦   +---updates
+¦   ¦   ¦   +---x64-windows
+¦   ¦   ¦   ¦   +---share
+¦   ¦   ¦   ¦       +---vcpkg-cmake
+¦   ¦   ¦   ¦       ¦       copyright
+¦   ¦   ¦   ¦       ¦       vcpkg-port-config.cmake
+¦   ¦   ¦   ¦       ¦       vcpkg.spdx.json
+¦   ¦   ¦   ¦       ¦       vcpkg_abi_info.txt
+¦   ¦   ¦   ¦       ¦       vcpkg_cmake_build.cmake
+¦   ¦   ¦   ¦       ¦       vcpkg_cmake_configure.cmake
+¦   ¦   ¦   ¦       ¦       vcpkg_cmake_install.cmake
+¦   ¦   ¦   ¦       ¦       
+¦   ¦   ¦   ¦       +---vcpkg-cmake-config
+¦   ¦   ¦   ¦               copyright
+¦   ¦   ¦   ¦               vcpkg-port-config.cmake
+¦   ¦   ¦   ¦               vcpkg.spdx.json
+¦   ¦   ¦   ¦               vcpkg_abi_info.txt
+¦   ¦   ¦   ¦               vcpkg_cmake_config_fixup.cmake
+¦   ¦   ¦   ¦               
+¦   ¦   ¦   +---x64-windows-static
+¦   ¦   ¦       +---debug
+¦   ¦   ¦       ¦   +---lib
+¦   ¦   ¦       ¦       ¦   fmtd.lib
+¦   ¦   ¦       ¦       ¦   spdlogd.lib
+¦   ¦   ¦       ¦       ¦   
+¦   ¦   ¦       ¦       +---pkgconfig
+¦   ¦   ¦       ¦               fmt.pc
+¦   ¦   ¦       ¦               spdlog.pc
+¦   ¦   ¦       ¦               
+¦   ¦   ¦       +---include
+¦   ¦   ¦       ¦   ¦   rapidcsv.h
+¦   ¦   ¦       ¦   ¦   
+¦   ¦   ¦       ¦   +---fmt
+¦   ¦   ¦       ¦   ¦       args.h
+¦   ¦   ¦       ¦   ¦       base.h
+¦   ¦   ¦       ¦   ¦       chrono.h
+¦   ¦   ¦       ¦   ¦       color.h
+¦   ¦   ¦       ¦   ¦       compile.h
+¦   ¦   ¦       ¦   ¦       core.h
+¦   ¦   ¦       ¦   ¦       format-inl.h
+¦   ¦   ¦       ¦   ¦       format.h
+¦   ¦   ¦       ¦   ¦       os.h
+¦   ¦   ¦       ¦   ¦       ostream.h
+¦   ¦   ¦       ¦   ¦       printf.h
+¦   ¦   ¦       ¦   ¦       ranges.h
+¦   ¦   ¦       ¦   ¦       std.h
+¦   ¦   ¦       ¦   ¦       xchar.h
+¦   ¦   ¦       ¦   ¦       
+¦   ¦   ¦       ¦   +---nlohmann
+¦   ¦   ¦       ¦   ¦   ¦   adl_serializer.hpp
+¦   ¦   ¦       ¦   ¦   ¦   byte_container_with_subtype.hpp
+¦   ¦   ¦       ¦   ¦   ¦   json.hpp
+¦   ¦   ¦       ¦   ¦   ¦   json_fwd.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ordered_map.hpp
+¦   ¦   ¦       ¦   ¦   ¦   
+¦   ¦   ¦       ¦   ¦   +---detail
+¦   ¦   ¦       ¦   ¦   ¦   ¦   abi_macros.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   exceptions.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   hash.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   json_custom_base_class.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   json_pointer.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   json_ref.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   macro_scope.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   macro_unscope.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   string_concat.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   string_escape.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   string_utils.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   value_t.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   
+¦   ¦   ¦       ¦   ¦   ¦   +---conversions
+¦   ¦   ¦       ¦   ¦   ¦   ¦       from_json.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       to_chars.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       to_json.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       
+¦   ¦   ¦       ¦   ¦   ¦   +---input
+¦   ¦   ¦       ¦   ¦   ¦   ¦       binary_reader.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       input_adapters.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       json_sax.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       lexer.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       parser.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       position_t.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       
+¦   ¦   ¦       ¦   ¦   ¦   +---iterators
+¦   ¦   ¦       ¦   ¦   ¦   ¦       internal_iterator.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       iteration_proxy.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       iterator_traits.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       iter_impl.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       json_reverse_iterator.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       primitive_iterator.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦       
+¦   ¦   ¦       ¦   ¦   ¦   +---meta
+¦   ¦   ¦       ¦   ¦   ¦   ¦   ¦   cpp_future.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   ¦   detected.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   ¦   identity_tag.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   ¦   is_sax.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   ¦   std_fs.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   ¦   type_traits.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   ¦   void_t.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦   ¦   
+¦   ¦   ¦       ¦   ¦   ¦   ¦   +---call_std
+¦   ¦   ¦       ¦   ¦   ¦   ¦           begin.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦           end.hpp
+¦   ¦   ¦       ¦   ¦   ¦   ¦           
+¦   ¦   ¦       ¦   ¦   ¦   +---output
+¦   ¦   ¦       ¦   ¦   ¦           binary_writer.hpp
+¦   ¦   ¦       ¦   ¦   ¦           output_adapters.hpp
+¦   ¦   ¦       ¦   ¦   ¦           serializer.hpp
+¦   ¦   ¦       ¦   ¦   ¦           
+¦   ¦   ¦       ¦   ¦   +---thirdparty
+¦   ¦   ¦       ¦   ¦       +---hedley
+¦   ¦   ¦       ¦   ¦               hedley.hpp
+¦   ¦   ¦       ¦   ¦               hedley_undef.hpp
+¦   ¦   ¦       ¦   ¦               
+¦   ¦   ¦       ¦   +---spdlog
+¦   ¦   ¦       ¦       ¦   async.h
+¦   ¦   ¦       ¦       ¦   async_logger-inl.h
+¦   ¦   ¦       ¦       ¦   async_logger.h
+¦   ¦   ¦       ¦       ¦   common-inl.h
+¦   ¦   ¦       ¦       ¦   common.h
+¦   ¦   ¦       ¦       ¦   formatter.h
+¦   ¦   ¦       ¦       ¦   fwd.h
+¦   ¦   ¦       ¦       ¦   logger-inl.h
+¦   ¦   ¦       ¦       ¦   logger.h
+¦   ¦   ¦       ¦       ¦   mdc.h
+¦   ¦   ¦       ¦       ¦   pattern_formatter-inl.h
+¦   ¦   ¦       ¦       ¦   pattern_formatter.h
+¦   ¦   ¦       ¦       ¦   spdlog-inl.h
+¦   ¦   ¦       ¦       ¦   spdlog.h
+¦   ¦   ¦       ¦       ¦   stopwatch.h
+¦   ¦   ¦       ¦       ¦   tweakme.h
+¦   ¦   ¦       ¦       ¦   version.h
+¦   ¦   ¦       ¦       ¦   
+¦   ¦   ¦       ¦       +---cfg
+¦   ¦   ¦       ¦       ¦       argv.h
+¦   ¦   ¦       ¦       ¦       env.h
+¦   ¦   ¦       ¦       ¦       helpers-inl.h
+¦   ¦   ¦       ¦       ¦       helpers.h
+¦   ¦   ¦       ¦       ¦       
+¦   ¦   ¦       ¦       +---details
+¦   ¦   ¦       ¦       ¦       backtracer-inl.h
+¦   ¦   ¦       ¦       ¦       backtracer.h
+¦   ¦   ¦       ¦       ¦       circular_q.h
+¦   ¦   ¦       ¦       ¦       console_globals.h
+¦   ¦   ¦       ¦       ¦       file_helper-inl.h
+¦   ¦   ¦       ¦       ¦       file_helper.h
+¦   ¦   ¦       ¦       ¦       fmt_helper.h
+¦   ¦   ¦       ¦       ¦       log_msg-inl.h
+¦   ¦   ¦       ¦       ¦       log_msg.h
+¦   ¦   ¦       ¦       ¦       log_msg_buffer-inl.h
+¦   ¦   ¦       ¦       ¦       log_msg_buffer.h
+¦   ¦   ¦       ¦       ¦       mpmc_blocking_q.h
+¦   ¦   ¦       ¦       ¦       null_mutex.h
+¦   ¦   ¦       ¦       ¦       os-inl.h
+¦   ¦   ¦       ¦       ¦       os.h
+¦   ¦   ¦       ¦       ¦       periodic_worker-inl.h
+¦   ¦   ¦       ¦       ¦       periodic_worker.h
+¦   ¦   ¦       ¦       ¦       registry-inl.h
+¦   ¦   ¦       ¦       ¦       registry.h
+¦   ¦   ¦       ¦       ¦       synchronous_factory.h
+¦   ¦   ¦       ¦       ¦       tcp_client-windows.h
+¦   ¦   ¦       ¦       ¦       tcp_client.h
+¦   ¦   ¦       ¦       ¦       thread_pool-inl.h
+¦   ¦   ¦       ¦       ¦       thread_pool.h
+¦   ¦   ¦       ¦       ¦       udp_client-windows.h
+¦   ¦   ¦       ¦       ¦       udp_client.h
+¦   ¦   ¦       ¦       ¦       windows_include.h
+¦   ¦   ¦       ¦       ¦       
+¦   ¦   ¦       ¦       +---fmt
+¦   ¦   ¦       ¦       ¦       bin_to_hex.h
+¦   ¦   ¦       ¦       ¦       chrono.h
+¦   ¦   ¦       ¦       ¦       compile.h
+¦   ¦   ¦       ¦       ¦       fmt.h
+¦   ¦   ¦       ¦       ¦       ostr.h
+¦   ¦   ¦       ¦       ¦       ranges.h
+¦   ¦   ¦       ¦       ¦       std.h
+¦   ¦   ¦       ¦       ¦       xchar.h
+¦   ¦   ¦       ¦       ¦       
+¦   ¦   ¦       ¦       +---sinks
+¦   ¦   ¦       ¦               android_sink.h
+¦   ¦   ¦       ¦               ansicolor_sink-inl.h
+¦   ¦   ¦       ¦               ansicolor_sink.h
+¦   ¦   ¦       ¦               base_sink-inl.h
+¦   ¦   ¦       ¦               base_sink.h
+¦   ¦   ¦       ¦               basic_file_sink-inl.h
+¦   ¦   ¦       ¦               basic_file_sink.h
+¦   ¦   ¦       ¦               callback_sink.h
+¦   ¦   ¦       ¦               daily_file_sink.h
+¦   ¦   ¦       ¦               dist_sink.h
+¦   ¦   ¦       ¦               dup_filter_sink.h
+¦   ¦   ¦       ¦               hourly_file_sink.h
+¦   ¦   ¦       ¦               kafka_sink.h
+¦   ¦   ¦       ¦               mongo_sink.h
+¦   ¦   ¦       ¦               msvc_sink.h
+¦   ¦   ¦       ¦               null_sink.h
+¦   ¦   ¦       ¦               ostream_sink.h
+¦   ¦   ¦       ¦               qt_sinks.h
+¦   ¦   ¦       ¦               ringbuffer_sink.h
+¦   ¦   ¦       ¦               rotating_file_sink-inl.h
+¦   ¦   ¦       ¦               rotating_file_sink.h
+¦   ¦   ¦       ¦               sink-inl.h
+¦   ¦   ¦       ¦               sink.h
+¦   ¦   ¦       ¦               stdout_color_sinks-inl.h
+¦   ¦   ¦       ¦               stdout_color_sinks.h
+¦   ¦   ¦       ¦               stdout_sinks-inl.h
+¦   ¦   ¦       ¦               stdout_sinks.h
+¦   ¦   ¦       ¦               syslog_sink.h
+¦   ¦   ¦       ¦               systemd_sink.h
+¦   ¦   ¦       ¦               tcp_sink.h
+¦   ¦   ¦       ¦               udp_sink.h
+¦   ¦   ¦       ¦               wincolor_sink-inl.h
+¦   ¦   ¦       ¦               wincolor_sink.h
+¦   ¦   ¦       ¦               win_eventlog_sink.h
+¦   ¦   ¦       ¦               
+¦   ¦   ¦       +---lib
+¦   ¦   ¦       ¦   ¦   fmt.lib
+¦   ¦   ¦       ¦   ¦   spdlog.lib
+¦   ¦   ¦       ¦   ¦   
+¦   ¦   ¦       ¦   +---pkgconfig
+¦   ¦   ¦       ¦           fmt.pc
+¦   ¦   ¦       ¦           spdlog.pc
+¦   ¦   ¦       ¦           
+¦   ¦   ¦       +---share
+¦   ¦   ¦           +---fmt
+¦   ¦   ¦           ¦       copyright
+¦   ¦   ¦           ¦       fmt-config-version.cmake
+¦   ¦   ¦           ¦       fmt-config.cmake
+¦   ¦   ¦           ¦       fmt-targets-debug.cmake
+¦   ¦   ¦           ¦       fmt-targets-release.cmake
+¦   ¦   ¦           ¦       fmt-targets.cmake
+¦   ¦   ¦           ¦       usage
+¦   ¦   ¦           ¦       vcpkg.spdx.json
+¦   ¦   ¦           ¦       vcpkg_abi_info.txt
+¦   ¦   ¦           ¦       
+¦   ¦   ¦           +---nlohmann-json
+¦   ¦   ¦           ¦       copyright
+¦   ¦   ¦           ¦       usage
+¦   ¦   ¦           ¦       vcpkg.spdx.json
+¦   ¦   ¦           ¦       vcpkg_abi_info.txt
+¦   ¦   ¦           ¦       
+¦   ¦   ¦           +---nlohmann_json
+¦   ¦   ¦           ¦       nlohmann_json.natvis
+¦   ¦   ¦           ¦       nlohmann_jsonConfig.cmake
+¦   ¦   ¦           ¦       nlohmann_jsonConfigVersion.cmake
+¦   ¦   ¦           ¦       nlohmann_jsonTargets.cmake
+¦   ¦   ¦           ¦       
+¦   ¦   ¦           +---pkgconfig
+¦   ¦   ¦           ¦       nlohmann_json.pc
+¦   ¦   ¦           ¦       
+¦   ¦   ¦           +---rapidcsv
+¦   ¦   ¦           ¦       copyright
+¦   ¦   ¦           ¦       vcpkg.spdx.json
+¦   ¦   ¦           ¦       vcpkg_abi_info.txt
+¦   ¦   ¦           ¦       
+¦   ¦   ¦           +---spdlog
+¦   ¦   ¦                   copyright
+¦   ¦   ¦                   spdlogConfig.cmake
+¦   ¦   ¦                   spdlogConfigTargets-debug.cmake
+¦   ¦   ¦                   spdlogConfigTargets-release.cmake
+¦   ¦   ¦                   spdlogConfigTargets.cmake
+¦   ¦   ¦                   spdlogConfigVersion.cmake
+¦   ¦   ¦                   usage
+¦   ¦   ¦                   vcpkg.spdx.json
+¦   ¦   ¦                   vcpkg_abi_info.txt
+¦   ¦   ¦                   
+¦   ¦   +---x64
+¦   ¦   ¦   +---Release
+¦   ¦   ¦       +---ALL_BUILD
+¦   ¦   ¦       ¦   ¦   ALL_BUILD.recipe
+¦   ¦   ¦       ¦   ¦   
+¦   ¦   ¦       ¦   +---ALL_BUILD.tlog
+¦   ¦   ¦       ¦           ALL_BUILD.lastbuildstate
+¦   ¦   ¦       ¦           CustomBuild.command.1.tlog
+¦   ¦   ¦       ¦           CustomBuild.read.1.tlog
+¦   ¦   ¦       ¦           CustomBuild.write.1.tlog
+¦   ¦   ¦       ¦           
+¦   ¦   ¦       +---ZERO_CHECK
+¦   ¦   ¦           ¦   ZERO_CHECK.recipe
+¦   ¦   ¦           ¦   
+¦   ¦   ¦           +---ZERO_CHECK.tlog
+¦   ¦   ¦                   CustomBuild.command.1.tlog
+¦   ¦   ¦                   CustomBuild.read.1.tlog
+¦   ¦   ¦                   CustomBuild.write.1.tlog
+¦   ¦   ¦                   ZERO_CHECK.lastbuildstate
+¦   ¦   ¦                   
+¦   ¦   +---ZERO_CHECK.dir
+¦   ¦       +---Debug
+¦   ¦       +---MinSizeRel
+¦   ¦       +---Release
+¦   ¦       +---RelWithDebInfo
+¦   +---extern
+¦   ¦   +---CommonLibSSE-NG
+¦   ¦       ¦   .clang-format
+¦   ¦       ¦   .editorconfig
+¦   ¦       ¦   .gitattributes
+¦   ¦       ¦   .gitignore
+¦   ¦       ¦   CMakeLists.txt
+¦   ¦       ¦   CMakePresets.json
+¦   ¦       ¦   CommonLibSSE.natvis
+¦   ¦       ¦   conanfile.py
+¦   ¦       ¦   LICENSE
+¦   ¦       ¦   README.md
+¦   ¦       ¦   vcpkg.json
+¦   ¦       ¦   xmake-extra.lua
+¦   ¦       ¦   xmake.lua
+¦   ¦       ¦   
+¦   ¦       +---.git
+¦   ¦       ¦   ¦   config
+¦   ¦       ¦   ¦   description
+¦   ¦       ¦   ¦   HEAD
+¦   ¦       ¦   ¦   index
+¦   ¦       ¦   ¦   packed-refs
+¦   ¦       ¦   ¦   shallow
+¦   ¦       ¦   ¦   
+¦   ¦       ¦   +---branches
+¦   ¦       ¦   +---hooks
+¦   ¦       ¦   ¦       applypatch-msg.sample
+¦   ¦       ¦   ¦       commit-msg.sample
+¦   ¦       ¦   ¦       fsmonitor-watchman.sample
+¦   ¦       ¦   ¦       post-update.sample
+¦   ¦       ¦   ¦       pre-applypatch.sample
+¦   ¦       ¦   ¦       pre-commit.sample
+¦   ¦       ¦   ¦       pre-merge-commit.sample
+¦   ¦       ¦   ¦       pre-push.sample
+¦   ¦       ¦   ¦       pre-rebase.sample
+¦   ¦       ¦   ¦       pre-receive.sample
+¦   ¦       ¦   ¦       prepare-commit-msg.sample
+¦   ¦       ¦   ¦       push-to-checkout.sample
+¦   ¦       ¦   ¦       sendemail-validate.sample
+¦   ¦       ¦   ¦       update.sample
+¦   ¦       ¦   ¦       
+¦   ¦       ¦   +---info
+¦   ¦       ¦   ¦       exclude
+¦   ¦       ¦   ¦       
+¦   ¦       ¦   +---logs
+¦   ¦       ¦   ¦   ¦   HEAD
+¦   ¦       ¦   ¦   ¦   
+¦   ¦       ¦   ¦   +---refs
+¦   ¦       ¦   ¦       +---heads
+¦   ¦       ¦   ¦       ¦       main
+¦   ¦       ¦   ¦       ¦       
+¦   ¦       ¦   ¦       +---remotes
+¦   ¦       ¦   ¦           +---origin
+¦   ¦       ¦   ¦                   HEAD
+¦   ¦       ¦   ¦                   
+¦   ¦       ¦   +---objects
+¦   ¦       ¦   ¦   +---info
+¦   ¦       ¦   ¦   +---pack
+¦   ¦       ¦   ¦           pack-a93e5ba9e546d19812f5c1bdb629bbb57f482495.idx
+¦   ¦       ¦   ¦           pack-a93e5ba9e546d19812f5c1bdb629bbb57f482495.pack
+¦   ¦       ¦   ¦           pack-a93e5ba9e546d19812f5c1bdb629bbb57f482495.rev
+¦   ¦       ¦   ¦           
+¦   ¦       ¦   +---refs
+¦   ¦       ¦       +---heads
+¦   ¦       ¦       ¦       main
+¦   ¦       ¦       ¦       
+¦   ¦       ¦       +---remotes
+¦   ¦       ¦       ¦   +---origin
+¦   ¦       ¦       ¦           HEAD
+¦   ¦       ¦       ¦           
+¦   ¦       ¦       +---tags
+¦   ¦       +---.github
+¦   ¦       ¦   +---workflows
+¦   ¦       ¦           maintenance.yml
+¦   ¦       ¦           main_ci.yml
+¦   ¦       ¦           
+¦   ¦       +---cmake
+¦   ¦       ¦       CommonLibSSE.cmake
+¦   ¦       ¦       config.cmake.in
+¦   ¦       ¦       sourcelist.cmake
+¦   ¦       ¦       testlist.cmake
+¦   ¦       ¦       
+¦   ¦       +---Flash
+¦   ¦       ¦   +---AS2
+¦   ¦       ¦       +---CLIK
+¦   ¦       ¦           ¦   Amp.as
+¦   ¦       ¦           ¦   Button.as
+¦   ¦       ¦           ¦   Mouse.as
+¦   ¦       ¦           ¦   MovieClip.as
+¦   ¦       ¦           ¦   Selection.as
+¦   ¦       ¦           ¦   Stage.as
+¦   ¦       ¦           ¦   TextField.as
+¦   ¦       ¦           ¦   TextFormat.as
+¦   ¦       ¦           ¦   
+¦   ¦       ¦           +---gfx
+¦   ¦       ¦           ¦   +---controls
+¦   ¦       ¦           ¦   ¦       Button.as
+¦   ¦       ¦           ¦   ¦       ButtonBar.as
+¦   ¦       ¦           ¦   ¦       ButtonGroup.as
+¦   ¦       ¦           ¦   ¦       CheckBox.as
+¦   ¦       ¦           ¦   ¦       CoreList.as
+¦   ¦       ¦           ¦   ¦       Dialog.as
+¦   ¦       ¦           ¦   ¦       DragTarget.as
+¦   ¦       ¦           ¦   ¦       DropdownMenu.as
+¦   ¦       ¦           ¦   ¦       InventorySlot.as
+¦   ¦       ¦           ¦   ¦       ItemSlot.as
+¦   ¦       ¦           ¦   ¦       Label.as
+¦   ¦       ¦           ¦   ¦       ListItemRenderer.as
+¦   ¦       ¦           ¦   ¦       NumericStepper.as
+¦   ¦       ¦           ¦   ¦       OptionStepper.as
+¦   ¦       ¦           ¦   ¦       ProgressBar.as
+¦   ¦       ¦           ¦   ¦       RadioButton.as
+¦   ¦       ¦           ¦   ¦       ScrollBar.as
+¦   ¦       ¦           ¦   ¦       ScrollIndicator.as
+¦   ¦       ¦           ¦   ¦       ScrollingList.as
+¦   ¦       ¦           ¦   ¦       Slider.as
+¦   ¦       ¦           ¦   ¦       StatusIndicator.as
+¦   ¦       ¦           ¦   ¦       TextArea.as
+¦   ¦       ¦           ¦   ¦       TextInput.as
+¦   ¦       ¦           ¦   ¦       TileList.as
+¦   ¦       ¦           ¦   ¦       UILoader.as
+¦   ¦       ¦           ¦   ¦       ViewStack.as
+¦   ¦       ¦           ¦   ¦       
+¦   ¦       ¦           ¦   +---core
+¦   ¦       ¦           ¦   ¦       UIComponent.as
+¦   ¦       ¦           ¦   ¦       
+¦   ¦       ¦           ¦   +---data
+¦   ¦       ¦           ¦   ¦       DataProvider.as
+¦   ¦       ¦           ¦   ¦       GameDataProvider.as
+¦   ¦       ¦           ¦   ¦       
+¦   ¦       ¦           ¦   +---events
+¦   ¦       ¦           ¦   ¦       EventDispatcher.as
+¦   ¦       ¦           ¦   ¦       EventTypes.as
+¦   ¦       ¦           ¦   ¦       
+¦   ¦       ¦           ¦   +---interfaces
+¦   ¦       ¦           ¦   ¦       IDataProvider.as
+¦   ¦       ¦           ¦   ¦       IList.as
+¦   ¦       ¦           ¦   ¦       IListItemRenderer.as
+¦   ¦       ¦           ¦   ¦       
+¦   ¦       ¦           ¦   +---io
+¦   ¦       ¦           ¦   ¦       GameDelegate.as
+¦   ¦       ¦           ¦   ¦       
+¦   ¦       ¦           ¦   +---layout
+¦   ¦       ¦           ¦   ¦       Panel.as
+¦   ¦       ¦           ¦   ¦       StagePanel.as
+¦   ¦       ¦           ¦   ¦       
+¦   ¦       ¦           ¦   +---managers
+¦   ¦       ¦           ¦   ¦       DragManager.as
+¦   ¦       ¦           ¦   ¦       FocusHandler.as
+¦   ¦       ¦           ¦   ¦       InputDelegate.as
+¦   ¦       ¦           ¦   ¦       PopUpManager.as
+¦   ¦       ¦           ¦   ¦       
+¦   ¦       ¦           ¦   +---motion
+¦   ¦       ¦           ¦   ¦       Tween.as
+¦   ¦       ¦           ¦   ¦       
+¦   ¦       ¦           ¦   +---ui
+¦   ¦       ¦           ¦   ¦       InputDetails.as
+¦   ¦       ¦           ¦   ¦       NavigationCode.as
+¦   ¦       ¦           ¦   ¦       
+¦   ¦       ¦           ¦   +---utils
+¦   ¦       ¦           ¦           Constraints.as
+¦   ¦       ¦           ¦           Delegate.as
+¦   ¦       ¦           ¦           Locale.as
+¦   ¦       ¦           ¦           
+¦   ¦       ¦           +---System
+¦   ¦       ¦                   capabilities.as
+¦   ¦       ¦                   
+¦   ¦       +---include
+¦   ¦       ¦   +---RE
+¦   ¦       ¦   ¦   ¦   Offsets.h
+¦   ¦       ¦   ¦   ¦   Offsets_NiRTTI.h
+¦   ¦       ¦   ¦   ¦   Offsets_RTTI.h
+¦   ¦       ¦   ¦   ¦   Offsets_VTABLE.h
+¦   ¦       ¦   ¦   ¦   RTTI.h
+¦   ¦       ¦   ¦   ¦   Skyrim.h
+¦   ¦       ¦   ¦   ¦   
+¦   ¦       ¦   ¦   +---A
+¦   ¦       ¦   ¦   ¦       AbsorbEffect.h
+¦   ¦       ¦   ¦   ¦       AbstractHeap.h
+¦   ¦       ¦   ¦   ¦       AccumulatingValueModifierEffect.h
+¦   ¦       ¦   ¦   ¦       ActionInput.h
+¦   ¦       ¦   ¦   ¦       ActionOutput.h
+¦   ¦       ¦   ¦   ¦       ActivateHandler.h
+¦   ¦       ¦   ¦   ¦       ActiveEffect.h
+¦   ¦       ¦   ¦   ¦       ActiveEffectFactory.h
+¦   ¦       ¦   ¦   ¦       ActiveEffectReferenceEffectController.h
+¦   ¦       ¦   ¦   ¦       Actor.h
+¦   ¦       ¦   ¦   ¦       ActorCause.h
+¦   ¦       ¦   ¦   ¦       ActorEquipManager.h
+¦   ¦       ¦   ¦   ¦       ActorInventoryEvent.h
+¦   ¦       ¦   ¦   ¦       ActorKill.h
+¦   ¦       ¦   ¦   ¦       ActorKnowledge.h
+¦   ¦       ¦   ¦   ¦       ActorMagicCaster.h
+¦   ¦       ¦   ¦   ¦       ActorMover.h
+¦   ¦       ¦   ¦   ¦       ActorPackage.h
+¦   ¦       ¦   ¦   ¦       ActorSpeedChannel.h
+¦   ¦       ¦   ¦   ¦       ActorState.h
+¦   ¦       ¦   ¦   ¦       ActorTargetCheck.h
+¦   ¦       ¦   ¦   ¦       ActorValueInfo.h
+¦   ¦       ¦   ¦   ¦       ActorValueList.h
+¦   ¦       ¦   ¦   ¦       ActorValueMeter.h
+¦   ¦       ¦   ¦   ¦       ActorValueOwner.h
+¦   ¦       ¦   ¦   ¦       ActorValues.h
+¦   ¦       ¦   ¦   ¦       AddCallbackVisitor.h
+¦   ¦       ¦   ¦   ¦       ahkpCharacterProxy.h
+¦   ¦       ¦   ¦   ¦       ahkpWorld.h
+¦   ¦       ¦   ¦   ¦       AIFormulas.h
+¦   ¦       ¦   ¦   ¦       AIProcess.h
+¦   ¦       ¦   ¦   ¦       AITimer.h
+¦   ¦       ¦   ¦   ¦       AITimeStamp.h
+¦   ¦       ¦   ¦   ¦       AlchemyItem.h
+¦   ¦       ¦   ¦   ¦       AlchemyMenu.h
+¦   ¦       ¦   ¦   ¦       AnimationFileManagerSingleton.h
+¦   ¦       ¦   ¦   ¦       AnimationObjects.h
+¦   ¦       ¦   ¦   ¦       Archive.h
+¦   ¦       ¦   ¦   ¦       ArmorRatingVisitor.h
+¦   ¦       ¦   ¦   ¦       ArmorRatingVisitorBase.h
+¦   ¦       ¦   ¦   ¦       Array.h
+¦   ¦       ¦   ¦   ¦       ArrowProjectile.h
+¦   ¦       ¦   ¦   ¦       AsyncStream.h
+¦   ¦       ¦   ¦   ¦       Atmosphere.h
+¦   ¦       ¦   ¦   ¦       AttachAshPileFunctor.h
+¦   ¦       ¦   ¦   ¦       AttachedScript.h
+¦   ¦       ¦   ¦   ¦       AttachLightHitEffectVisitor.h
+¦   ¦       ¦   ¦   ¦       AttachTechniqueInput.h
+¦   ¦       ¦   ¦   ¦       AttackAnimationArrayMap.h
+¦   ¦       ¦   ¦   ¦       AttackBlockHandler.h
+¦   ¦       ¦   ¦   ¦       AutoMoveHandler.h
+¦   ¦       ¦   ¦   ¦       AutoRegisterCreator.h
+¦   ¦       ¦   ¦   ¦       AutoRegisterFactory.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---B
+¦   ¦       ¦   ¦   ¦       BanishEffect.h
+¦   ¦       ¦   ¦   ¦       BarrierProjectile.h
+¦   ¦       ¦   ¦   ¦       BarterMenu.h
+¦   ¦       ¦   ¦   ¦       BaseFormComponent.h
+¦   ¦       ¦   ¦   ¦       BaseHandleReaderWriter.h
+¦   ¦       ¦   ¦   ¦       BeamProjectile.h
+¦   ¦       ¦   ¦   ¦       BGSAbilityPerkEntry.h
+¦   ¦       ¦   ¦   ¦       BGSAcousticSpace.h
+¦   ¦       ¦   ¦   ¦       BGSAction.h
+¦   ¦       ¦   ¦   ¦       BGSActionData.h
+¦   ¦       ¦   ¦   ¦       BGSActorCellEvent.h
+¦   ¦       ¦   ¦   ¦       BGSActorEvent.h
+¦   ¦       ¦   ¦   ¦       BGSAddonNode.h
+¦   ¦       ¦   ¦   ¦       BGSAddToPlayerInventoryEvent.h
+¦   ¦       ¦   ¦   ¦       BGSAnimationSequencer.h
+¦   ¦       ¦   ¦   ¦       BGSApparatus.h
+¦   ¦       ¦   ¦   ¦       BGSArtObject.h
+¦   ¦       ¦   ¦   ¦       BGSAssociationType.h
+¦   ¦       ¦   ¦   ¦       BGSAttackData.h
+¦   ¦       ¦   ¦   ¦       BGSAttackDataForm.h
+¦   ¦       ¦   ¦   ¦       BGSAttackDataMap.h
+¦   ¦       ¦   ¦   ¦       BGSBaseAlias.h
+¦   ¦       ¦   ¦   ¦       BGSBehaviorGraphModel.h
+¦   ¦       ¦   ¦   ¦       BGSBipedObjectForm.h
+¦   ¦       ¦   ¦   ¦       BGSBlockBashData.h
+¦   ¦       ¦   ¦   ¦       BGSBodyPartData.h
+¦   ¦       ¦   ¦   ¦       BGSBodyPartDefs.h
+¦   ¦       ¦   ¦   ¦       BGSCameraPath.h
+¦   ¦       ¦   ¦   ¦       BGSCameraShot.h
+¦   ¦       ¦   ¦   ¦       BGSCollisionLayer.h
+¦   ¦       ¦   ¦   ¦       BGSColorForm.h
+¦   ¦       ¦   ¦   ¦       BGSConstructibleObject.h
+¦   ¦       ¦   ¦   ¦       BGSCreatedObjectManager.h
+¦   ¦       ¦   ¦   ¦       BGSDebris.h
+¦   ¦       ¦   ¦   ¦       BGSDecalEmitter.h
+¦   ¦       ¦   ¦   ¦       BGSDecalGroup.h
+¦   ¦       ¦   ¦   ¦       BGSDecalManager.h
+¦   ¦       ¦   ¦   ¦       BGSDecalNode.h
+¦   ¦       ¦   ¦   ¦       BGSDefaultObjectManager.h
+¦   ¦       ¦   ¦   ¦       BGSDestructibleObjectForm.h
+¦   ¦       ¦   ¦   ¦       BGSDialogueBranch.h
+¦   ¦       ¦   ¦   ¦       BGSDirectionalAmbientLightingColors.h
+¦   ¦       ¦   ¦   ¦       BGSDistantTreeBlock.h
+¦   ¦       ¦   ¦   ¦       BGSDualCastData.h
+¦   ¦       ¦   ¦   ¦       BGSEncounterZone.h
+¦   ¦       ¦   ¦   ¦       BGSEntryPoint.h
+¦   ¦       ¦   ¦   ¦       BGSEntryPointFunctionData.h
+¦   ¦       ¦   ¦   ¦       BGSEntryPointFunctionDataActivateChoice.h
+¦   ¦       ¦   ¦   ¦       BGSEntryPointFunctionDataOneValue.h
+¦   ¦       ¦   ¦   ¦       BGSEntryPointFunctionDataSpellItem.h
+¦   ¦       ¦   ¦   ¦       BGSEntryPointFunctionDataText.h
+¦   ¦       ¦   ¦   ¦       BGSEntryPointPerkEntry.h
+¦   ¦       ¦   ¦   ¦       BGSEquipSlot.h
+¦   ¦       ¦   ¦   ¦       BGSEquipType.h
+¦   ¦       ¦   ¦   ¦       BGSExplosion.h
+¦   ¦       ¦   ¦   ¦       BGSFootstep.h
+¦   ¦       ¦   ¦   ¦       BGSFootstepEvent.h
+¦   ¦       ¦   ¦   ¦       BGSFootstepManager.h
+¦   ¦       ¦   ¦   ¦       BGSFootstepSet.h
+¦   ¦       ¦   ¦   ¦       BGSGrassManager.h
+¦   ¦       ¦   ¦   ¦       BGSHazard.h
+¦   ¦       ¦   ¦   ¦       BGSHeadPart.h
+¦   ¦       ¦   ¦   ¦       BGSIdleCollection.h
+¦   ¦       ¦   ¦   ¦       BGSIdleMarker.h
+¦   ¦       ¦   ¦   ¦       BGSImpactData.h
+¦   ¦       ¦   ¦   ¦       BGSImpactDataSet.h
+¦   ¦       ¦   ¦   ¦       BGSImpactManager.h
+¦   ¦       ¦   ¦   ¦       BGSInstancedQuestObjective.h
+¦   ¦       ¦   ¦   ¦       BGSKeyword.h
+¦   ¦       ¦   ¦   ¦       BGSKeywordForm.h
+¦   ¦       ¦   ¦   ¦       BGSLensFlare.h
+¦   ¦       ¦   ¦   ¦       BGSLightingTemplate.h
+¦   ¦       ¦   ¦   ¦       BGSListForm.h
+¦   ¦       ¦   ¦   ¦       BGSLoadFormBuffer.h
+¦   ¦       ¦   ¦   ¦       BGSLoadFormData.h
+¦   ¦       ¦   ¦   ¦       BGSLoadGameBuffer.h
+¦   ¦       ¦   ¦   ¦       BGSLoadGameSubBuffer.h
+¦   ¦       ¦   ¦   ¦       BGSLocAlias.h
+¦   ¦       ¦   ¦   ¦       BGSLocalizedStringDL.h
+¦   ¦       ¦   ¦   ¦       BGSLocation.h
+¦   ¦       ¦   ¦   ¦       BGSLocationRefType.h
+¦   ¦       ¦   ¦   ¦       BGSMaterialObject.h
+¦   ¦       ¦   ¦   ¦       BGSMaterialType.h
+¦   ¦       ¦   ¦   ¦       BGSMenuDisplayObject.h
+¦   ¦       ¦   ¦   ¦       BGSMenuIcon.h
+¦   ¦       ¦   ¦   ¦       BGSMessage.h
+¦   ¦       ¦   ¦   ¦       BGSMessageIcon.h
+¦   ¦       ¦   ¦   ¦       BGSMovableStatic.h
+¦   ¦       ¦   ¦   ¦       BGSMovementType.h
+¦   ¦       ¦   ¦   ¦       BGSMoviePlayer.h
+¦   ¦       ¦   ¦   ¦       BGSMusicPaletteTrack.h
+¦   ¦       ¦   ¦   ¦       BGSMusicSilenceTrack.h
+¦   ¦       ¦   ¦   ¦       BGSMusicSingleTrack.h
+¦   ¦       ¦   ¦   ¦       BGSMusicTrack.h
+¦   ¦       ¦   ¦   ¦       BGSMusicTrackFormWrapper.h
+¦   ¦       ¦   ¦   ¦       BGSMusicType.h
+¦   ¦       ¦   ¦   ¦       BGSNamedPackageData.h
+¦   ¦       ¦   ¦   ¦       BGSNote.h
+¦   ¦       ¦   ¦   ¦       BGSNumericIDIndex.h
+¦   ¦       ¦   ¦   ¦       BGSOpenCloseForm.h
+¦   ¦       ¦   ¦   ¦       BGSOutfit.h
+¦   ¦       ¦   ¦   ¦       BGSOverridePackCollection.h
+¦   ¦       ¦   ¦   ¦       BGSPackageDataBool.h
+¦   ¦       ¦   ¦   ¦       BGSPackageDataLocation.h
+¦   ¦       ¦   ¦   ¦       BGSPackageDataPointerTemplate.h
+¦   ¦       ¦   ¦   ¦       BGSPerk.h
+¦   ¦       ¦   ¦   ¦       BGSPerkEntry.h
+¦   ¦       ¦   ¦   ¦       BGSPerkRankArray.h
+¦   ¦       ¦   ¦   ¦       BGSPickupPutdownSounds.h
+¦   ¦       ¦   ¦   ¦       BGSPreloadable.h
+¦   ¦       ¦   ¦   ¦       BGSProcedureTreeBranch.h
+¦   ¦       ¦   ¦   ¦       BGSProcedureTreeConditionalItem.h
+¦   ¦       ¦   ¦   ¦       BGSProcedureTreeProcedure.h
+¦   ¦       ¦   ¦   ¦       BGSProcedureTreeSequence.h
+¦   ¦       ¦   ¦   ¦       BGSProjectile.h
+¦   ¦       ¦   ¦   ¦       BGSRagdoll.h
+¦   ¦       ¦   ¦   ¦       BGSRefAlias.h
+¦   ¦       ¦   ¦   ¦       BGSReferenceEffect.h
+¦   ¦       ¦   ¦   ¦       BGSRelationship.h
+¦   ¦       ¦   ¦   ¦       BGSReverbParameters.h
+¦   ¦       ¦   ¦   ¦       BGSSaveFormBuffer.h
+¦   ¦       ¦   ¦   ¦       BGSSaveGameBuffer.h
+¦   ¦       ¦   ¦   ¦       BGSSaveLoadGame.h
+¦   ¦       ¦   ¦   ¦       BGSSaveLoadManager.h
+¦   ¦       ¦   ¦   ¦       BGSScene.h
+¦   ¦       ¦   ¦   ¦       BGSSceneAction.h
+¦   ¦       ¦   ¦   ¦       BGSSceneActionDialogue.h
+¦   ¦       ¦   ¦   ¦       BGSSceneActionPackage.h
+¦   ¦       ¦   ¦   ¦       BGSSceneActionTimer.h
+¦   ¦       ¦   ¦   ¦       BGSShaderParticleGeometryData.h
+¦   ¦       ¦   ¦   ¦       BGSSkillPerkTreeNode.h
+¦   ¦       ¦   ¦   ¦       BGSSkinForm.h
+¦   ¦       ¦   ¦   ¦       BGSSoundCategory.h
+¦   ¦       ¦   ¦   ¦       BGSSoundDescriptor.h
+¦   ¦       ¦   ¦   ¦       BGSSoundDescriptorForm.h
+¦   ¦       ¦   ¦   ¦       BGSSoundOutput.h
+¦   ¦       ¦   ¦   ¦       BGSStandardSoundDef.h
+¦   ¦       ¦   ¦   ¦       BGSStaticCollection.h
+¦   ¦       ¦   ¦   ¦       BGSStoryEventManager.h
+¦   ¦       ¦   ¦   ¦       BGSStoryManagerBranchNode.h
+¦   ¦       ¦   ¦   ¦       BGSStoryManagerEventNode.h
+¦   ¦       ¦   ¦   ¦       BGSStoryManagerNodeBase.h
+¦   ¦       ¦   ¦   ¦       BGSStoryManagerQuestNode.h
+¦   ¦       ¦   ¦   ¦       BGSStoryManagerTreeForm.h
+¦   ¦       ¦   ¦   ¦       BGSStoryTeller.h
+¦   ¦       ¦   ¦   ¦       BGSTalkingActivator.h
+¦   ¦       ¦   ¦   ¦       BGSTerrainManager.h
+¦   ¦       ¦   ¦   ¦       BGSTextureModel.h
+¦   ¦       ¦   ¦   ¦       BGSTextureSet.h
+¦   ¦       ¦   ¦   ¦       BGSTypedItem.h
+¦   ¦       ¦   ¦   ¦       BGSVoiceType.h
+¦   ¦       ¦   ¦   ¦       BGSVolumetricLighting.h
+¦   ¦       ¦   ¦   ¦       BGSWorldLocation.h
+¦   ¦       ¦   ¦   ¦       bhkBackfaceContactListener.h
+¦   ¦       ¦   ¦   ¦       bhkCachingShapePhantom.h
+¦   ¦       ¦   ¦   ¦       bhkCharacterController.h
+¦   ¦       ¦   ¦   ¦       bhkCharacterPointCollector.h
+¦   ¦       ¦   ¦   ¦       bhkCharacterProxy.h
+¦   ¦       ¦   ¦   ¦       bhkCharacterState.h
+¦   ¦       ¦   ¦   ¦       bhkCharacterStateClimbing.h
+¦   ¦       ¦   ¦   ¦       bhkCharacterStateFlying.h
+¦   ¦       ¦   ¦   ¦       bhkCharacterStateInAir.h
+¦   ¦       ¦   ¦   ¦       bhkCharacterStateJumping.h
+¦   ¦       ¦   ¦   ¦       bhkCharacterStateOnGround.h
+¦   ¦       ¦   ¦   ¦       bhkCharacterStateSwimming.h
+¦   ¦       ¦   ¦   ¦       bhkCharProxyController.h
+¦   ¦       ¦   ¦   ¦       bhkCollisionFilter.h
+¦   ¦       ¦   ¦   ¦       bhkCollisionObject.h
+¦   ¦       ¦   ¦   ¦       bhkCompressedMeshShape.h
+¦   ¦       ¦   ¦   ¦       bhkCompressedMeshShapeData.h
+¦   ¦       ¦   ¦   ¦       bhkContactListener.h
+¦   ¦       ¦   ¦   ¦       bhkEntity.h
+¦   ¦       ¦   ¦   ¦       bhkListShape.h
+¦   ¦       ¦   ¦   ¦       bhkMeshMaterial.h
+¦   ¦       ¦   ¦   ¦       bhkNiCollisionObject.h
+¦   ¦       ¦   ¦   ¦       bhkPCollisionObject.h
+¦   ¦       ¦   ¦   ¦       bhkPhantom.h
+¦   ¦       ¦   ¦   ¦       bhkPickData.h
+¦   ¦       ¦   ¦   ¦       bhkRefObject.h
+¦   ¦       ¦   ¦   ¦       bhkRigidBody.h
+¦   ¦       ¦   ¦   ¦       bhkSerializable.h
+¦   ¦       ¦   ¦   ¦       bhkShape.h
+¦   ¦       ¦   ¦   ¦       bhkShapeCollection.h
+¦   ¦       ¦   ¦   ¦       bhkShapePhantom.h
+¦   ¦       ¦   ¦   ¦       bhkSPCollisionObject.h
+¦   ¦       ¦   ¦   ¦       bhkThreadMemorySource.h
+¦   ¦       ¦   ¦   ¦       bhkWorld.h
+¦   ¦       ¦   ¦   ¦       bhkWorldObject.h
+¦   ¦       ¦   ¦   ¦       BipedAnim.h
+¦   ¦       ¦   ¦   ¦       BipedObjects.h
+¦   ¦       ¦   ¦   ¦       BleedoutCameraState.h
+¦   ¦       ¦   ¦   ¦       BookMenu.h
+¦   ¦       ¦   ¦   ¦       BooksRead.h
+¦   ¦       ¦   ¦   ¦       BottomBar.h
+¦   ¦       ¦   ¦   ¦       BoundItemEffect.h
+¦   ¦       ¦   ¦   ¦       BSAnimationGraphChannel.h
+¦   ¦       ¦   ¦   ¦       BSAnimationGraphEvent.h
+¦   ¦       ¦   ¦   ¦       BSAnimationGraphManager.h
+¦   ¦       ¦   ¦   ¦       BSAnimationUpdateData.h
+¦   ¦       ¦   ¦   ¦       BSAnimNote.h
+¦   ¦       ¦   ¦   ¦       BSAnimNoteListener.h
+¦   ¦       ¦   ¦   ¦       BSArchive.h
+¦   ¦       ¦   ¦   ¦       BSArchiveHeader.h
+¦   ¦       ¦   ¦   ¦       BSAtomic.h
+¦   ¦       ¦   ¦   ¦       BSAudioManager.h
+¦   ¦       ¦   ¦   ¦       BSAudioManagerThread.h
+¦   ¦       ¦   ¦   ¦       BSBatchRenderer.h
+¦   ¦       ¦   ¦   ¦       BSBitField.h
+¦   ¦       ¦   ¦   ¦       BSBloodSplatterShaderProperty.h
+¦   ¦       ¦   ¦   ¦       BSBound.h
+¦   ¦       ¦   ¦   ¦       BSContainer.h
+¦   ¦       ¦   ¦   ¦       BSCoreTypes.h
+¦   ¦       ¦   ¦   ¦       BSCullingProcess.h
+¦   ¦       ¦   ¦   ¦       BSDirectInputManager.h
+¦   ¦       ¦   ¦   ¦       BSDismemberSkinInstance.h
+¦   ¦       ¦   ¦   ¦       BSDynamicTriShape.h
+¦   ¦       ¦   ¦   ¦       BSEffectShaderData.h
+¦   ¦       ¦   ¦   ¦       BSEffectShaderMaterial.h
+¦   ¦       ¦   ¦   ¦       BSEffectShaderProperty.h
+¦   ¦       ¦   ¦   ¦       BSExtraData.h
+¦   ¦       ¦   ¦   ¦       BSFaceGenAnimationData.h
+¦   ¦       ¦   ¦   ¦       BSFaceGenKeyframe.h
+¦   ¦       ¦   ¦   ¦       BSFaceGenKeyframeMultiple.h
+¦   ¦       ¦   ¦   ¦       BSFaceGenManager.h
+¦   ¦       ¦   ¦   ¦       BSFaceGenModel.h
+¦   ¦       ¦   ¦   ¦       BSFaceGenModelExtraData.h
+¦   ¦       ¦   ¦   ¦       BSFaceGenNiNode.h
+¦   ¦       ¦   ¦   ¦       BSFadeNode.h
+¦   ¦       ¦   ¦   ¦       BSFile.h
+¦   ¦       ¦   ¦   ¦       BSFixedString.h
+¦   ¦       ¦   ¦   ¦       BSFurnitureMarkerNode.h
+¦   ¦       ¦   ¦   ¦       BSGamepadDevice.h
+¦   ¦       ¦   ¦   ¦       BSGameSound.h
+¦   ¦       ¦   ¦   ¦       BSGeometry.h
+¦   ¦       ¦   ¦   ¦       BSHandleRefObject.h
+¦   ¦       ¦   ¦   ¦       BShkbAnimationGraph.h
+¦   ¦       ¦   ¦   ¦       BSIInputDevice.h
+¦   ¦       ¦   ¦   ¦       BSImagespaceShader.h
+¦   ¦       ¦   ¦   ¦       BSImagespaceShaderBlur3.h
+¦   ¦       ¦   ¦   ¦       BSIMusicTrack.h
+¦   ¦       ¦   ¦   ¦       BSIMusicType.h
+¦   ¦       ¦   ¦   ¦       BSInputDevice.h
+¦   ¦       ¦   ¦   ¦       BSInputDeviceFactory.h
+¦   ¦       ¦   ¦   ¦       BSInputDeviceManager.h
+¦   ¦       ¦   ¦   ¦       BSInputEventQueue.h
+¦   ¦       ¦   ¦   ¦       BSInstanceTriShape.h
+¦   ¦       ¦   ¦   ¦       BSIntrusiveRefCounted.h
+¦   ¦       ¦   ¦   ¦       BSIRagdollDriver.h
+¦   ¦       ¦   ¦   ¦       BSIReverbType.h
+¦   ¦       ¦   ¦   ¦       BSISoundCategory.h
+¦   ¦       ¦   ¦   ¦       BSISoundDescriptor.h
+¦   ¦       ¦   ¦   ¦       BSISoundOutputModel.h
+¦   ¦       ¦   ¦   ¦       BSKeyboardDevice.h
+¦   ¦       ¦   ¦   ¦       BSLensFlareRenderData.h
+¦   ¦       ¦   ¦   ¦       BSLight.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterial.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialBase.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialEnvmap.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialEye.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialFacegen.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialFacegenTint.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialGlowmap.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialHairTint.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialLandscape.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialLODLandscape.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialMultiLayerParallax.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialParallax.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialParallaxOcc.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialSnow.h
+¦   ¦       ¦   ¦   ¦       BSLightingShaderProperty.h
+¦   ¦       ¦   ¦   ¦       BSMasterParticleSystem.h
+¦   ¦       ¦   ¦   ¦       BSMaterialObject.h
+¦   ¦       ¦   ¦   ¦       BSMemStorage.h
+¦   ¦       ¦   ¦   ¦       BSModelDB.h
+¦   ¦       ¦   ¦   ¦       BSMouseDevice.h
+¦   ¦       ¦   ¦   ¦       BSMultiBound.h
+¦   ¦       ¦   ¦   ¦       BSMultiBoundAABB.h
+¦   ¦       ¦   ¦   ¦       BSMultiBoundNode.h
+¦   ¦       ¦   ¦   ¦       BSMultiBoundOBB.h
+¦   ¦       ¦   ¦   ¦       BSMultiBoundShape.h
+¦   ¦       ¦   ¦   ¦       BSMultiIndexTriShape.h
+¦   ¦       ¦   ¦   ¦       BSMultiStreamInstanceTriShape.h
+¦   ¦       ¦   ¦   ¦       BSMusicEvent.h
+¦   ¦       ¦   ¦   ¦       BSMusicManager.h
+¦   ¦       ¦   ¦   ¦       BSNavmesh.h
+¦   ¦       ¦   ¦   ¦       BSNavmeshInfoMap.h
+¦   ¦       ¦   ¦   ¦       BSNiAllocator.h
+¦   ¦       ¦   ¦   ¦       BSNiNode.h
+¦   ¦       ¦   ¦   ¦       BSOpenVR.h
+¦   ¦       ¦   ¦   ¦       BSOpenVRControllerDevice.h
+¦   ¦       ¦   ¦   ¦       BSOrderedNode.h
+¦   ¦       ¦   ¦   ¦       BSParticleShaderCubeEmitter.h
+¦   ¦       ¦   ¦   ¦       BSParticleShaderEmitter.h
+¦   ¦       ¦   ¦   ¦       BSParticleShaderObjectEmitter.h
+¦   ¦       ¦   ¦   ¦       BSParticleShaderProperty.h
+¦   ¦       ¦   ¦   ¦       BSPathingCell.h
+¦   ¦       ¦   ¦   ¦       BSPCGamepadDeviceDelegate.h
+¦   ¦       ¦   ¦   ¦       BSPCGamepadDeviceHandler.h
+¦   ¦       ¦   ¦   ¦       BSPCOrbisGamepadDevice.h
+¦   ¦       ¦   ¦   ¦       BSPointerHandle.h
+¦   ¦       ¦   ¦   ¦       BSPointerHandleManager.h
+¦   ¦       ¦   ¦   ¦       BSPointerHandleSmartPointer.h
+¦   ¦       ¦   ¦   ¦       BSPortalGraph.h
+¦   ¦       ¦   ¦   ¦       BSPrecomputedNavmeshInfoPathMap.h
+¦   ¦       ¦   ¦   ¦       BSReloadShaderI.h
+¦   ¦       ¦   ¦   ¦       BSRenderManager.h
+¦   ¦       ¦   ¦   ¦       BSRenderPass.h
+¦   ¦       ¦   ¦   ¦       BSResourceEntryDB.h
+¦   ¦       ¦   ¦   ¦       BSResourceNiBinaryStream.h
+¦   ¦       ¦   ¦   ¦       BSResponse.h
+¦   ¦       ¦   ¦   ¦       BSSaveDataSystemUtility.h
+¦   ¦       ¦   ¦   ¦       BSScaleformExternalTexture.h
+¦   ¦       ¦   ¦   ¦       BSScaleformImageLoader.h
+¦   ¦       ¦   ¦   ¦       BSScaleformManager.h
+¦   ¦       ¦   ¦   ¦       BSScaleformTranslator.h
+¦   ¦       ¦   ¦   ¦       BSSceneGraph.h
+¦   ¦       ¦   ¦   ¦       BSScriptObjectBindPolicy.h
+¦   ¦       ¦   ¦   ¦       BSShader.h
+¦   ¦       ¦   ¦   ¦       BSShaderManager.h
+¦   ¦       ¦   ¦   ¦       BSShaderMaterial.h
+¦   ¦       ¦   ¦   ¦       BSShaderProperty.h
+¦   ¦       ¦   ¦   ¦       BSShaderPropertyLightData.h
+¦   ¦       ¦   ¦   ¦       BSShaderRenderTargets.h
+¦   ¦       ¦   ¦   ¦       BSShaderTextureSet.h
+¦   ¦       ¦   ¦   ¦       BSShadowLight.h
+¦   ¦       ¦   ¦   ¦       BSSimpleScaleController.h
+¦   ¦       ¦   ¦   ¦       BSSmallBlockAllocator.h
+¦   ¦       ¦   ¦   ¦       BSSoundHandle.h
+¦   ¦       ¦   ¦   ¦       BSStorage.h
+¦   ¦       ¦   ¦   ¦       BSStream.h
+¦   ¦       ¦   ¦   ¦       BSString.h
+¦   ¦       ¦   ¦   ¦       BSStringPool.h
+¦   ¦       ¦   ¦   ¦       BSSystemFile.h
+¦   ¦       ¦   ¦   ¦       BSSystemFileStorage.h
+¦   ¦       ¦   ¦   ¦       BSTAnimationGraphDataChannel.h
+¦   ¦       ¦   ¦   ¦       BSTArray.h
+¦   ¦       ¦   ¦   ¦       BSTCaseInsensitiveStringMap.h
+¦   ¦       ¦   ¦   ¦       BSTCreateFactoryManager.h
+¦   ¦       ¦   ¦   ¦       BSTDerivedCreator.h
+¦   ¦       ¦   ¦   ¦       BSTempEffect.h
+¦   ¦       ¦   ¦   ¦       BSTempEffectDebris.h
+¦   ¦       ¦   ¦   ¦       BSTempEffectGeometryDecal.h
+¦   ¦       ¦   ¦   ¦       BSTempEffectParticle.h
+¦   ¦       ¦   ¦   ¦       BSTempEffectSimpleDecal.h
+¦   ¦       ¦   ¦   ¦       BSTempEffectSPG.h
+¦   ¦       ¦   ¦   ¦       BSTempEffectWeaponBlood.h
+¦   ¦       ¦   ¦   ¦       BSTerrainEffect.h
+¦   ¦       ¦   ¦   ¦       BSTEvent.h
+¦   ¦       ¦   ¦   ¦       BSTextureSet.h
+¦   ¦       ¦   ¦   ¦       BSTFreeList.h
+¦   ¦       ¦   ¦   ¦       BSTHashMap.h
+¦   ¦       ¦   ¦   ¦       BSThread.h
+¦   ¦       ¦   ¦   ¦       BSThreadEvent.h
+¦   ¦       ¦   ¦   ¦       BSTimer.h
+¦   ¦       ¦   ¦   ¦       BSTList.h
+¦   ¦       ¦   ¦   ¦       BSTLocklessQueue.h
+¦   ¦       ¦   ¦   ¦       BSTMessageQueue.h
+¦   ¦       ¦   ¦   ¦       BSTObjectDictionary.h
+¦   ¦       ¦   ¦   ¦       BSTPoint.h
+¦   ¦       ¦   ¦   ¦       BSTPointerAndFlags.h
+¦   ¦       ¦   ¦   ¦       BSTrackedControllerDevice.h
+¦   ¦       ¦   ¦   ¦       BSTreeManager.h
+¦   ¦       ¦   ¦   ¦       BSTriShape.h
+¦   ¦       ¦   ¦   ¦       BSTSingleton.h
+¦   ¦       ¦   ¦   ¦       BSTSmartPointer.h
+¦   ¦       ¦   ¦   ¦       BSTTuple.h
+¦   ¦       ¦   ¦   ¦       BSUIMessageData.h
+¦   ¦       ¦   ¦   ¦       BSUIScaleformData.h
+¦   ¦       ¦   ¦   ¦       BSValueNode.h
+¦   ¦       ¦   ¦   ¦       BSVirtualKeyboardDevice.h
+¦   ¦       ¦   ¦   ¦       BSVisit.h
+¦   ¦       ¦   ¦   ¦       BSVolumetricLightingRenderData.h
+¦   ¦       ¦   ¦   ¦       BSVRInterface.h
+¦   ¦       ¦   ¦   ¦       BSWaterShaderMaterial.h
+¦   ¦       ¦   ¦   ¦       BSWaterShaderProperty.h
+¦   ¦       ¦   ¦   ¦       BSWin32GamepadDevice.h
+¦   ¦       ¦   ¦   ¦       BSWin32KeyboardDevice.h
+¦   ¦       ¦   ¦   ¦       BSWin32MouseDevice.h
+¦   ¦       ¦   ¦   ¦       BSWin32SaveDataSystemUtility.h
+¦   ¦       ¦   ¦   ¦       BSWin32VirtualKeyboardDevice.h
+¦   ¦       ¦   ¦   ¦       BSWindModifier.h
+¦   ¦       ¦   ¦   ¦       BSXAudio2GameSound.h
+¦   ¦       ¦   ¦   ¦       BSXFlags.h
+¦   ¦       ¦   ¦   ¦       ButtonEvent.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---C
+¦   ¦       ¦   ¦   ¦       Calendar.h
+¦   ¦       ¦   ¦   ¦       CalmEffect.h
+¦   ¦       ¦   ¦   ¦       CFilter.h
+¦   ¦       ¦   ¦   ¦       Character.h
+¦   ¦       ¦   ¦   ¦       CharEvent.h
+¦   ¦       ¦   ¦   ¦       ChestsLooted.h
+¦   ¦       ¦   ¦   ¦       CloakEffect.h
+¦   ¦       ¦   ¦   ¦       Clouds.h
+¦   ¦       ¦   ¦   ¦       CodeTasklet.h
+¦   ¦       ¦   ¦   ¦       CollisionLayers.h
+¦   ¦       ¦   ¦   ¦       Color.h
+¦   ¦       ¦   ¦   ¦       ColorUtil.h
+¦   ¦       ¦   ¦   ¦       CombatController.h
+¦   ¦       ¦   ¦   ¦       CombatGroup.h
+¦   ¦       ¦   ¦   ¦       CombatGroupDetectionListener.h
+¦   ¦       ¦   ¦   ¦       CombatInventory.h
+¦   ¦       ¦   ¦   ¦       CombatInventoryItem.h
+¦   ¦       ¦   ¦   ¦       CombatInventoryItemMagic.h
+¦   ¦       ¦   ¦   ¦       CombatInventoryItemMagicT.h
+¦   ¦       ¦   ¦   ¦       CombatInventoryItemPotion.h
+¦   ¦       ¦   ¦   ¦       CombatInventoryItemScroll.h
+¦   ¦       ¦   ¦   ¦       CombatInventoryItemShout.h
+¦   ¦       ¦   ¦   ¦       CombatInventoryItemStaff.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCaster.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterBoundItem.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterCloak.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterDisarm.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterInvisibility.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterLight.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterOffensive.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterParalyze.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterReanimate.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterRestore.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterScript.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterStagger.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterSummon.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterTargetEffect.h
+¦   ¦       ¦   ¦   ¦       CombatMagicCasterWard.h
+¦   ¦       ¦   ¦   ¦       CombatManager.h
+¦   ¦       ¦   ¦   ¦       CombatObject.h
+¦   ¦       ¦   ¦   ¦       CombatSearchLocation.h
+¦   ¦       ¦   ¦   ¦       CombatState.h
+¦   ¦       ¦   ¦   ¦       CommandEffect.h
+¦   ¦       ¦   ¦   ¦       CommandSummonedEffect.h
+¦   ¦       ¦   ¦   ¦       CommandTable.h
+¦   ¦       ¦   ¦   ¦       CommonTypeTraits.h
+¦   ¦       ¦   ¦   ¦       CompactingStore.h
+¦   ¦       ¦   ¦   ¦       CompiledScriptLoader.h
+¦   ¦       ¦   ¦   ¦       ConcreteFormFactory.h
+¦   ¦       ¦   ¦   ¦       ConcreteObjectFormFactory.h
+¦   ¦       ¦   ¦   ¦       ConcussionEffect.h
+¦   ¦       ¦   ¦   ¦       ConeProjectile.h
+¦   ¦       ¦   ¦   ¦       Console.h
+¦   ¦       ¦   ¦   ¦       ConsoleData.h
+¦   ¦       ¦   ¦   ¦       ConsoleLog.h
+¦   ¦       ¦   ¦   ¦       ConsoleNativeUIMenu.h
+¦   ¦       ¦   ¦   ¦       ConstructibleObjectMenu.h
+¦   ¦       ¦   ¦   ¦       ContainerItemExtra.h
+¦   ¦       ¦   ¦   ¦       ContainerMenu.h
+¦   ¦       ¦   ¦   ¦       ControlMap.h
+¦   ¦       ¦   ¦   ¦       CraftingMenu.h
+¦   ¦       ¦   ¦   ¦       CraftingSubMenu.h
+¦   ¦       ¦   ¦   ¦       CRC.h
+¦   ¦       ¦   ¦   ¦       CreationClubMenu.h
+¦   ¦       ¦   ¦   ¦       CreditsMenu.h
+¦   ¦       ¦   ¦   ¦       Crime.h
+¦   ¦       ¦   ¦   ¦       CriticalHit.h
+¦   ¦       ¦   ¦   ¦       CrosshairPickData.h
+¦   ¦       ¦   ¦   ¦       CureEffect.h
+¦   ¦       ¦   ¦   ¦       CursorMenu.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---D
+¦   ¦       ¦   ¦   ¦       DarknessEffect.h
+¦   ¦       ¦   ¦   ¦       DBTraits.h
+¦   ¦       ¦   ¦   ¦       DecalData.h
+¦   ¦       ¦   ¦   ¦       DefaultObjectsReadyEvent.h
+¦   ¦       ¦   ¦   ¦       DelayFunctor.h
+¦   ¦       ¦   ¦   ¦       DemoralizeEffect.h
+¦   ¦       ¦   ¦   ¦       DepthStencilDepthModes.h
+¦   ¦       ¦   ¦   ¦       DetectionListener.h
+¦   ¦       ¦   ¦   ¦       DetectionPriorities.h
+¦   ¦       ¦   ¦   ¦       DetectionState.h
+¦   ¦       ¦   ¦   ¦       DetectLifeEffect.h
+¦   ¦       ¦   ¦   ¦       DeviceConnectEvent.h
+¦   ¦       ¦   ¦   ¦       DevNull.h
+¦   ¦       ¦   ¦   ¦       DialogueItem.h
+¦   ¦       ¦   ¦   ¦       DialogueMenu.h
+¦   ¦       ¦   ¦   ¦       DialoguePackage.h
+¦   ¦       ¦   ¦   ¦       DialogueTypes.h
+¦   ¦       ¦   ¦   ¦       DisarmedEvent.h
+¦   ¦       ¦   ¦   ¦       DisarmEffect.h
+¦   ¦       ¦   ¦   ¦       DisguiseEffect.h
+¦   ¦       ¦   ¦   ¦       DispelEffect.h
+¦   ¦       ¦   ¦   ¦       DoNothingUnhandledPolicy.h
+¦   ¦       ¦   ¦   ¦       DragonSoulsGained.h
+¦   ¦       ¦   ¦   ¦       DropObjectFunctor.h
+¦   ¦       ¦   ¦   ¦       DualValueModifierEffect.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---E
+¦   ¦       ¦   ¦   ¦       Effect.h
+¦   ¦       ¦   ¦   ¦       EffectArchetypes.h
+¦   ¦       ¦   ¦   ¦       EffectSetting.h
+¦   ¦       ¦   ¦   ¦       EmotionTypes.h
+¦   ¦       ¦   ¦   ¦       EnchantConstructMenu.h
+¦   ¦       ¦   ¦   ¦       EnchantmentItem.h
+¦   ¦       ¦   ¦   ¦       EnhanceWeaponEffect.h
+¦   ¦       ¦   ¦   ¦       ErrorCodes.h
+¦   ¦       ¦   ¦   ¦       ErrorLogger.h
+¦   ¦       ¦   ¦   ¦       EtherealizationEffect.h
+¦   ¦       ¦   ¦   ¦       Explosion.h
+¦   ¦       ¦   ¦   ¦       ExtraAction.h
+¦   ¦       ¦   ¦   ¦       ExtraActivateLoopSound.h
+¦   ¦       ¦   ¦   ¦       ExtraActivateRef.h
+¦   ¦       ¦   ¦   ¦       ExtraActivateRefChildren.h
+¦   ¦       ¦   ¦   ¦       ExtraActorCause.h
+¦   ¦       ¦   ¦   ¦       ExtraAliasInstanceArray.h
+¦   ¦       ¦   ¦   ¦       ExtraAlphaCutoff.h
+¦   ¦       ¦   ¦   ¦       ExtraAmmo.h
+¦   ¦       ¦   ¦   ¦       ExtraAnimationSequencer.h
+¦   ¦       ¦   ¦   ¦       ExtraAnimGraphManager.h
+¦   ¦       ¦   ¦   ¦       ExtraAnimNoteReceiver.h
+¦   ¦       ¦   ¦   ¦       ExtraAshPileRef.h
+¦   ¦       ¦   ¦   ¦       ExtraAttachedArrows3D.h
+¦   ¦       ¦   ¦   ¦       ExtraAttachRef.h
+¦   ¦       ¦   ¦   ¦       ExtraAttachRefChildren.h
+¦   ¦       ¦   ¦   ¦       ExtraBadPosition.h
+¦   ¦       ¦   ¦   ¦       ExtraBiped.h
+¦   ¦       ¦   ¦   ¦       ExtraCachedScale.h
+¦   ¦       ¦   ¦   ¦       ExtraCannotWear.h
+¦   ¦       ¦   ¦   ¦       ExtraCanTalkToPlayer.h
+¦   ¦       ¦   ¦   ¦       ExtraCell3D.h
+¦   ¦       ¦   ¦   ¦       ExtraCellAcousticSpace.h
+¦   ¦       ¦   ¦   ¦       ExtraCellGrassData.h
+¦   ¦       ¦   ¦   ¦       ExtraCellImageSpace.h
+¦   ¦       ¦   ¦   ¦       ExtraCellMusicType.h
+¦   ¦       ¦   ¦   ¦       ExtraCellSkyRegion.h
+¦   ¦       ¦   ¦   ¦       ExtraCellWaterEnvMap.h
+¦   ¦       ¦   ¦   ¦       ExtraCellWaterType.h
+¦   ¦       ¦   ¦   ¦       ExtraCharge.h
+¦   ¦       ¦   ¦   ¦       ExtraCollisionData.h
+¦   ¦       ¦   ¦   ¦       ExtraCombatStyle.h
+¦   ¦       ¦   ¦   ¦       ExtraContainerChanges.h
+¦   ¦       ¦   ¦   ¦       ExtraCount.h
+¦   ¦       ¦   ¦   ¦       ExtraCreatureAwakeSound.h
+¦   ¦       ¦   ¦   ¦       ExtraCreatureMovementSound.h
+¦   ¦       ¦   ¦   ¦       ExtraDataList.h
+¦   ¦       ¦   ¦   ¦       ExtraDataTypes.h
+¦   ¦       ¦   ¦   ¦       ExtraDecalGroup.h
+¦   ¦       ¦   ¦   ¦       ExtraDetachTime.h
+¦   ¦       ¦   ¦   ¦       ExtraDismemberedLimbs.h
+¦   ¦       ¦   ¦   ¦       ExtraDistantData.h
+¦   ¦       ¦   ¦   ¦       ExtraDroppedItemList.h
+¦   ¦       ¦   ¦   ¦       ExtraEditorID.h
+¦   ¦       ¦   ¦   ¦       ExtraEditorRef3DData.h
+¦   ¦       ¦   ¦   ¦       ExtraEditorRefMoveData.h
+¦   ¦       ¦   ¦   ¦       ExtraEmittanceSource.h
+¦   ¦       ¦   ¦   ¦       ExtraEnableStateChildren.h
+¦   ¦       ¦   ¦   ¦       ExtraEnableStateParent.h
+¦   ¦       ¦   ¦   ¦       ExtraEnchantment.h
+¦   ¦       ¦   ¦   ¦       ExtraEncounterZone.h
+¦   ¦       ¦   ¦   ¦       ExtraFactionChanges.h
+¦   ¦       ¦   ¦   ¦       ExtraFavorCost.h
+¦   ¦       ¦   ¦   ¦       ExtraFlags.h
+¦   ¦       ¦   ¦   ¦       ExtraFollower.h
+¦   ¦       ¦   ¦   ¦       ExtraFollowerSwimBreadcrumbs.h
+¦   ¦       ¦   ¦   ¦       ExtraForcedLandingMarker.h
+¦   ¦       ¦   ¦   ¦       ExtraForcedTarget.h
+¦   ¦       ¦   ¦   ¦       ExtraFriendHits.h
+¦   ¦       ¦   ¦   ¦       ExtraFromAlias.h
+¦   ¦       ¦   ¦   ¦       ExtraGhost.h
+¦   ¦       ¦   ¦   ¦       ExtraGIDBuffer.h
+¦   ¦       ¦   ¦   ¦       ExtraGlobal.h
+¦   ¦       ¦   ¦   ¦       ExtraGroupConstraint.h
+¦   ¦       ¦   ¦   ¦       ExtraGuardedRefData.h
+¦   ¦       ¦   ¦   ¦       ExtraHasNoRumors.h
+¦   ¦       ¦   ¦   ¦       ExtraHavok.h
+¦   ¦       ¦   ¦   ¦       ExtraHeadingTarget.h
+¦   ¦       ¦   ¦   ¦       ExtraHeadTrackingWeight.h
+¦   ¦       ¦   ¦   ¦       ExtraHealth.h
+¦   ¦       ¦   ¦   ¦       ExtraHealthPerc.h
+¦   ¦       ¦   ¦   ¦       ExtraHorse.h
+¦   ¦       ¦   ¦   ¦       ExtraHotkey.h
+¦   ¦       ¦   ¦   ¦       ExtraIgnoredBySandbox.h
+¦   ¦       ¦   ¦   ¦       ExtraInfoGeneralTopic.h
+¦   ¦       ¦   ¦   ¦       ExtraInteraction.h
+¦   ¦       ¦   ¦   ¦       ExtraItemDropper.h
+¦   ¦       ¦   ¦   ¦       ExtraLargeRefOwnerCells.h
+¦   ¦       ¦   ¦   ¦       ExtraLastFinishedSequence.h
+¦   ¦       ¦   ¦   ¦       ExtraLevCreaModifier.h
+¦   ¦       ¦   ¦   ¦       ExtraLeveledCreature.h
+¦   ¦       ¦   ¦   ¦       ExtraLeveledItem.h
+¦   ¦       ¦   ¦   ¦       ExtraLeveledItemBase.h
+¦   ¦       ¦   ¦   ¦       ExtraLight.h
+¦   ¦       ¦   ¦   ¦       ExtraLightData.h
+¦   ¦       ¦   ¦   ¦       ExtraLinkedRef.h
+¦   ¦       ¦   ¦   ¦       ExtraLinkedRefChildren.h
+¦   ¦       ¦   ¦   ¦       ExtraLitWaterRefs.h
+¦   ¦       ¦   ¦   ¦       ExtraLocation.h
+¦   ¦       ¦   ¦   ¦       ExtraLocationRefType.h
+¦   ¦       ¦   ¦   ¦       ExtraLock.h
+¦   ¦       ¦   ¦   ¦       ExtraLockList.h
+¦   ¦       ¦   ¦   ¦       ExtraMagicCaster.h
+¦   ¦       ¦   ¦   ¦       ExtraMagicLight.h
+¦   ¦       ¦   ¦   ¦       ExtraMapMarker.h
+¦   ¦       ¦   ¦   ¦       ExtraMissingLinkedRefIDs.h
+¦   ¦       ¦   ¦   ¦       ExtraMissingRefIDs.h
+¦   ¦       ¦   ¦   ¦       ExtraModelSwap.h
+¦   ¦       ¦   ¦   ¦       ExtraMultiBound.h
+¦   ¦       ¦   ¦   ¦       ExtraMultiBoundRef.h
+¦   ¦       ¦   ¦   ¦       ExtraNavMeshPortal.h
+¦   ¦       ¦   ¦   ¦       ExtraNorthRotation.h
+¦   ¦       ¦   ¦   ¦       ExtraObjectHealth.h
+¦   ¦       ¦   ¦   ¦       ExtraOcclusionPlaneRefData.h
+¦   ¦       ¦   ¦   ¦       ExtraOcclusionShape.h
+¦   ¦       ¦   ¦   ¦       ExtraOpenCloseActivateRef.h
+¦   ¦       ¦   ¦   ¦       ExtraOriginalReference.h
+¦   ¦       ¦   ¦   ¦       ExtraOutfitItem.h
+¦   ¦       ¦   ¦   ¦       ExtraOwnership.h
+¦   ¦       ¦   ¦   ¦       ExtraPackage.h
+¦   ¦       ¦   ¦   ¦       ExtraPackageData.h
+¦   ¦       ¦   ¦   ¦       ExtraPackageStartLocation.h
+¦   ¦       ¦   ¦   ¦       ExtraPatrolRefData.h
+¦   ¦       ¦   ¦   ¦       ExtraPatrolRefInUseData.h
+¦   ¦       ¦   ¦   ¦       ExtraPersistentCell.h
+¦   ¦       ¦   ¦   ¦       ExtraPlayerCrimeList.h
+¦   ¦       ¦   ¦   ¦       ExtraPoison.h
+¦   ¦       ¦   ¦   ¦       ExtraPortal.h
+¦   ¦       ¦   ¦   ¦       ExtraPortalRefData.h
+¦   ¦       ¦   ¦   ¦       ExtraPrimitive.h
+¦   ¦       ¦   ¦   ¦       ExtraProcessMiddleLow.h
+¦   ¦       ¦   ¦   ¦       ExtraPromotedRef.h
+¦   ¦       ¦   ¦   ¦       ExtraRaceData.h
+¦   ¦       ¦   ¦   ¦       ExtraRadius.h
+¦   ¦       ¦   ¦   ¦       ExtraRagDollData.h
+¦   ¦       ¦   ¦   ¦       ExtraRandomTeleportMarker.h
+¦   ¦       ¦   ¦   ¦       ExtraRank.h
+¦   ¦       ¦   ¦   ¦       ExtraReferenceHandle.h
+¦   ¦       ¦   ¦   ¦       ExtraReflectedRefs.h
+¦   ¦       ¦   ¦   ¦       ExtraReflectorRefs.h
+¦   ¦       ¦   ¦   ¦       ExtraRefractionProperty.h
+¦   ¦       ¦   ¦   ¦       ExtraRefrPath.h
+¦   ¦       ¦   ¦   ¦       ExtraRegionList.h
+¦   ¦       ¦   ¦   ¦       ExtraReservedMarkers.h
+¦   ¦       ¦   ¦   ¦       ExtraResourcesPreload.h
+¦   ¦       ¦   ¦   ¦       ExtraRoom.h
+¦   ¦       ¦   ¦   ¦       ExtraRoomRefData.h
+¦   ¦       ¦   ¦   ¦       ExtraRunOncePacks.h
+¦   ¦       ¦   ¦   ¦       ExtraSavedAnimation.h
+¦   ¦       ¦   ¦   ¦       ExtraSavedHavokData.h
+¦   ¦       ¦   ¦   ¦       ExtraSayTopicInfoOnceADay.h
+¦   ¦       ¦   ¦   ¦       ExtraSayToTopicInfo.h
+¦   ¦       ¦   ¦   ¦       ExtraScale.h
+¦   ¦       ¦   ¦   ¦       ExtraSceneData.h
+¦   ¦       ¦   ¦   ¦       ExtraScriptedAnimDependence.h
+¦   ¦       ¦   ¦   ¦       ExtraSeenData.h
+¦   ¦       ¦   ¦   ¦       ExtraShouldWear.h
+¦   ¦       ¦   ¦   ¦       ExtraSoul.h
+¦   ¦       ¦   ¦   ¦       ExtraSound.h
+¦   ¦       ¦   ¦   ¦       ExtraSpawnContainer.h
+¦   ¦       ¦   ¦   ¦       ExtraStartingPosition.h
+¦   ¦       ¦   ¦   ¦       ExtraStartingWorldOrCell.h
+¦   ¦       ¦   ¦   ¦       ExtraTeleport.h
+¦   ¦       ¦   ¦   ¦       ExtraTeleportName.h
+¦   ¦       ¦   ¦   ¦       ExtraTerminalState.h
+¦   ¦       ¦   ¦   ¦       ExtraTextDisplayData.h
+¦   ¦       ¦   ¦   ¦       ExtraTimeLeft.h
+¦   ¦       ¦   ¦   ¦       ExtraTresPassPackage.h
+¦   ¦       ¦   ¦   ¦       ExtraUniqueID.h
+¦   ¦       ¦   ¦   ¦       ExtraUsedMarkers.h
+¦   ¦       ¦   ¦   ¦       ExtraWaterCurrentZoneData.h
+¦   ¦       ¦   ¦   ¦       ExtraWaterData.h
+¦   ¦       ¦   ¦   ¦       ExtraWaterLightRefs.h
+¦   ¦       ¦   ¦   ¦       ExtraWeaponAttackSound.h
+¦   ¦       ¦   ¦   ¦       ExtraWeaponIdleSound.h
+¦   ¦       ¦   ¦   ¦       ExtraWorn.h
+¦   ¦       ¦   ¦   ¦       ExtraWornLeft.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---F
+¦   ¦       ¦   ¦   ¦       FactionRank.h
+¦   ¦       ¦   ¦   ¦       FaderMenu.h
+¦   ¦       ¦   ¦   ¦       FastTravelConfirmCallback.h
+¦   ¦       ¦   ¦   ¦       FavoritesHandler.h
+¦   ¦       ¦   ¦   ¦       FavoritesMenu.h
+¦   ¦       ¦   ¦   ¦       FightReactions.h
+¦   ¦       ¦   ¦   ¦       FileID.h
+¦   ¦       ¦   ¦   ¦       FindMaxMagnitudeVisitor.h
+¦   ¦       ¦   ¦   ¦       FirstPersonState.h
+¦   ¦       ¦   ¦   ¦       FixedStrings.h
+¦   ¦       ¦   ¦   ¦       FlameProjectile.h
+¦   ¦       ¦   ¦   ¦       FOCollisionListener.h
+¦   ¦       ¦   ¦   ¦       FORM.h
+¦   ¦       ¦   ¦   ¦       FormTraits.h
+¦   ¦       ¦   ¦   ¦       FormTypes.h
+¦   ¦       ¦   ¦   ¦       FORM_ENUM_STRING.h
+¦   ¦       ¦   ¦   ¦       FragmentSystem.h
+¦   ¦       ¦   ¦   ¦       FreeCameraState.h
+¦   ¦       ¦   ¦   ¦       FrenzyEffect.h
+¦   ¦       ¦   ¦   ¦       FunctionArguments.h
+¦   ¦       ¦   ¦   ¦       FunctionMessage.h
+¦   ¦       ¦   ¦   ¦       FxDelegate.h
+¦   ¦       ¦   ¦   ¦       FxDelegateArgs.h
+¦   ¦       ¦   ¦   ¦       FxDelegateHandler.h
+¦   ¦       ¦   ¦   ¦       FxResponseArgs.h
+¦   ¦       ¦   ¦   ¦       FxResponseArgsBase.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---G
+¦   ¦       ¦   ¦   ¦       GAcquireInterface.h
+¦   ¦       ¦   ¦   ¦       GAllocator.h
+¦   ¦       ¦   ¦   ¦       GAllocatorBaseGH.h
+¦   ¦       ¦   ¦   ¦       GAllocatorBaseLH.h
+¦   ¦       ¦   ¦   ¦       GameSettingCollection.h
+¦   ¦       ¦   ¦   ¦       GArray.h
+¦   ¦       ¦   ¦   ¦       GArrayBase.h
+¦   ¦       ¦   ¦   ¦       GArrayConstPolicy.h
+¦   ¦       ¦   ¦   ¦       GArrayData.h
+¦   ¦       ¦   ¦   ¦       GArrayDataBase.h
+¦   ¦       ¦   ¦   ¦       GArrayDefaultPolicy.h
+¦   ¦       ¦   ¦   ¦       GArrayLH.h
+¦   ¦       ¦   ¦   ¦       GASActionBufferData.h
+¦   ¦       ¦   ¦   ¦       GASDoAction.h
+¦   ¦       ¦   ¦   ¦       GASDoInitAction.h
+¦   ¦       ¦   ¦   ¦       GASEnvironment.h
+¦   ¦       ¦   ¦   ¦       GASExecuteTag.h
+¦   ¦       ¦   ¦   ¦       GASFunctionObject.h
+¦   ¦       ¦   ¦   ¦       GASGlobalContext.h
+¦   ¦       ¦   ¦   ¦       GASObject.h
+¦   ¦       ¦   ¦   ¦       GASObjectInterface.h
+¦   ¦       ¦   ¦   ¦       GASRefCountBase.h
+¦   ¦       ¦   ¦   ¦       GASStringBuiltinManager.h
+¦   ¦       ¦   ¦   ¦       GASStringManager.h
+¦   ¦       ¦   ¦   ¦       GASUserDefinedFunctionObject.h
+¦   ¦       ¦   ¦   ¦       GAtomic.h
+¦   ¦       ¦   ¦   ¦       GColor.h
+¦   ¦       ¦   ¦   ¦       GConstructorMov.h
+¦   ¦       ¦   ¦   ¦       GEvent.h
+¦   ¦       ¦   ¦   ¦       GFixedSizeHash.h
+¦   ¦       ¦   ¦   ¦       GFxActionControl.h
+¦   ¦       ¦   ¦   ¦       GFxASCharacter.h
+¦   ¦       ¦   ¦   ¦       GFxButtonCharacterDef.h
+¦   ¦       ¦   ¦   ¦       GFxCharacter.h
+¦   ¦       ¦   ¦   ¦       GFxCharacterDef.h
+¦   ¦       ¦   ¦   ¦       GFxConstShapeCharacterDef.h
+¦   ¦       ¦   ¦   ¦       GFxConstShapeNoStyles.h
+¦   ¦       ¦   ¦   ¦       GFxConstShapeWithStyles.h
+¦   ¦       ¦   ¦   ¦       GFxEditTextCharacterDef.h
+¦   ¦       ¦   ¦   ¦       GFxEvent.h
+¦   ¦       ¦   ¦   ¦       GFxExternalInterface.h
+¦   ¦       ¦   ¦   ¦       GFxFileConstants.h
+¦   ¦       ¦   ¦   ¦       GFxFunctionHandler.h
+¦   ¦       ¦   ¦   ¦       GFxImageLoader.h
+¦   ¦       ¦   ¦   ¦       GFxImageResource.h
+¦   ¦       ¦   ¦   ¦       GFxInitImportActions.h
+¦   ¦       ¦   ¦   ¦       GFxKey.h
+¦   ¦       ¦   ¦   ¦       GFxKeyboardState.h
+¦   ¦       ¦   ¦   ¦       GFxLoader.h
+¦   ¦       ¦   ¦   ¦       GFxLoaderImpl.h
+¦   ¦       ¦   ¦   ¦       GFxLoaderTask.h
+¦   ¦       ¦   ¦   ¦       GFxLoadProcess.h
+¦   ¦       ¦   ¦   ¦       GFxLoadStates.h
+¦   ¦       ¦   ¦   ¦       GFxLoadUpdateSync.h
+¦   ¦       ¦   ¦   ¦       GFxLog.h
+¦   ¦       ¦   ¦   ¦       GFxLogBase.h
+¦   ¦       ¦   ¦   ¦       GFxLogConstants.h
+¦   ¦       ¦   ¦   ¦       GFxMorphCharacterDef.h
+¦   ¦       ¦   ¦   ¦       GFxMovie.h
+¦   ¦       ¦   ¦   ¦       GFxMovieBindProcess.h
+¦   ¦       ¦   ¦   ¦       GFxMovieDataDef.h
+¦   ¦       ¦   ¦   ¦       GFxMovieDef.h
+¦   ¦       ¦   ¦   ¦       GFxMovieDefBindStates.h
+¦   ¦       ¦   ¦   ¦       GFxMovieDefImpl.h
+¦   ¦       ¦   ¦   ¦       GFxMovieImageLoadTask.h
+¦   ¦       ¦   ¦   ¦       GFxMovieRoot.h
+¦   ¦       ¦   ¦   ¦       GFxMovieView.h
+¦   ¦       ¦   ¦   ¦       GFxPlaceObject.h
+¦   ¦       ¦   ¦   ¦       GFxPlaceObject2.h
+¦   ¦       ¦   ¦   ¦       GFxPlaceObject2a.h
+¦   ¦       ¦   ¦   ¦       GFxPlaceObject3.h
+¦   ¦       ¦   ¦   ¦       GFxPlaceObjectBase.h
+¦   ¦       ¦   ¦   ¦       GFxPlaceObjectUnpacked.h
+¦   ¦       ¦   ¦   ¦       GFxPlayerStats.h
+¦   ¦       ¦   ¦   ¦       GFxRemoveObject.h
+¦   ¦       ¦   ¦   ¦       GFxRemoveObject2.h
+¦   ¦       ¦   ¦   ¦       GFxRenderConfig.h
+¦   ¦       ¦   ¦   ¦       GFxResource.h
+¦   ¦       ¦   ¦   ¦       GFxResourceID.h
+¦   ¦       ¦   ¦   ¦       GFxResourceKey.h
+¦   ¦       ¦   ¦   ¦       GFxResourceLib.h
+¦   ¦       ¦   ¦   ¦       GFxResourceLibBase.h
+¦   ¦       ¦   ¦   ¦       GFxResourceReport.h
+¦   ¦       ¦   ¦   ¦       GFxResourceWeakLib.h
+¦   ¦       ¦   ¦   ¦       GFxSetBackgroundColor.h
+¦   ¦       ¦   ¦   ¦       GFxShapeBase.h
+¦   ¦       ¦   ¦   ¦       GFxShapeBaseCharacterDef.h
+¦   ¦       ¦   ¦   ¦       GFxShapeCharacterDef.h
+¦   ¦       ¦   ¦   ¦       GFxShapeNoStyles.h
+¦   ¦       ¦   ¦   ¦       GFxShapeWithStyles.h
+¦   ¦       ¦   ¦   ¦       GFxSpecialKeysState.h
+¦   ¦       ¦   ¦   ¦       GFxSprite.h
+¦   ¦       ¦   ¦   ¦       GFxSpriteDef.h
+¦   ¦       ¦   ¦   ¦       GFxState.h
+¦   ¦       ¦   ¦   ¦       GFxStateBag.h
+¦   ¦       ¦   ¦   ¦       GFxStateBagImpl.h
+¦   ¦       ¦   ¦   ¦       GFxStaticTextCharacterDef.h
+¦   ¦       ¦   ¦   ¦       GFxStream.h
+¦   ¦       ¦   ¦   ¦       GFxTask.h
+¦   ¦       ¦   ¦   ¦       GFxTimelineDef.h
+¦   ¦       ¦   ¦   ¦       GFxTranslator.h
+¦   ¦       ¦   ¦   ¦       GFxValue.h
+¦   ¦       ¦   ¦   ¦       GFxWStringBuffer.h
+¦   ¦       ¦   ¦   ¦       GFxWWHelper.h
+¦   ¦       ¦   ¦   ¦       GHash.h
+¦   ¦       ¦   ¦   ¦       GHashNode.h
+¦   ¦       ¦   ¦   ¦       GHashSet.h
+¦   ¦       ¦   ¦   ¦       GHashSetBase.h
+¦   ¦       ¦   ¦   ¦       GHashsetCachedEntry.h
+¦   ¦       ¦   ¦   ¦       GHashsetCachedNodeEntry.h
+¦   ¦       ¦   ¦   ¦       GHashsetEntry.h
+¦   ¦       ¦   ¦   ¦       GHashsetNodeEntry.h
+¦   ¦       ¦   ¦   ¦       GHashSetUncached.h
+¦   ¦       ¦   ¦   ¦       GHashUncached.h
+¦   ¦       ¦   ¦   ¦       GiftMenu.h
+¦   ¦       ¦   ¦   ¦       GImage.h
+¦   ¦       ¦   ¦   ¦       GImageBase.h
+¦   ¦       ¦   ¦   ¦       GImageInfo.h
+¦   ¦       ¦   ¦   ¦       GImageInfoBase.h
+¦   ¦       ¦   ¦   ¦       GImageInfoBaseImpl.h
+¦   ¦       ¦   ¦   ¦       GList.h
+¦   ¦       ¦   ¦   ¦       GlobalLocations.h
+¦   ¦       ¦   ¦   ¦       GlobalPaths.h
+¦   ¦       ¦   ¦   ¦       GMath.h
+¦   ¦       ¦   ¦   ¦       GMatrix2D.h
+¦   ¦       ¦   ¦   ¦       GMatrix3D.h
+¦   ¦       ¦   ¦   ¦       GMemory.h
+¦   ¦       ¦   ¦   ¦       GMemoryHeap.h
+¦   ¦       ¦   ¦   ¦       GMutex.h
+¦   ¦       ¦   ¦   ¦       GNewOverrideBase.h
+¦   ¦       ¦   ¦   ¦       GPoint.h
+¦   ¦       ¦   ¦   ¦       GPtr.h
+¦   ¦       ¦   ¦   ¦       GrabActorEffect.h
+¦   ¦       ¦   ¦   ¦       GrassParam.h
+¦   ¦       ¦   ¦   ¦       GRect.h
+¦   ¦       ¦   ¦   ¦       GRefCountBase.h
+¦   ¦       ¦   ¦   ¦       GRefCountBaseGC.h
+¦   ¦       ¦   ¦   ¦       GRefCountBaseNTS.h
+¦   ¦       ¦   ¦   ¦       GRefCountBaseStatImpl.h
+¦   ¦       ¦   ¦   ¦       GRefCountBaseWeakSupport.h
+¦   ¦       ¦   ¦   ¦       GRefCountImpl.h
+¦   ¦       ¦   ¦   ¦       GRefCountImplCore.h
+¦   ¦       ¦   ¦   ¦       GRefCountNTSImpl.h
+¦   ¦       ¦   ¦   ¦       GRefCountWeakSupportImpl.h
+¦   ¦       ¦   ¦   ¦       GrenadeProjectile.h
+¦   ¦       ¦   ¦   ¦       GRenderer.h
+¦   ¦       ¦   ¦   ¦       GRendererEventHandler.h
+¦   ¦       ¦   ¦   ¦       GridArray.h
+¦   ¦       ¦   ¦   ¦       GridCellArray.h
+¦   ¦       ¦   ¦   ¦       GStats.h
+¦   ¦       ¦   ¦   ¦       GStd.h
+¦   ¦       ¦   ¦   ¦       GString.h
+¦   ¦       ¦   ¦   ¦       GStringDH.h
+¦   ¦       ¦   ¦   ¦       GStringHash.h
+¦   ¦       ¦   ¦   ¦       GSysAllocBase.h
+¦   ¦       ¦   ¦   ¦       GSysAllocPaged.h
+¦   ¦       ¦   ¦   ¦       GTexture.h
+¦   ¦       ¦   ¦   ¦       GuideEffect.h
+¦   ¦       ¦   ¦   ¦       GViewport.h
+¦   ¦       ¦   ¦   ¦       GWaitable.h
+¦   ¦       ¦   ¦   ¦       GWaitCondition.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---H
+¦   ¦       ¦   ¦   ¦       HandleManager.h
+¦   ¦       ¦   ¦   ¦       HandlePolicy.h
+¦   ¦       ¦   ¦   ¦       Hazard.h
+¦   ¦       ¦   ¦   ¦       HeapBlock.h
+¦   ¦       ¦   ¦   ¦       HeapBlockFreeHead.h
+¦   ¦       ¦   ¦   ¦       HeldStateHandler.h
+¦   ¦       ¦   ¦   ¦       HighProcessData.h
+¦   ¦       ¦   ¦   ¦       HitData.h
+¦   ¦       ¦   ¦   ¦       hkAabb.h
+¦   ¦       ¦   ¦   ¦       hkaAnimatedReferenceFrame.h
+¦   ¦       ¦   ¦   ¦       hkaAnimation.h
+¦   ¦       ¦   ¦   ¦       hkaAnimationBinding.h
+¦   ¦       ¦   ¦   ¦       hkaAnimationControl.h
+¦   ¦       ¦   ¦   ¦       hkaAnnotationTrack.h
+¦   ¦       ¦   ¦   ¦       hkaDefaultAnimationControl.h
+¦   ¦       ¦   ¦   ¦       hkaRagdollInstance.h
+¦   ¦       ¦   ¦   ¦       hkArray.h
+¦   ¦       ¦   ¦   ¦       hkbAnimationBindingSet.h
+¦   ¦       ¦   ¦   ¦       hkBaseObject.h
+¦   ¦       ¦   ¦   ¦       hkBaseTypes.h
+¦   ¦       ¦   ¦   ¦       hkbAssetBundleStringData.h
+¦   ¦       ¦   ¦   ¦       hkbBehaviorGraph.h
+¦   ¦       ¦   ¦   ¦       hkbBehaviorGraphData.h
+¦   ¦       ¦   ¦   ¦       hkbBehaviorGraphStringData.h
+¦   ¦       ¦   ¦   ¦       hkbBindable.h
+¦   ¦       ¦   ¦   ¦       hkbCharacter.h
+¦   ¦       ¦   ¦   ¦       hkbCharacterControllerSetup.h
+¦   ¦       ¦   ¦   ¦       hkbCharacterData.h
+¦   ¦       ¦   ¦   ¦       hkbCharacterSetup.h
+¦   ¦       ¦   ¦   ¦       hkbCharacterStringData.h
+¦   ¦       ¦   ¦   ¦       hkbClipGenerator.h
+¦   ¦       ¦   ¦   ¦       hkbContext.h
+¦   ¦       ¦   ¦   ¦       hkbEvent.h
+¦   ¦       ¦   ¦   ¦       hkbEventBase.h
+¦   ¦       ¦   ¦   ¦       hkbGenerator.h
+¦   ¦       ¦   ¦   ¦       hkbNode.h
+¦   ¦       ¦   ¦   ¦       hkbProjectData.h
+¦   ¦       ¦   ¦   ¦       hkbProjectStringData.h
+¦   ¦       ¦   ¦   ¦       hkbRagdollDriver.h
+¦   ¦       ¦   ¦   ¦       hkbRigidBodySetup.h
+¦   ¦       ¦   ¦   ¦       hkbShapeSetup.h
+¦   ¦       ¦   ¦   ¦       hkbStateMachine.h
+¦   ¦       ¦   ¦   ¦       hkContactPoint.h
+¦   ¦       ¦   ¦   ¦       hkContainerAllocators.h
+¦   ¦       ¦   ¦   ¦       hkFinishLoadedObjectFlag.h
+¦   ¦       ¦   ¦   ¦       hkMatrix3.h
+¦   ¦       ¦   ¦   ¦       hkMemoryAllocator.h
+¦   ¦       ¦   ¦   ¦       hkMoppBvTreeShapeBase.h
+¦   ¦       ¦   ¦   ¦       hkMotionState.h
+¦   ¦       ¦   ¦   ¦       hkMultiThreadCheck.h
+¦   ¦       ¦   ¦   ¦       hkp3AxisSweep.h
+¦   ¦       ¦   ¦   ¦       hkpAction.h
+¦   ¦       ¦   ¦   ¦       hkpAgentNnTrack.h
+¦   ¦       ¦   ¦   ¦       hkpAllCdPointCollector.h
+¦   ¦       ¦   ¦   ¦       hkpArrayAction.h
+¦   ¦       ¦   ¦   ¦       hkpBoxShape.h
+¦   ¦       ¦   ¦   ¦       hkpBroadPhase.h
+¦   ¦       ¦   ¦   ¦       hkpBroadPhaseCastCollector.h
+¦   ¦       ¦   ¦   ¦       hkpBroadPhaseHandle.h
+¦   ¦       ¦   ¦   ¦       hkpBvTreeShape.h
+¦   ¦       ¦   ¦   ¦       hkpCachingShapePhantom.h
+¦   ¦       ¦   ¦   ¦       hkpCapsuleShape.h
+¦   ¦       ¦   ¦   ¦       hkpCdBody.h
+¦   ¦       ¦   ¦   ¦       hkpCdPoint.h
+¦   ¦       ¦   ¦   ¦       hkpCdPointCollector.h
+¦   ¦       ¦   ¦   ¦       hkpCharacterContext.h
+¦   ¦       ¦   ¦   ¦       hkpCharacterControl.h
+¦   ¦       ¦   ¦   ¦       hkpCharacterProxy.h
+¦   ¦       ¦   ¦   ¦       hkpCharacterProxyListener.h
+¦   ¦       ¦   ¦   ¦       hkpCharacterState.h
+¦   ¦       ¦   ¦   ¦       hkpCharacterStateManager.h
+¦   ¦       ¦   ¦   ¦       hkpClosestRayHitCollector.h
+¦   ¦       ¦   ¦   ¦       hkpCollidable.h
+¦   ¦       ¦   ¦   ¦       hkpCollidableCollidableFilter.h
+¦   ¦       ¦   ¦   ¦       hkpCollisionEvent.h
+¦   ¦       ¦   ¦   ¦       hkpCollisionFilter.h
+¦   ¦       ¦   ¦   ¦       hkpCollisionInput.h
+¦   ¦       ¦   ¦   ¦       hkpCompressedMeshShape.h
+¦   ¦       ¦   ¦   ¦       hkpConstraintAtom.h
+¦   ¦       ¦   ¦   ¦       hkpConstraintData.h
+¦   ¦       ¦   ¦   ¦       hkpConstraintInfo.h
+¦   ¦       ¦   ¦   ¦       hkpConstraintInstance.h
+¦   ¦       ¦   ¦   ¦       hkpConstraintMotor.h
+¦   ¦       ¦   ¦   ¦       hkpConstraintOwner.h
+¦   ¦       ¦   ¦   ¦       hkpContactListener.h
+¦   ¦       ¦   ¦   ¦       hkpContactPointEvent.h
+¦   ¦       ¦   ¦   ¦       hkpConvexListFilter.h
+¦   ¦       ¦   ¦   ¦       hkpConvexShape.h
+¦   ¦       ¦   ¦   ¦       hkpEaseConstraintsAction.h
+¦   ¦       ¦   ¦   ¦       hkpEntity.h
+¦   ¦       ¦   ¦   ¦       hkpEntityListener.h
+¦   ¦       ¦   ¦   ¦       hkpFixedRigidMotion.h
+¦   ¦       ¦   ¦   ¦       hkpKeyframedRigidMotion.h
+¦   ¦       ¦   ¦   ¦       hkpLimitedHingeConstraintData.h
+¦   ¦       ¦   ¦   ¦       hkpLinearCastCollisionInput.h
+¦   ¦       ¦   ¦   ¦       hkpLinearCastInput.h
+¦   ¦       ¦   ¦   ¦       hkpLinkedCollidable.h
+¦   ¦       ¦   ¦   ¦       hkpListShape.h
+¦   ¦       ¦   ¦   ¦       hkpMaterial.h
+¦   ¦       ¦   ¦   ¦       hkpMeshMaterial.h
+¦   ¦       ¦   ¦   ¦       hkpMoppAabbCastVirtualMachine.h
+¦   ¦       ¦   ¦   ¦       hkpMoppBvTreeShape.h
+¦   ¦       ¦   ¦   ¦       hkpMoppCode.h
+¦   ¦       ¦   ¦   ¦       hkpMotion.h
+¦   ¦       ¦   ¦   ¦       hkpPhantom.h
+¦   ¦       ¦   ¦   ¦       hkpPhantomListener.h
+¦   ¦       ¦   ¦   ¦       hkpPhantomType.h
+¦   ¦       ¦   ¦   ¦       hkpProperty.h
+¦   ¦       ¦   ¦   ¦       hkpRagdollConstraintData.h
+¦   ¦       ¦   ¦   ¦       hkpRayCollidableFilter.h
+¦   ¦       ¦   ¦   ¦       hkpRayHitCollector.h
+¦   ¦       ¦   ¦   ¦       hkpRayShapeCollectionFilter.h
+¦   ¦       ¦   ¦   ¦       hkpRigidBody.h
+¦   ¦       ¦   ¦   ¦       hkpRootCdPoint.h
+¦   ¦       ¦   ¦   ¦       hkpShape.h
+¦   ¦       ¦   ¦   ¦       hkpShapeBuffer.h
+¦   ¦       ¦   ¦   ¦       hkpShapeCollection.h
+¦   ¦       ¦   ¦   ¦       hkpShapeCollectionFilter.h
+¦   ¦       ¦   ¦   ¦       hkpShapeContainer.h
+¦   ¦       ¦   ¦   ¦       hkpShapePhantom.h
+¦   ¦       ¦   ¦   ¦       hkpShapeRayCastCollectorOutput.h
+¦   ¦       ¦   ¦   ¦       hkpShapeRayCastOutput.h
+¦   ¦       ¦   ¦   ¦       hkpShapeType.h
+¦   ¦       ¦   ¦   ¦       hkpSimplexSolver.h
+¦   ¦       ¦   ¦   ¦       hkpSimulationIsland.h
+¦   ¦       ¦   ¦   ¦       hkpSingleShapeContainer.h
+¦   ¦       ¦   ¦   ¦       hkpSolverInfo.h
+¦   ¦       ¦   ¦   ¦       hkpSolverResults.h
+¦   ¦       ¦   ¦   ¦       hkpSphereRepShape.h
+¦   ¦       ¦   ¦   ¦       hkpSphereShape.h
+¦   ¦       ¦   ¦   ¦       hkpTypedBroadPhaseHandle.h
+¦   ¦       ¦   ¦   ¦       hkpWeldingUtility.h
+¦   ¦       ¦   ¦   ¦       hkpWorld.h
+¦   ¦       ¦   ¦   ¦       hkpWorldCinfo.h
+¦   ¦       ¦   ¦   ¦       hkpWorldLinearCaster.h
+¦   ¦       ¦   ¦   ¦       hkpWorldObject.h
+¦   ¦       ¦   ¦   ¦       hkpWorldPostSimulationListener.h
+¦   ¦       ¦   ¦   ¦       hkpWorldRayCastInput.h
+¦   ¦       ¦   ¦   ¦       hkpWorldRayCastOutput.h
+¦   ¦       ¦   ¦   ¦       hkQsTransform.h
+¦   ¦       ¦   ¦   ¦       hkQuaternion.h
+¦   ¦       ¦   ¦   ¦       hkReferencedObject.h
+¦   ¦       ¦   ¦   ¦       hkRefPtr.h
+¦   ¦       ¦   ¦   ¦       hkRefVariant.h
+¦   ¦       ¦   ¦   ¦       hkRotation.h
+¦   ¦       ¦   ¦   ¦       hkSmallArray.h
+¦   ¦       ¦   ¦   ¦       hkSseMathTypes.h
+¦   ¦       ¦   ¦   ¦       hkStepInfo.h
+¦   ¦       ¦   ¦   ¦       hkStringPtr.h
+¦   ¦       ¦   ¦   ¦       hkSweptTransform.h
+¦   ¦       ¦   ¦   ¦       hkTransform.h
+¦   ¦       ¦   ¦   ¦       hkVector4.h
+¦   ¦       ¦   ¦   ¦       HorseCameraState.h
+¦   ¦       ¦   ¦   ¦       HUDChargeMeter.h
+¦   ¦       ¦   ¦   ¦       HUDData.h
+¦   ¦       ¦   ¦   ¦       HUDMenu.h
+¦   ¦       ¦   ¦   ¦       HUDMeter.h
+¦   ¦       ¦   ¦   ¦       HUDNotifications.h
+¦   ¦       ¦   ¦   ¦       HUDObject.h
+¦   ¦       ¦   ¦   ¦       SendHUDMessage.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---I
+¦   ¦       ¦   ¦   ¦       IAIWorldLocationHandle.h
+¦   ¦       ¦   ¦   ¦       IAnimationClipLoaderSingleton.h
+¦   ¦       ¦   ¦   ¦       IAnimationGraphManagerHolder.h
+¦   ¦       ¦   ¦   ¦       IAnimationSetCallbackFunctor.h
+¦   ¦       ¦   ¦   ¦       IBSTCreator.h
+¦   ¦       ¦   ¦   ¦       ICellAttachDetachEventSource.h
+¦   ¦       ¦   ¦   ¦       ID.h
+¦   ¦       ¦   ¦   ¦       IDEvent.h
+¦   ¦       ¦   ¦   ¦       IFormFactory.h
+¦   ¦       ¦   ¦   ¦       IFreezeQuery.h
+¦   ¦       ¦   ¦   ¦       IFuncCallQuery.h
+¦   ¦       ¦   ¦   ¦       IFunction.h
+¦   ¦       ¦   ¦   ¦       IFunctionArguments.h
+¦   ¦       ¦   ¦   ¦       IHandleReaderWriter.h
+¦   ¦       ¦   ¦   ¦       IHandlerFunctor.h
+¦   ¦       ¦   ¦   ¦       ILoader.h
+¦   ¦       ¦   ¦   ¦       ImageSpaceData.h
+¦   ¦       ¦   ¦   ¦       ImageSpaceEffect.h
+¦   ¦       ¦   ¦   ¦       ImageSpaceEffectDepthOfField.h
+¦   ¦       ¦   ¦   ¦       ImageSpaceEffectOption.h
+¦   ¦       ¦   ¦   ¦       ImageSpaceEffectParam.h
+¦   ¦       ¦   ¦   ¦       ImageSpaceManager.h
+¦   ¦       ¦   ¦   ¦       ImageSpaceModifierInstance.h
+¦   ¦       ¦   ¦   ¦       ImageSpaceModifierInstanceDOF.h
+¦   ¦       ¦   ¦   ¦       ImageSpaceModifierInstanceForm.h
+¦   ¦       ¦   ¦   ¦       ImageSpaceModifierInstanceTemp.h
+¦   ¦       ¦   ¦   ¦       ImageSpaceShaderParam.h
+¦   ¦       ¦   ¦   ¦       ImageSpaceTexture.h
+¦   ¦       ¦   ¦   ¦       IMapCameraCallbacks.h
+¦   ¦       ¦   ¦   ¦       IMemoryHeap.h
+¦   ¦       ¦   ¦   ¦       IMemoryPagePolicy.h
+¦   ¦       ¦   ¦   ¦       IMemoryStore.h
+¦   ¦       ¦   ¦   ¦       IMemoryStoreBase.h
+¦   ¦       ¦   ¦   ¦       IMenu.h
+¦   ¦       ¦   ¦   ¦       IMessageBoxCallback.h
+¦   ¦       ¦   ¦   ¦       IMovementControllerRegisterInterface.h
+¦   ¦       ¦   ¦   ¦       IMovementDirectControl.h
+¦   ¦       ¦   ¦   ¦       IMovementInterface.h
+¦   ¦       ¦   ¦   ¦       IMovementMessageInterface.h
+¦   ¦       ¦   ¦   ¦       IMovementMotionDrivenControl.h
+¦   ¦       ¦   ¦   ¦       IMovementPlannerDirectControl.h
+¦   ¦       ¦   ¦   ¦       IMovementSelectIdle.h
+¦   ¦       ¦   ¦   ¦       IMovementState.h
+¦   ¦       ¦   ¦   ¦       ImpactResults.h
+¦   ¦       ¦   ¦   ¦       Info.h
+¦   ¦       ¦   ¦   ¦       IngredientItem.h
+¦   ¦       ¦   ¦   ¦       INIPrefSettingCollection.h
+¦   ¦       ¦   ¦   ¦       INISettingCollection.h
+¦   ¦       ¦   ¦   ¦       InputDevices.h
+¦   ¦       ¦   ¦   ¦       InputEvent.h
+¦   ¦       ¦   ¦   ¦       InterfaceStrings.h
+¦   ¦       ¦   ¦   ¦       InteriorData.h
+¦   ¦       ¦   ¦   ¦       Inventory.h
+¦   ¦       ¦   ¦   ¦       Inventory3DManager.h
+¦   ¦       ¦   ¦   ¦       InventoryChanges.h
+¦   ¦       ¦   ¦   ¦       InventoryEntryData.h
+¦   ¦       ¦   ¦   ¦       InventoryEvent.h
+¦   ¦       ¦   ¦   ¦       InventoryMenu.h
+¦   ¦       ¦   ¦   ¦       InventoryUpdateData.h
+¦   ¦       ¦   ¦   ¦       InvisibilityEffect.h
+¦   ¦       ¦   ¦   ¦       IObjectHandlePolicy.h
+¦   ¦       ¦   ¦   ¦       IObjectProcessor.h
+¦   ¦       ¦   ¦   ¦       IPackageData.h
+¦   ¦       ¦   ¦   ¦       IPackageDataAIWorldLocationHandle.h
+¦   ¦       ¦   ¦   ¦       IPostAnimationChannelUpdateFunctor.h
+¦   ¦       ¦   ¦   ¦       IProcedureTreeItem.h
+¦   ¦       ¦   ¦   ¦       IProfilePolicy.h
+¦   ¦       ¦   ¦   ¦       ISavePatcherInterface.h
+¦   ¦       ¦   ¦   ¦       IStackCallbackFunctor.h
+¦   ¦       ¦   ¦   ¦       IStackCallbackSaveInterface.h
+¦   ¦       ¦   ¦   ¦       IStore.h
+¦   ¦       ¦   ¦   ¦       ItemCard.h
+¦   ¦       ¦   ¦   ¦       ItemCrafted.h
+¦   ¦       ¦   ¦   ¦       ItemHarvested.h
+¦   ¦       ¦   ¦   ¦       ItemList.h
+¦   ¦       ¦   ¦   ¦       ItemsPickpocketed.h
+¦   ¦       ¦   ¦   ¦       IUIMessageData.h
+¦   ¦       ¦   ¦   ¦       IVirtualMachine.h
+¦   ¦       ¦   ¦   ¦       IVMDebugInterface.h
+¦   ¦       ¦   ¦   ¦       IVMObjectBindInterface.h
+¦   ¦       ¦   ¦   ¦       IVMSaveLoadInterface.h
+¦   ¦       ¦   ¦   ¦       IXAudio2VoiceCallback.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---J
+¦   ¦       ¦   ¦   ¦       JournalMenu.h
+¦   ¦       ¦   ¦   ¦       JournalTab.h
+¦   ¦       ¦   ¦   ¦       Journal_QuestsTab.h
+¦   ¦       ¦   ¦   ¦       Journal_StatsTab.h
+¦   ¦       ¦   ¦   ¦       Journal_SystemTab.h
+¦   ¦       ¦   ¦   ¦       JumpHandler.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---K
+¦   ¦       ¦   ¦   ¦       KinectEvent.h
+¦   ¦       ¦   ¦   ¦       KinectMenu.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---L
+¦   ¦       ¦   ¦   ¦       LegendarySkillResetConfirmCallback.h
+¦   ¦       ¦   ¦   ¦       LevelIncrease.h
+¦   ¦       ¦   ¦   ¦       LevelUpMenu.h
+¦   ¦       ¦   ¦   ¦       LightEffect.h
+¦   ¦       ¦   ¦   ¦       LinkerProcessor.h
+¦   ¦       ¦   ¦   ¦       LoadingMenu.h
+¦   ¦       ¦   ¦   ¦       LoadStorageWrapper.h
+¦   ¦       ¦   ¦   ¦       LoadWaitSpinner.h
+¦   ¦       ¦   ¦   ¦       LocalMapCamera.h
+¦   ¦       ¦   ¦   ¦       LocalMapMenu.h
+¦   ¦       ¦   ¦   ¦       Location.h
+¦   ¦       ¦   ¦   ¦       LocationCleared.h
+¦   ¦       ¦   ¦   ¦       LocationDiscovery.h
+¦   ¦       ¦   ¦   ¦       LocationTraverser.h
+¦   ¦       ¦   ¦   ¦       LocationTree.h
+¦   ¦       ¦   ¦   ¦       LockEffect.h
+¦   ¦       ¦   ¦   ¦       LockpickingMenu.h
+¦   ¦       ¦   ¦   ¦       LogEvent.h
+¦   ¦       ¦   ¦   ¦       Logger.h
+¦   ¦       ¦   ¦   ¦       LoggingDisabler.h
+¦   ¦       ¦   ¦   ¦       LookHandler.h
+¦   ¦       ¦   ¦   ¦       LooseFileLocation.h
+¦   ¦       ¦   ¦   ¦       LooseFileStream.h
+¦   ¦       ¦   ¦   ¦       LooseFileStreamBase.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---M
+¦   ¦       ¦   ¦   ¦       MagicCaster.h
+¦   ¦       ¦   ¦   ¦       MagicFavorites.h
+¦   ¦       ¦   ¦   ¦       MagicFormulas.h
+¦   ¦       ¦   ¦   ¦       MagicItem.h
+¦   ¦       ¦   ¦   ¦       MagicItemDataCollector.h
+¦   ¦       ¦   ¦   ¦       MagicItemTraversalFunctor.h
+¦   ¦       ¦   ¦   ¦       MagicMenu.h
+¦   ¦       ¦   ¦   ¦       MagicSystem.h
+¦   ¦       ¦   ¦   ¦       MagicTarget.h
+¦   ¦       ¦   ¦   ¦       MagicUtilities.h
+¦   ¦       ¦   ¦   ¦       Main.h
+¦   ¦       ¦   ¦   ¦       MainMenu.h
+¦   ¦       ¦   ¦   ¦       MapCamera.h
+¦   ¦       ¦   ¦   ¦       MapInputHandler.h
+¦   ¦       ¦   ¦   ¦       MapLookHandler.h
+¦   ¦       ¦   ¦   ¦       MapMenu.h
+¦   ¦       ¦   ¦   ¦       MapMoveHandler.h
+¦   ¦       ¦   ¦   ¦       MapZoomHandler.h
+¦   ¦       ¦   ¦   ¦       MarkerUsedData.h
+¦   ¦       ¦   ¦   ¦       MaterialIDs.h
+¦   ¦       ¦   ¦   ¦       MemoryHeap.h
+¦   ¦       ¦   ¦   ¦       MemoryManager.h
+¦   ¦       ¦   ¦   ¦       MemoryPage.h
+¦   ¦       ¦   ¦   ¦       MenuControls.h
+¦   ¦       ¦   ¦   ¦       MenuCursor.h
+¦   ¦       ¦   ¦   ¦       MenuEventHandler.h
+¦   ¦       ¦   ¦   ¦       MenuModeChangeEvent.h
+¦   ¦       ¦   ¦   ¦       MenuOpenCloseEvent.h
+¦   ¦       ¦   ¦   ¦       MenuOpenHandler.h
+¦   ¦       ¦   ¦   ¦       MenuTopicManager.h
+¦   ¦       ¦   ¦   ¦       MessageBoxData.h
+¦   ¦       ¦   ¦   ¦       MessageBoxMenu.h
+¦   ¦       ¦   ¦   ¦       MiddleHighProcessData.h
+¦   ¦       ¦   ¦   ¦       Misc.h
+¦   ¦       ¦   ¦   ¦       MissileProjectile.h
+¦   ¦       ¦   ¦   ¦       MistMenu.h
+¦   ¦       ¦   ¦   ¦       ModelProcessor.h
+¦   ¦       ¦   ¦   ¦       ModelReferenceEffect.h
+¦   ¦       ¦   ¦   ¦       ModManagerMenu.h
+¦   ¦       ¦   ¦   ¦       Moon.h
+¦   ¦       ¦   ¦   ¦       MouseMoveEvent.h
+¦   ¦       ¦   ¦   ¦       Movement.h
+¦   ¦       ¦   ¦   ¦       MovementControllerAI.h
+¦   ¦       ¦   ¦   ¦       MovementControllerNPC.h
+¦   ¦       ¦   ¦   ¦       MovementHandler.h
+¦   ¦       ¦   ¦   ¦       MoveToFunctor.h
+¦   ¦       ¦   ¦   ¦       MoviePlayer.h
+¦   ¦       ¦   ¦   ¦       MultiBoundMarkerData.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---N
+¦   ¦       ¦   ¦   ¦       NativeFunction.h
+¦   ¦       ¦   ¦   ¦       NativeFunctionBase.h
+¦   ¦       ¦   ¦   ¦       NativeLatentFunction.h
+¦   ¦       ¦   ¦   ¦       NavMesh.h
+¦   ¦       ¦   ¦   ¦       NavMeshInfoMap.h
+¦   ¦       ¦   ¦   ¦       NiAllocator.h
+¦   ¦       ¦   ¦   ¦       NiAlphaProperty.h
+¦   ¦       ¦   ¦   ¦       NiAnimationKey.h
+¦   ¦       ¦   ¦   ¦       NiAVObject.h
+¦   ¦       ¦   ¦   ¦       NiBinaryStream.h
+¦   ¦       ¦   ¦   ¦       NiBoneMatrixSetterI.h
+¦   ¦       ¦   ¦   ¦       NiBooleanExtraData.h
+¦   ¦       ¦   ¦   ¦       NiBound.h
+¦   ¦       ¦   ¦   ¦       NiCamera.h
+¦   ¦       ¦   ¦   ¦       NiCloningProcess.h
+¦   ¦       ¦   ¦   ¦       NiCollisionObject.h
+¦   ¦       ¦   ¦   ¦       NiColor.h
+¦   ¦       ¦   ¦   ¦       NiColorData.h
+¦   ¦       ¦   ¦   ¦       NiColorInterpolator.h
+¦   ¦       ¦   ¦   ¦       NiColorKey.h
+¦   ¦       ¦   ¦   ¦       NiControllerManager.h
+¦   ¦       ¦   ¦   ¦       NiControllerSequence.h
+¦   ¦       ¦   ¦   ¦       NiCullingProcess.h
+¦   ¦       ¦   ¦   ¦       NiExtraData.h
+¦   ¦       ¦   ¦   ¦       NiFile.h
+¦   ¦       ¦   ¦   ¦       NiFloatData.h
+¦   ¦       ¦   ¦   ¦       NiFloatExtraData.h
+¦   ¦       ¦   ¦   ¦       NiFloatInterpolator.h
+¦   ¦       ¦   ¦   ¦       NiFloatKey.h
+¦   ¦       ¦   ¦   ¦       NiFloatsExtraData.h
+¦   ¦       ¦   ¦   ¦       NiFrustum.h
+¦   ¦       ¦   ¦   ¦       NiFrustumPlanes.h
+¦   ¦       ¦   ¦   ¦       NiGeometry.h
+¦   ¦       ¦   ¦   ¦       NiGeometryData.h
+¦   ¦       ¦   ¦   ¦       NightEyeEffect.h
+¦   ¦       ¦   ¦   ¦       NiIntegerExtraData.h
+¦   ¦       ¦   ¦   ¦       NiIntegersExtraData.h
+¦   ¦       ¦   ¦   ¦       NiInterpController.h
+¦   ¦       ¦   ¦   ¦       NiInterpolator.h
+¦   ¦       ¦   ¦   ¦       NiKeyBasedInterpolator.h
+¦   ¦       ¦   ¦   ¦       NiLight.h
+¦   ¦       ¦   ¦   ¦       NiMath.h
+¦   ¦       ¦   ¦   ¦       NiMatrix3.h
+¦   ¦       ¦   ¦   ¦       NiMemManager.h
+¦   ¦       ¦   ¦   ¦       NiMeshParticleSystem.h
+¦   ¦       ¦   ¦   ¦       NiMultiTargetTransformController.h
+¦   ¦       ¦   ¦   ¦       NiNode.h
+¦   ¦       ¦   ¦   ¦       NiObject.h
+¦   ¦       ¦   ¦   ¦       NiObjectGroup.h
+¦   ¦       ¦   ¦   ¦       NiObjectNET.h
+¦   ¦       ¦   ¦   ¦       NiParticles.h
+¦   ¦       ¦   ¦   ¦       NiParticlesData.h
+¦   ¦       ¦   ¦   ¦       NiParticleSystem.h
+¦   ¦       ¦   ¦   ¦       NiPlane.h
+¦   ¦       ¦   ¦   ¦       NiPoint2.h
+¦   ¦       ¦   ¦   ¦       NiPoint3.h
+¦   ¦       ¦   ¦   ¦       NiPointLight.h
+¦   ¦       ¦   ¦   ¦       NiProperty.h
+¦   ¦       ¦   ¦   ¦       NiPSysData.h
+¦   ¦       ¦   ¦   ¦       NiPSysGravityModifier.h
+¦   ¦       ¦   ¦   ¦       NiPSysModifier.h
+¦   ¦       ¦   ¦   ¦       NiQuaternion.h
+¦   ¦       ¦   ¦   ¦       NiRect.h
+¦   ¦       ¦   ¦   ¦       NiRefObject.h
+¦   ¦       ¦   ¦   ¦       NiRTTI.h
+¦   ¦       ¦   ¦   ¦       NiShadeProperty.h
+¦   ¦       ¦   ¦   ¦       NiSkinData.h
+¦   ¦       ¦   ¦   ¦       NiSkinInstance.h
+¦   ¦       ¦   ¦   ¦       NiSkinPartition.h
+¦   ¦       ¦   ¦   ¦       NiSmartPointer.h
+¦   ¦       ¦   ¦   ¦       NiSourceTexture.h
+¦   ¦       ¦   ¦   ¦       NiStream.h
+¦   ¦       ¦   ¦   ¦       NiStringExtraData.h
+¦   ¦       ¦   ¦   ¦       NiStringsExtraData.h
+¦   ¦       ¦   ¦   ¦       NiSystem.h
+¦   ¦       ¦   ¦   ¦       NiTArray.h
+¦   ¦       ¦   ¦   ¦       NiTCollection.h
+¦   ¦       ¦   ¦   ¦       NiTDefaultAllocator.h
+¦   ¦       ¦   ¦   ¦       NiTexture.h
+¦   ¦       ¦   ¦   ¦       NiTimeController.h
+¦   ¦       ¦   ¦   ¦       NiTList.h
+¦   ¦       ¦   ¦   ¦       NiTListBase.h
+¦   ¦       ¦   ¦   ¦       NiTMap.h
+¦   ¦       ¦   ¦   ¦       NiTMapBase.h
+¦   ¦       ¦   ¦   ¦       NiTPointerAllocator.h
+¦   ¦       ¦   ¦   ¦       NiTPointerList.h
+¦   ¦       ¦   ¦   ¦       NiTPointerListBase.h
+¦   ¦       ¦   ¦   ¦       NiTPointerMap.h
+¦   ¦       ¦   ¦   ¦       NiTransform.h
+¦   ¦       ¦   ¦   ¦       NiTSet.h
+¦   ¦       ¦   ¦   ¦       NiTStringMap.h
+¦   ¦       ¦   ¦   ¦       NonActorMagicCaster.h
+¦   ¦       ¦   ¦   ¦       NonActorMagicTarget.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---O
+¦   ¦       ¦   ¦   ¦       Object.h
+¦   ¦       ¦   ¦   ¦       ObjectiveState.h
+¦   ¦       ¦   ¦   ¦       ObjectTypeInfo.h
+¦   ¦       ¦   ¦   ¦       OldMessageBoxCallback.h
+¦   ¦       ¦   ¦   ¦       OpenEffect.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---P
+¦   ¦       ¦   ¦   ¦       PackageLocation.h
+¦   ¦       ¦   ¦   ¦       PackedInstructionStream.h
+¦   ¦       ¦   ¦   ¦       PackUnpack.h
+¦   ¦       ¦   ¦   ¦       PackUnpackImpl.h
+¦   ¦       ¦   ¦   ¦       ParalysisEffect.h
+¦   ¦       ¦   ¦   ¦       PathingCell.h
+¦   ¦       ¦   ¦   ¦       PCGamepadType.h
+¦   ¦       ¦   ¦   ¦       PeakValueModifierEffect.h
+¦   ¦       ¦   ¦   ¦       PerkEntryVisitor.h
+¦   ¦       ¦   ¦   ¦       PerkRankVisitor.h
+¦   ¦       ¦   ¦   ¦       PermanentMagicFunctor.h
+¦   ¦       ¦   ¦   ¦       PlayerCamera.h
+¦   ¦       ¦   ¦   ¦       PlayerCameraTransitionState.h
+¦   ¦       ¦   ¦   ¦       PlayerCharacter.h
+¦   ¦       ¦   ¦   ¦       PlayerControls.h
+¦   ¦       ¦   ¦   ¦       PlayerControlsData.h
+¦   ¦       ¦   ¦   ¦       PlayerInputHandler.h
+¦   ¦       ¦   ¦   ¦       PoisonedWeapon.h
+¦   ¦       ¦   ¦   ¦       PositionPlayerEvent.h
+¦   ¦       ¦   ¦   ¦       Precipitation.h
+¦   ¦       ¦   ¦   ¦       PrecomputedNavmeshInfoPathMap.h
+¦   ¦       ¦   ¦   ¦       ProcessLists.h
+¦   ¦       ¦   ¦   ¦       Profiler.h
+¦   ¦       ¦   ¦   ¦       Projectile.h
+¦   ¦       ¦   ¦   ¦       PropertyTypeInfo.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---Q
+¦   ¦       ¦   ¦   ¦       QuestEvents.h
+¦   ¦       ¦   ¦   ¦       QuestObjectiveStates.h
+¦   ¦       ¦   ¦   ¦       QuestStatus.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---R
+¦   ¦       ¦   ¦   ¦       RaceSexCamera.h
+¦   ¦       ¦   ¦   ¦       RaceSexMenu.h
+¦   ¦       ¦   ¦   ¦       RaceSexMenuEvent.h
+¦   ¦       ¦   ¦   ¦       RallyEffect.h
+¦   ¦       ¦   ¦   ¦       RawFuncCallQuery.h
+¦   ¦       ¦   ¦   ¦       ReadyWeaponHandler.h
+¦   ¦       ¦   ¦   ¦       ReanimateEffect.h
+¦   ¦       ¦   ¦   ¦       RefActivateData.h
+¦   ¦       ¦   ¦   ¦       RefAttachTechniqueInput.h
+¦   ¦       ¦   ¦   ¦       ReferenceArray.h
+¦   ¦       ¦   ¦   ¦       ReferenceEffect.h
+¦   ¦       ¦   ¦   ¦       ReferenceEffectController.h
+¦   ¦       ¦   ¦   ¦       RefrInteraction.h
+¦   ¦       ¦   ¦   ¦       RegisterPrefix.h
+¦   ¦       ¦   ¦   ¦       RegSettingCollection.h
+¦   ¦       ¦   ¦   ¦       RemoveCallbackVisitor.h
+¦   ¦       ¦   ¦   ¦       RemoveItemFunctor.h
+¦   ¦       ¦   ¦   ¦       Renderer.h
+¦   ¦       ¦   ¦   ¦       RenderTargetData.h
+¦   ¦       ¦   ¦   ¦       RenderTargetManager.h
+¦   ¦       ¦   ¦   ¦       RenderTargetProperties.h
+¦   ¦       ¦   ¦   ¦       Request.h
+¦   ¦       ¦   ¦   ¦       ReticuleController.h
+¦   ¦       ¦   ¦   ¦       Rumble.h
+¦   ¦       ¦   ¦   ¦       RunHandler.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---S
+¦   ¦       ¦   ¦   ¦       SafeZoneMenu.h
+¦   ¦       ¦   ¦   ¦       SaveFileHandleReaderWriter.h
+¦   ¦       ¦   ¦   ¦       SavePatcher.h
+¦   ¦       ¦   ¦   ¦       SaveStorageWrapper.h
+¦   ¦       ¦   ¦   ¦       SceneGraph.h
+¦   ¦       ¦   ¦   ¦       ScrapHeap.h
+¦   ¦       ¦   ¦   ¦       ScreenshotHandler.h
+¦   ¦       ¦   ¦   ¦       ScreenSplatter.h
+¦   ¦       ¦   ¦   ¦       Script.h
+¦   ¦       ¦   ¦   ¦       ScriptedRefEffect.h
+¦   ¦       ¦   ¦   ¦       ScriptEffect.h
+¦   ¦       ¦   ¦   ¦       ScriptEventSourceHolder.h
+¦   ¦       ¦   ¦   ¦       ScriptFunction.h
+¦   ¦       ¦   ¦   ¦       ScrollItem.h
+¦   ¦       ¦   ¦   ¦       SendPlayerToJailFunctor.h
+¦   ¦       ¦   ¦   ¦       SendUIMessage.h
+¦   ¦       ¦   ¦   ¦       SetEventData.h
+¦   ¦       ¦   ¦   ¦       SetMotionTypeFunctor.h
+¦   ¦       ¦   ¦   ¦       SetPositionFunctor.h
+¦   ¦       ¦   ¦   ¦       Setting.h
+¦   ¦       ¦   ¦   ¦       SettingCollection.h
+¦   ¦       ¦   ¦   ¦       SettingCollectionList.h
+¦   ¦       ¦   ¦   ¦       SettingCollectionMap.h
+¦   ¦       ¦   ¦   ¦       SettingT.h
+¦   ¦       ¦   ¦   ¦       Sexes.h
+¦   ¦       ¦   ¦   ¦       SFTypes.h
+¦   ¦       ¦   ¦   ¦       ShaderReferenceEffect.h
+¦   ¦       ¦   ¦   ¦       ShadowSceneNode.h
+¦   ¦       ¦   ¦   ¦       ShoutAttack.h
+¦   ¦       ¦   ¦   ¦       ShoutHandler.h
+¦   ¦       ¦   ¦   ¦       ShoutMeter.h
+¦   ¦       ¦   ¦   ¦       SimpleAllocMemoryPagePolicy.h
+¦   ¦       ¦   ¦   ¦       SimpleAnimationGraphManagerHolder.h
+¦   ¦       ¦   ¦   ¦       SkillIncrease.h
+¦   ¦       ¦   ¦   ¦       Sky.h
+¦   ¦       ¦   ¦   ¦       SkyEffectController.h
+¦   ¦       ¦   ¦   ¦       SkyObject.h
+¦   ¦       ¦   ¦   ¦       SkyrimScriptObjectBindPolicy.h
+¦   ¦       ¦   ¦   ¦       SkyrimScriptStore.h
+¦   ¦       ¦   ¦   ¦       SkyrimVM.h
+¦   ¦       ¦   ¦   ¦       SleepWaitMenu.h
+¦   ¦       ¦   ¦   ¦       SlowTimeEffect.h
+¦   ¦       ¦   ¦   ¦       SmithingMenu.h
+¦   ¦       ¦   ¦   ¦       SneakHandler.h
+¦   ¦       ¦   ¦   ¦       SoulLevels.h
+¦   ¦       ¦   ¦   ¦       SoulsTrapped.h
+¦   ¦       ¦   ¦   ¦       SoulTrapEffect.h
+¦   ¦       ¦   ¦   ¦       SoundLevels.h
+¦   ¦       ¦   ¦   ¦       SourceActionMap.h
+¦   ¦       ¦   ¦   ¦       SpawnHazardEffect.h
+¦   ¦       ¦   ¦   ¦       SpellItem.h
+¦   ¦       ¦   ¦   ¦       SpellsLearned.h
+¦   ¦       ¦   ¦   ¦       SprintHandler.h
+¦   ¦       ¦   ¦   ¦       Stack.h
+¦   ¦       ¦   ¦   ¦       StackFrame.h
+¦   ¦       ¦   ¦   ¦       StaggerEffect.h
+¦   ¦       ¦   ¦   ¦       StandardItemData.h
+¦   ¦       ¦   ¦   ¦       Stars.h
+¦   ¦       ¦   ¦   ¦       State.h
+¦   ¦       ¦   ¦   ¦       StatsEvent.h
+¦   ¦       ¦   ¦   ¦       StatsMenu.h
+¦   ¦       ¦   ¦   ¦       StatsNode.h
+¦   ¦       ¦   ¦   ¦       StealthMeter.h
+¦   ¦       ¦   ¦   ¦       Stream.h
+¦   ¦       ¦   ¦   ¦       StreamBase.h
+¦   ¦       ¦   ¦   ¦       SubtitleManager.h
+¦   ¦       ¦   ¦   ¦       SummonCreatureEffect.h
+¦   ¦       ¦   ¦   ¦       SummonPlacementEffect.h
+¦   ¦       ¦   ¦   ¦       Sun.h
+¦   ¦       ¦   ¦   ¦       SuspendedStack.h
+¦   ¦       ¦   ¦   ¦       SyncQueueObj.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---T
+¦   ¦       ¦   ¦   ¦       TargetValueModifierEffect.h
+¦   ¦       ¦   ¦   ¦       TaskQueueInterface.h
+¦   ¦       ¦   ¦   ¦       TelekinesisEffect.h
+¦   ¦       ¦   ¦   ¦       TempEffectTraits.h
+¦   ¦       ¦   ¦   ¦       TES.h
+¦   ¦       ¦   ¦   ¦       TESActionData.h
+¦   ¦       ¦   ¦   ¦       TESActivateEvent.h
+¦   ¦       ¦   ¦   ¦       TESActiveEffectApplyRemoveEvent.h
+¦   ¦       ¦   ¦   ¦       TESActorBase.h
+¦   ¦       ¦   ¦   ¦       TESActorBaseData.h
+¦   ¦       ¦   ¦   ¦       TESActorLocationChangeEvent.h
+¦   ¦       ¦   ¦   ¦       TESAIForm.h
+¦   ¦       ¦   ¦   ¦       TESAmmo.h
+¦   ¦       ¦   ¦   ¦       TESAttackDamageForm.h
+¦   ¦       ¦   ¦   ¦       TESBipedModelForm.h
+¦   ¦       ¦   ¦   ¦       TESBoundAnimObject.h
+¦   ¦       ¦   ¦   ¦       TESBoundObject.h
+¦   ¦       ¦   ¦   ¦       TESCamera.h
+¦   ¦       ¦   ¦   ¦       TESCameraState.h
+¦   ¦       ¦   ¦   ¦       TESCellAttachDetachEvent.h
+¦   ¦       ¦   ¦   ¦       TESCellFullyLoadedEvent.h
+¦   ¦       ¦   ¦   ¦       TESChildCell.h
+¦   ¦       ¦   ¦   ¦       TESClass.h
+¦   ¦       ¦   ¦   ¦       TESClimate.h
+¦   ¦       ¦   ¦   ¦       TESCombatEvent.h
+¦   ¦       ¦   ¦   ¦       TESCombatStyle.h
+¦   ¦       ¦   ¦   ¦       TESCondition.h
+¦   ¦       ¦   ¦   ¦       TESContainer.h
+¦   ¦       ¦   ¦   ¦       TESContainerChangedEvent.h
+¦   ¦       ¦   ¦   ¦       TESCustomPackageData.h
+¦   ¦       ¦   ¦   ¦       TESDataHandler.h
+¦   ¦       ¦   ¦   ¦       TESDeathEvent.h
+¦   ¦       ¦   ¦   ¦       TESDescription.h
+¦   ¦       ¦   ¦   ¦       TESEffectShader.h
+¦   ¦       ¦   ¦   ¦       TESEnchantableForm.h
+¦   ¦       ¦   ¦   ¦       TESEnterBleedoutEvent.h
+¦   ¦       ¦   ¦   ¦       TESEquipEvent.h
+¦   ¦       ¦   ¦   ¦       TESEyes.h
+¦   ¦       ¦   ¦   ¦       TESFaction.h
+¦   ¦       ¦   ¦   ¦       TESFastTravelEndEvent.h
+¦   ¦       ¦   ¦   ¦       TESFile.h
+¦   ¦       ¦   ¦   ¦       TESFlora.h
+¦   ¦       ¦   ¦   ¦       TESForm.h
+¦   ¦       ¦   ¦   ¦       TESFormDeleteEvent.h
+¦   ¦       ¦   ¦   ¦       TESFullName.h
+¦   ¦       ¦   ¦   ¦       TESFurniture.h
+¦   ¦       ¦   ¦   ¦       TESFurnitureEvent.h
+¦   ¦       ¦   ¦   ¦       TESGlobal.h
+¦   ¦       ¦   ¦   ¦       TESGrabReleaseEvent.h
+¦   ¦       ¦   ¦   ¦       TESGrass.h
+¦   ¦       ¦   ¦   ¦       TESHavokUtilities.h
+¦   ¦       ¦   ¦   ¦       TESHitEvent.h
+¦   ¦       ¦   ¦   ¦       TESIcon.h
+¦   ¦       ¦   ¦   ¦       TESIdleForm.h
+¦   ¦       ¦   ¦   ¦       TESImageSpace.h
+¦   ¦       ¦   ¦   ¦       TESImageSpaceModifiableForm.h
+¦   ¦       ¦   ¦   ¦       TESImageSpaceModifier.h
+¦   ¦       ¦   ¦   ¦       TESInitScriptEvent.h
+¦   ¦       ¦   ¦   ¦       TESKey.h
+¦   ¦       ¦   ¦   ¦       TESLandTexture.h
+¦   ¦       ¦   ¦   ¦       TESLevCharacter.h
+¦   ¦       ¦   ¦   ¦       TESLeveledList.h
+¦   ¦       ¦   ¦   ¦       TESLevItem.h
+¦   ¦       ¦   ¦   ¦       TESLevSpell.h
+¦   ¦       ¦   ¦   ¦       TESLoadGameEvent.h
+¦   ¦       ¦   ¦   ¦       TESLoadScreen.h
+¦   ¦       ¦   ¦   ¦       TESLockChangedEvent.h
+¦   ¦       ¦   ¦   ¦       TESMagicCasterForm.h
+¦   ¦       ¦   ¦   ¦       TESMagicEffectApplyEvent.h
+¦   ¦       ¦   ¦   ¦       TESMagicTargetForm.h
+¦   ¦       ¦   ¦   ¦       TESModel.h
+¦   ¦       ¦   ¦   ¦       TESModelPSA.h
+¦   ¦       ¦   ¦   ¦       TESModelRDT.h
+¦   ¦       ¦   ¦   ¦       TESModelTextureSwap.h
+¦   ¦       ¦   ¦   ¦       TESModelTri.h
+¦   ¦       ¦   ¦   ¦       TESMoveAttachDetachEvent.h
+¦   ¦       ¦   ¦   ¦       TESNPC.h
+¦   ¦       ¦   ¦   ¦       TESObject.h
+¦   ¦       ¦   ¦   ¦       TESObjectACTI.h
+¦   ¦       ¦   ¦   ¦       TESObjectANIO.h
+¦   ¦       ¦   ¦   ¦       TESObjectARMA.h
+¦   ¦       ¦   ¦   ¦       TESObjectARMO.h
+¦   ¦       ¦   ¦   ¦       TESObjectBOOK.h
+¦   ¦       ¦   ¦   ¦       TESObjectCELL.h
+¦   ¦       ¦   ¦   ¦       TESObjectCONT.h
+¦   ¦       ¦   ¦   ¦       TESObjectDOOR.h
+¦   ¦       ¦   ¦   ¦       TESObjectLAND.h
+¦   ¦       ¦   ¦   ¦       TESObjectLIGH.h
+¦   ¦       ¦   ¦   ¦       TESObjectLoadedEvent.h
+¦   ¦       ¦   ¦   ¦       TESObjectMISC.h
+¦   ¦       ¦   ¦   ¦       TESObjectREFR.h
+¦   ¦       ¦   ¦   ¦       TESObjectSTAT.h
+¦   ¦       ¦   ¦   ¦       TESObjectTREE.h
+¦   ¦       ¦   ¦   ¦       TESObjectWEAP.h
+¦   ¦       ¦   ¦   ¦       TESOpenCloseEvent.h
+¦   ¦       ¦   ¦   ¦       TESPackage.h
+¦   ¦       ¦   ¦   ¦       TESPackageData.h
+¦   ¦       ¦   ¦   ¦       TESPlayerBowShotEvent.h
+¦   ¦       ¦   ¦   ¦       TESProduceForm.h
+¦   ¦       ¦   ¦   ¦       TESQualityForm.h
+¦   ¦       ¦   ¦   ¦       TESQuest.h
+¦   ¦       ¦   ¦   ¦       TESQuestStageEvent.h
+¦   ¦       ¦   ¦   ¦       TESQuestStageItem.h
+¦   ¦       ¦   ¦   ¦       TESQuestStartStopEvent.h
+¦   ¦       ¦   ¦   ¦       TESRace.h
+¦   ¦       ¦   ¦   ¦       TESRaceForm.h
+¦   ¦       ¦   ¦   ¦       TESReactionForm.h
+¦   ¦       ¦   ¦   ¦       TESRegion.h
+¦   ¦       ¦   ¦   ¦       TESRegionData.h
+¦   ¦       ¦   ¦   ¦       TESRegionDataLandscape.h
+¦   ¦       ¦   ¦   ¦       TESRegionDataManager.h
+¦   ¦       ¦   ¦   ¦       TESRegionDataMap.h
+¦   ¦       ¦   ¦   ¦       TESRegionDataSound.h
+¦   ¦       ¦   ¦   ¦       TESRegionDataWeather.h
+¦   ¦       ¦   ¦   ¦       TESRegionList.h
+¦   ¦       ¦   ¦   ¦       TESResetEvent.h
+¦   ¦       ¦   ¦   ¦       TESResolveNPCTemplatesEvent.h
+¦   ¦       ¦   ¦   ¦       TESShout.h
+¦   ¦       ¦   ¦   ¦       TESSleepStopEvent.h
+¦   ¦       ¦   ¦   ¦       TESSoulGem.h
+¦   ¦       ¦   ¦   ¦       TESSound.h
+¦   ¦       ¦   ¦   ¦       TESSpellCastEvent.h
+¦   ¦       ¦   ¦   ¦       TESSpellList.h
+¦   ¦       ¦   ¦   ¦       TESSwitchRaceCompleteEvent.h
+¦   ¦       ¦   ¦   ¦       TESTexture.h
+¦   ¦       ¦   ¦   ¦       TESTexture1024.h
+¦   ¦       ¦   ¦   ¦       TESTopic.h
+¦   ¦       ¦   ¦   ¦       TESTopicInfo.h
+¦   ¦       ¦   ¦   ¦       TESTrackedStatsEvent.h
+¦   ¦       ¦   ¦   ¦       TESUniqueIDChangeEvent.h
+¦   ¦       ¦   ¦   ¦       TESValueForm.h
+¦   ¦       ¦   ¦   ¦       TESWaitStopEvent.h
+¦   ¦       ¦   ¦   ¦       TESWaterDisplacement.h
+¦   ¦       ¦   ¦   ¦       TESWaterForm.h
+¦   ¦       ¦   ¦   ¦       TESWaterNormals.h
+¦   ¦       ¦   ¦   ¦       TESWaterObject.h
+¦   ¦       ¦   ¦   ¦       TESWaterReflections.h
+¦   ¦       ¦   ¦   ¦       TESWaterSystem.h
+¦   ¦       ¦   ¦   ¦       TESWeather.h
+¦   ¦       ¦   ¦   ¦       TESWeightForm.h
+¦   ¦       ¦   ¦   ¦       TESWordOfPower.h
+¦   ¦       ¦   ¦   ¦       TESWorldSpace.h
+¦   ¦       ¦   ¦   ¦       TextureAddressModes.h
+¦   ¦       ¦   ¦   ¦       TextureFileFormat.h
+¦   ¦       ¦   ¦   ¦       TextureFilterModes.h
+¦   ¦       ¦   ¦   ¦       TextureFormat.h
+¦   ¦       ¦   ¦   ¦       ThirdPersonState.h
+¦   ¦       ¦   ¦   ¦       ThumbstickEvent.h
+¦   ¦       ¦   ¦   ¦       TintMask.h
+¦   ¦       ¦   ¦   ¦       TitleSequenceMenu.h
+¦   ¦       ¦   ¦   ¦       TLSData.h
+¦   ¦       ¦   ¦   ¦       TogglePOVHandler.h
+¦   ¦       ¦   ¦   ¦       ToggleRunHandler.h
+¦   ¦       ¦   ¦   ¦       TrainingMenu.h
+¦   ¦       ¦   ¦   ¦       TurnUndeadEffect.h
+¦   ¦       ¦   ¦   ¦       TutorialMenu.h
+¦   ¦       ¦   ¦   ¦       TweenMenu.h
+¦   ¦       ¦   ¦   ¦       TypeInfo.h
+¦   ¦       ¦   ¦   ¦       TypeTraits.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---U
+¦   ¦       ¦   ¦   ¦       UI.h
+¦   ¦       ¦   ¦   ¦       UI3DSceneManager.h
+¦   ¦       ¦   ¦   ¦       UIBlurManager.h
+¦   ¦       ¦   ¦   ¦       UIMessage.h
+¦   ¦       ¦   ¦   ¦       UIMessageQueue.h
+¦   ¦       ¦   ¦   ¦       UIRenderManager.h
+¦   ¦       ¦   ¦   ¦       UISaveLoadManager.h
+¦   ¦       ¦   ¦   ¦       UnlinkedTypes.h
+¦   ¦       ¦   ¦   ¦       UserEventEnabled.h
+¦   ¦       ¦   ¦   ¦       UserEvents.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---V
+¦   ¦       ¦   ¦   ¦       ValueAndConditionsEffect.h
+¦   ¦       ¦   ¦   ¦       ValueModifierEffect.h
+¦   ¦       ¦   ¦   ¦       VampireLordEffect.h
+¦   ¦       ¦   ¦   ¦       Variable.h
+¦   ¦       ¦   ¦   ¦       VATS.h
+¦   ¦       ¦   ¦   ¦       VDescTable.h
+¦   ¦       ¦   ¦   ¦       VertexDesc.h
+¦   ¦       ¦   ¦   ¦       VirtualMachine.h
+¦   ¦       ¦   ¦   ¦       VoiceSpellFireHandler.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---W
+¦   ¦       ¦   ¦   ¦       WeaponAnimationGraphManagerHolder.h
+¦   ¦       ¦   ¦   ¦       WeatherType.h
+¦   ¦       ¦   ¦   ¦       WerewolfEffect.h
+¦   ¦       ¦   ¦   ¦       WerewolfFeedEffect.h
+¦   ¦       ¦   ¦   ¦       WorldSpaceMenu.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---Z
+¦   ¦       ¦   ¦           ZeroFunctionArguments.h
+¦   ¦       ¦   ¦           ZeroOverheadHeap.h
+¦   ¦       ¦   ¦           
+¦   ¦       ¦   +---REL
+¦   ¦       ¦   ¦       Common.h
+¦   ¦       ¦   ¦       ID.h
+¦   ¦       ¦   ¦       Module.h
+¦   ¦       ¦   ¦       Offset.h
+¦   ¦       ¦   ¦       Pattern.h
+¦   ¦       ¦   ¦       REL.h
+¦   ¦       ¦   ¦       Relocation.h
+¦   ¦       ¦   ¦       Version.h
+¦   ¦       ¦   ¦       
+¦   ¦       ¦   +---REX
+¦   ¦       ¦   ¦   ¦   PS4.h
+¦   ¦       ¦   ¦   ¦   W32.h
+¦   ¦       ¦   ¦   ¦   
+¦   ¦       ¦   ¦   +---PS4
+¦   ¦       ¦   ¦   ¦       SCEPAD.h
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---W32
+¦   ¦       ¦   ¦           ADVAPI32.h
+¦   ¦       ¦   ¦           BASE.h
+¦   ¦       ¦   ¦           COM.h
+¦   ¦       ¦   ¦           COMPTR.h
+¦   ¦       ¦   ¦           D3D.h
+¦   ¦       ¦   ¦           D3D11.h
+¦   ¦       ¦   ¦           D3D11_1.h
+¦   ¦       ¦   ¦           D3D11_2.h
+¦   ¦       ¦   ¦           D3D11_3.h
+¦   ¦       ¦   ¦           D3D11_4.h
+¦   ¦       ¦   ¦           D3DCOMPILER.h
+¦   ¦       ¦   ¦           DBGHELP.h
+¦   ¦       ¦   ¦           DINPUT.h
+¦   ¦       ¦   ¦           DXGI.h
+¦   ¦       ¦   ¦           DXGI_2.h
+¦   ¦       ¦   ¦           DXGI_3.h
+¦   ¦       ¦   ¦           DXGI_4.h
+¦   ¦       ¦   ¦           DXGI_5.h
+¦   ¦       ¦   ¦           DXGI_6.h
+¦   ¦       ¦   ¦           KERNEL32.h
+¦   ¦       ¦   ¦           OLE32.h
+¦   ¦       ¦   ¦           SHELL32.h
+¦   ¦       ¦   ¦           USER32.h
+¦   ¦       ¦   ¦           VERSION.h
+¦   ¦       ¦   ¦           XINPUT.h
+¦   ¦       ¦   ¦           
+¦   ¦       ¦   +---SKSE
+¦   ¦       ¦       ¦   API.h
+¦   ¦       ¦       ¦   Events.h
+¦   ¦       ¦       ¦   IAT.h
+¦   ¦       ¦       ¦   InputMap.h
+¦   ¦       ¦       ¦   Interfaces.h
+¦   ¦       ¦       ¦   Logger.h
+¦   ¦       ¦       ¦   RegistrationMap.h
+¦   ¦       ¦       ¦   RegistrationMapUnique.h
+¦   ¦       ¦       ¦   RegistrationSet.h
+¦   ¦       ¦       ¦   RegistrationSetUnique.h
+¦   ¦       ¦       ¦   SKSE.h
+¦   ¦       ¦       ¦   Trampoline.h
+¦   ¦       ¦       ¦   Translation.h
+¦   ¦       ¦       ¦   Version.h
+¦   ¦       ¦       ¦   
+¦   ¦       ¦       +---Impl
+¦   ¦       ¦               PCH.h
+¦   ¦       ¦               RegistrationTraits.h
+¦   ¦       ¦               Stubs.h
+¦   ¦       ¦               
+¦   ¦       +---scripts
+¦   ¦       ¦       cmake_generate.py
+¦   ¦       ¦       generate_offsets.py
+¦   ¦       ¦       
+¦   ¦       +---src
+¦   ¦       ¦   +---RE
+¦   ¦       ¦   ¦   ¦   Skyrim.cpp
+¦   ¦       ¦   ¦   ¦   
+¦   ¦       ¦   ¦   +---A
+¦   ¦       ¦   ¦   ¦       ActiveEffect.cpp
+¦   ¦       ¦   ¦   ¦       ActiveEffectFactory.cpp
+¦   ¦       ¦   ¦   ¦       Actor.cpp
+¦   ¦       ¦   ¦   ¦       ActorEquipManager.cpp
+¦   ¦       ¦   ¦   ¦       ActorKill.cpp
+¦   ¦       ¦   ¦   ¦       ActorValueList.cpp
+¦   ¦       ¦   ¦   ¦       ActorValueOwner.cpp
+¦   ¦       ¦   ¦   ¦       AddCallbackVisitor.cpp
+¦   ¦       ¦   ¦   ¦       AIFormulas.cpp
+¦   ¦       ¦   ¦   ¦       AIProcess.cpp
+¦   ¦       ¦   ¦   ¦       ArmorRatingVisitor.cpp
+¦   ¦       ¦   ¦   ¦       ArmorRatingVisitorBase.cpp
+¦   ¦       ¦   ¦   ¦       Array.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---B
+¦   ¦       ¦   ¦   ¦       BarterMenu.cpp
+¦   ¦       ¦   ¦   ¦       BGSAttackData.cpp
+¦   ¦       ¦   ¦   ¦       BGSBaseAlias.cpp
+¦   ¦       ¦   ¦   ¦       BGSBipedObjectForm.cpp
+¦   ¦       ¦   ¦   ¦       BGSColorForm.cpp
+¦   ¦       ¦   ¦   ¦       BGSCreatedObjectManager.cpp
+¦   ¦       ¦   ¦   ¦       BGSDebris.cpp
+¦   ¦       ¦   ¦   ¦       BGSDecalNode.cpp
+¦   ¦       ¦   ¦   ¦       BGSDefaultObjectManager.cpp
+¦   ¦       ¦   ¦   ¦       BGSEntryPointFunctionDataActivateChoice.cpp
+¦   ¦       ¦   ¦   ¦       BGSEntryPointPerkEntry.cpp
+¦   ¦       ¦   ¦   ¦       BGSFootstepManager.cpp
+¦   ¦       ¦   ¦   ¦       BGSHeadPart.cpp
+¦   ¦       ¦   ¦   ¦       BGSIdleCollection.cpp
+¦   ¦       ¦   ¦   ¦       BGSKeywordForm.cpp
+¦   ¦       ¦   ¦   ¦       BGSListForm.cpp
+¦   ¦       ¦   ¦   ¦       BGSLocation.cpp
+¦   ¦       ¦   ¦   ¦       BGSOpenCloseForm.cpp
+¦   ¦       ¦   ¦   ¦       BGSPerkEntry.cpp
+¦   ¦       ¦   ¦   ¦       BGSPerkRankArray.cpp
+¦   ¦       ¦   ¦   ¦       BGSRefAlias.cpp
+¦   ¦       ¦   ¦   ¦       BGSSaveLoadManager.cpp
+¦   ¦       ¦   ¦   ¦       BGSSkillPerkTreeNode.cpp
+¦   ¦       ¦   ¦   ¦       BGSSoundCategory.cpp
+¦   ¦       ¦   ¦   ¦       BGSStoryTeller.cpp
+¦   ¦       ¦   ¦   ¦       bhkCharProxyController.cpp
+¦   ¦       ¦   ¦   ¦       bhkRigidBody.cpp
+¦   ¦       ¦   ¦   ¦       BipedAnim.cpp
+¦   ¦       ¦   ¦   ¦       BookMenu.cpp
+¦   ¦       ¦   ¦   ¦       BooksRead.cpp
+¦   ¦       ¦   ¦   ¦       BSAtomic.cpp
+¦   ¦       ¦   ¦   ¦       BSAudioManager.cpp
+¦   ¦       ¦   ¦   ¦       BSDirectInputManager.cpp
+¦   ¦       ¦   ¦   ¦       BSEffectShaderData.cpp
+¦   ¦       ¦   ¦   ¦       BSExtraData.cpp
+¦   ¦       ¦   ¦   ¦       BSFaceGenNiNode.cpp
+¦   ¦       ¦   ¦   ¦       BSFadeNode.cpp
+¦   ¦       ¦   ¦   ¦       BSFixedString.cpp
+¦   ¦       ¦   ¦   ¦       BSGamepadDevice.cpp
+¦   ¦       ¦   ¦   ¦       BSGeometry.cpp
+¦   ¦       ¦   ¦   ¦       BSHandleRefObject.cpp
+¦   ¦       ¦   ¦   ¦       BSInputDevice.cpp
+¦   ¦       ¦   ¦   ¦       BSInputDeviceFactory.cpp
+¦   ¦       ¦   ¦   ¦       BSInputDeviceManager.cpp
+¦   ¦       ¦   ¦   ¦       BSInputEventQueue.cpp
+¦   ¦       ¦   ¦   ¦       BSInstanceTriShape.cpp
+¦   ¦       ¦   ¦   ¦       BSKeyboardDevice.cpp
+¦   ¦       ¦   ¦   ¦       BSLightingShaderMaterialBase.cpp
+¦   ¦       ¦   ¦   ¦       BSLightingShaderProperty.cpp
+¦   ¦       ¦   ¦   ¦       BSModelDB.cpp
+¦   ¦       ¦   ¦   ¦       BSMouseDevice.cpp
+¦   ¦       ¦   ¦   ¦       BSMultiBoundNode.cpp
+¦   ¦       ¦   ¦   ¦       BSPCGamepadDeviceDelegate.cpp
+¦   ¦       ¦   ¦   ¦       BSPCGamepadDeviceHandler.cpp
+¦   ¦       ¦   ¦   ¦       BSPCOrbisGamepadDevice.cpp
+¦   ¦       ¦   ¦   ¦       BSPointerHandle.cpp
+¦   ¦       ¦   ¦   ¦       BSResourceNiBinaryStream.cpp
+¦   ¦       ¦   ¦   ¦       BSResponse.cpp
+¦   ¦       ¦   ¦   ¦       BSScaleformManager.cpp
+¦   ¦       ¦   ¦   ¦       BSScaleformTranslator.cpp
+¦   ¦       ¦   ¦   ¦       BSScriptObjectBindPolicy.cpp
+¦   ¦       ¦   ¦   ¦       BSShaderProperty.cpp
+¦   ¦       ¦   ¦   ¦       BSShaderTextureSet.cpp
+¦   ¦       ¦   ¦   ¦       BSSoundHandle.cpp
+¦   ¦       ¦   ¦   ¦       BSStringPool.cpp
+¦   ¦       ¦   ¦   ¦       BSSystemFileStorage.cpp
+¦   ¦       ¦   ¦   ¦       BSTArray.cpp
+¦   ¦       ¦   ¦   ¦       BSTCreateFactoryManager.cpp
+¦   ¦       ¦   ¦   ¦       BSVirtualKeyboardDevice.cpp
+¦   ¦       ¦   ¦   ¦       BSVisit.cpp
+¦   ¦       ¦   ¦   ¦       BSWin32GamepadDevice.cpp
+¦   ¦       ¦   ¦   ¦       BSWin32KeyboardDevice.cpp
+¦   ¦       ¦   ¦   ¦       BSWin32MouseDevice.cpp
+¦   ¦       ¦   ¦   ¦       BSWin32SaveDataSystemUtility.cpp
+¦   ¦       ¦   ¦   ¦       BSWin32VirtualKeyboardDevice.cpp
+¦   ¦       ¦   ¦   ¦       BSWindModifier.cpp
+¦   ¦       ¦   ¦   ¦       BSXFlags.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---C
+¦   ¦       ¦   ¦   ¦       Calendar.cpp
+¦   ¦       ¦   ¦   ¦       ChestsLooted.cpp
+¦   ¦       ¦   ¦   ¦       Color.cpp
+¦   ¦       ¦   ¦   ¦       ColorUtil.cpp
+¦   ¦       ¦   ¦   ¦       CommandTable.cpp
+¦   ¦       ¦   ¦   ¦       ConeProjectile.cpp
+¦   ¦       ¦   ¦   ¦       Console.cpp
+¦   ¦       ¦   ¦   ¦       ConsoleLog.cpp
+¦   ¦       ¦   ¦   ¦       ContainerItemExtra.cpp
+¦   ¦       ¦   ¦   ¦       ContainerMenu.cpp
+¦   ¦       ¦   ¦   ¦       ControlMap.cpp
+¦   ¦       ¦   ¦   ¦       CriticalHit.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---D
+¦   ¦       ¦   ¦   ¦       DisarmedEvent.cpp
+¦   ¦       ¦   ¦   ¦       DragonSoulsGained.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---E
+¦   ¦       ¦   ¦   ¦       Effect.cpp
+¦   ¦       ¦   ¦   ¦       EffectArchetypes.cpp
+¦   ¦       ¦   ¦   ¦       EnchantConstructMenu.cpp
+¦   ¦       ¦   ¦   ¦       Explosion.cpp
+¦   ¦       ¦   ¦   ¦       ExtraAliasInstanceArray.cpp
+¦   ¦       ¦   ¦   ¦       ExtraAshPileRef.cpp
+¦   ¦       ¦   ¦   ¦       ExtraCannotWear.cpp
+¦   ¦       ¦   ¦   ¦       ExtraCanTalkToPlayer.cpp
+¦   ¦       ¦   ¦   ¦       ExtraCharge.cpp
+¦   ¦       ¦   ¦   ¦       ExtraContainerChanges.cpp
+¦   ¦       ¦   ¦   ¦       ExtraCount.cpp
+¦   ¦       ¦   ¦   ¦       ExtraDataList.cpp
+¦   ¦       ¦   ¦   ¦       ExtraEnchantment.cpp
+¦   ¦       ¦   ¦   ¦       ExtraEncounterZone.cpp
+¦   ¦       ¦   ¦   ¦       ExtraForcedTarget.cpp
+¦   ¦       ¦   ¦   ¦       ExtraHealth.cpp
+¦   ¦       ¦   ¦   ¦       ExtraHotkey.cpp
+¦   ¦       ¦   ¦   ¦       ExtraLevCreaModifier.cpp
+¦   ¦       ¦   ¦   ¦       ExtraLightData.cpp
+¦   ¦       ¦   ¦   ¦       ExtraLock.cpp
+¦   ¦       ¦   ¦   ¦       ExtraMissingLinkedRefIDs.cpp
+¦   ¦       ¦   ¦   ¦       ExtraNorthRotation.cpp
+¦   ¦       ¦   ¦   ¦       ExtraOwnership.cpp
+¦   ¦       ¦   ¦   ¦       ExtraPoison.cpp
+¦   ¦       ¦   ¦   ¦       ExtraRank.cpp
+¦   ¦       ¦   ¦   ¦       ExtraReferenceHandle.cpp
+¦   ¦       ¦   ¦   ¦       ExtraSoul.cpp
+¦   ¦       ¦   ¦   ¦       ExtraTextDisplayData.cpp
+¦   ¦       ¦   ¦   ¦       ExtraUniqueID.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---F
+¦   ¦       ¦   ¦   ¦       FindMaxMagnitudeVisitor.cpp
+¦   ¦       ¦   ¦   ¦       FormTypes.cpp
+¦   ¦       ¦   ¦   ¦       FxDelegate.cpp
+¦   ¦       ¦   ¦   ¦       FxDelegateArgs.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---G
+¦   ¦       ¦   ¦   ¦       GameSettingCollection.cpp
+¦   ¦       ¦   ¦   ¦       GAtomic.cpp
+¦   ¦       ¦   ¦   ¦       GFxLoader.cpp
+¦   ¦       ¦   ¦   ¦       GFxLog.cpp
+¦   ¦       ¦   ¦   ¦       GFxMovie.cpp
+¦   ¦       ¦   ¦   ¦       GFxMovieDataDef.cpp
+¦   ¦       ¦   ¦   ¦       GFxMovieDef.cpp
+¦   ¦       ¦   ¦   ¦       GFxMovieView.cpp
+¦   ¦       ¦   ¦   ¦       GFxRenderConfig.cpp
+¦   ¦       ¦   ¦   ¦       GFxResource.cpp
+¦   ¦       ¦   ¦   ¦       GFxResourceID.cpp
+¦   ¦       ¦   ¦   ¦       GFxResourceKey.cpp
+¦   ¦       ¦   ¦   ¦       GFxState.cpp
+¦   ¦       ¦   ¦   ¦       GFxStateBag.cpp
+¦   ¦       ¦   ¦   ¦       GFxTranslator.cpp
+¦   ¦       ¦   ¦   ¦       GFxValue.cpp
+¦   ¦       ¦   ¦   ¦       GFxWStringBuffer.cpp
+¦   ¦       ¦   ¦   ¦       GFxWWHelper.cpp
+¦   ¦       ¦   ¦   ¦       GiftMenu.cpp
+¦   ¦       ¦   ¦   ¦       GMemory.cpp
+¦   ¦       ¦   ¦   ¦       GMemoryHeap.cpp
+¦   ¦       ¦   ¦   ¦       GRefCountImpl.cpp
+¦   ¦       ¦   ¦   ¦       GRefCountNTSImpl.cpp
+¦   ¦       ¦   ¦   ¦       GRenderer.cpp
+¦   ¦       ¦   ¦   ¦       GStd.cpp
+¦   ¦       ¦   ¦   ¦       GString.cpp
+¦   ¦       ¦   ¦   ¦       GViewport.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---H
+¦   ¦       ¦   ¦   ¦       Hazard.cpp
+¦   ¦       ¦   ¦   ¦       HeapBlock.cpp
+¦   ¦       ¦   ¦   ¦       hkBaseTypes.cpp
+¦   ¦       ¦   ¦   ¦       hkpBroadPhase.cpp
+¦   ¦       ¦   ¦   ¦       hkpCdBody.cpp
+¦   ¦       ¦   ¦   ¦       hkpCharacterProxyListener.cpp
+¦   ¦       ¦   ¦   ¦       hkpMaterial.cpp
+¦   ¦       ¦   ¦   ¦       hkpWorldObject.cpp
+¦   ¦       ¦   ¦   ¦       hkReferencedObject.cpp
+¦   ¦       ¦   ¦   ¦       hkStringPtr.cpp
+¦   ¦       ¦   ¦   ¦       hkVector4.cpp
+¦   ¦       ¦   ¦   ¦       HUDMeter.cpp
+¦   ¦       ¦   ¦   ¦       HUDObject.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---I
+¦   ¦       ¦   ¦   ¦       IAnimationGraphManagerHolder.cpp
+¦   ¦       ¦   ¦   ¦       IFormFactory.cpp
+¦   ¦       ¦   ¦   ¦       IFunction.cpp
+¦   ¦       ¦   ¦   ¦       IHandlerFunctor.cpp
+¦   ¦       ¦   ¦   ¦       IMemoryStore.cpp
+¦   ¦       ¦   ¦   ¦       IMenu.cpp
+¦   ¦       ¦   ¦   ¦       IngredientItem.cpp
+¦   ¦       ¦   ¦   ¦       INIPrefSettingCollection.cpp
+¦   ¦       ¦   ¦   ¦       INISettingCollection.cpp
+¦   ¦       ¦   ¦   ¦       InputEvent.cpp
+¦   ¦       ¦   ¦   ¦       InterfaceStrings.cpp
+¦   ¦       ¦   ¦   ¦       Inventory.cpp
+¦   ¦       ¦   ¦   ¦       Inventory3DManager.cpp
+¦   ¦       ¦   ¦   ¦       InventoryChanges.cpp
+¦   ¦       ¦   ¦   ¦       InventoryEntryData.cpp
+¦   ¦       ¦   ¦   ¦       IObjectHandlePolicy.cpp
+¦   ¦       ¦   ¦   ¦       IStackCallbackFunctor.cpp
+¦   ¦       ¦   ¦   ¦       ItemCrafted.cpp
+¦   ¦       ¦   ¦   ¦       ItemHarvested.cpp
+¦   ¦       ¦   ¦   ¦       ItemList.cpp
+¦   ¦       ¦   ¦   ¦       ItemsPickpocketed.cpp
+¦   ¦       ¦   ¦   ¦       IVirtualMachine.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---L
+¦   ¦       ¦   ¦   ¦       LevelIncrease.cpp
+¦   ¦       ¦   ¦   ¦       LocalMapCamera.cpp
+¦   ¦       ¦   ¦   ¦       Location.cpp
+¦   ¦       ¦   ¦   ¦       LocationCleared.cpp
+¦   ¦       ¦   ¦   ¦       LocationDiscovery.cpp
+¦   ¦       ¦   ¦   ¦       LockpickingMenu.cpp
+¦   ¦       ¦   ¦   ¦       LooseFileStream.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---M
+¦   ¦       ¦   ¦   ¦       MagicCaster.cpp
+¦   ¦       ¦   ¦   ¦       MagicFavorites.cpp
+¦   ¦       ¦   ¦   ¦       MagicFormulas.cpp
+¦   ¦       ¦   ¦   ¦       MagicItem.cpp
+¦   ¦       ¦   ¦   ¦       MagicItemDataCollector.cpp
+¦   ¦       ¦   ¦   ¦       MagicSystem.cpp
+¦   ¦       ¦   ¦   ¦       MagicTarget.cpp
+¦   ¦       ¦   ¦   ¦       MagicUtilities.cpp
+¦   ¦       ¦   ¦   ¦       Main.cpp
+¦   ¦       ¦   ¦   ¦       MaterialIDs.cpp
+¦   ¦       ¦   ¦   ¦       MemoryPage.cpp
+¦   ¦       ¦   ¦   ¦       MenuControls.cpp
+¦   ¦       ¦   ¦   ¦       MenuCursor.cpp
+¦   ¦       ¦   ¦   ¦       MenuEventHandler.cpp
+¦   ¦       ¦   ¦   ¦       Misc.cpp
+¦   ¦       ¦   ¦   ¦       MissileProjectile.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---N
+¦   ¦       ¦   ¦   ¦       NativeFunctionBase.cpp
+¦   ¦       ¦   ¦   ¦       NiAlphaProperty.cpp
+¦   ¦       ¦   ¦   ¦       NiAnimationKey.cpp
+¦   ¦       ¦   ¦   ¦       NiAVObject.cpp
+¦   ¦       ¦   ¦   ¦       NiBinaryStream.cpp
+¦   ¦       ¦   ¦   ¦       NiBooleanExtraData.cpp
+¦   ¦       ¦   ¦   ¦       NiCamera.cpp
+¦   ¦       ¦   ¦   ¦       NiColor.cpp
+¦   ¦       ¦   ¦   ¦       NiColorData.cpp
+¦   ¦       ¦   ¦   ¦       NiColorKey.cpp
+¦   ¦       ¦   ¦   ¦       NiControllerManager.cpp
+¦   ¦       ¦   ¦   ¦       NiControllerSequence.cpp
+¦   ¦       ¦   ¦   ¦       NiExtraData.cpp
+¦   ¦       ¦   ¦   ¦       NiFloatData.cpp
+¦   ¦       ¦   ¦   ¦       NiFloatExtraData.cpp
+¦   ¦       ¦   ¦   ¦       NiFloatKey.cpp
+¦   ¦       ¦   ¦   ¦       NiFloatsExtraData.cpp
+¦   ¦       ¦   ¦   ¦       NiGeometry.cpp
+¦   ¦       ¦   ¦   ¦       NiIntegerExtraData.cpp
+¦   ¦       ¦   ¦   ¦       NiIntegersExtraData.cpp
+¦   ¦       ¦   ¦   ¦       NiInterpolator.cpp
+¦   ¦       ¦   ¦   ¦       NiMath.cpp
+¦   ¦       ¦   ¦   ¦       NiMatrix3.cpp
+¦   ¦       ¦   ¦   ¦       NiMemManager.cpp
+¦   ¦       ¦   ¦   ¦       NiNode.cpp
+¦   ¦       ¦   ¦   ¦       NiObject.cpp
+¦   ¦       ¦   ¦   ¦       NiObjectNET.cpp
+¦   ¦       ¦   ¦   ¦       NiPoint2.cpp
+¦   ¦       ¦   ¦   ¦       NiPoint3.cpp
+¦   ¦       ¦   ¦   ¦       NiRefObject.cpp
+¦   ¦       ¦   ¦   ¦       NiSkinInstance.cpp
+¦   ¦       ¦   ¦   ¦       NiStringsExtraData.cpp
+¦   ¦       ¦   ¦   ¦       NiSystem.cpp
+¦   ¦       ¦   ¦   ¦       NiTCollection.cpp
+¦   ¦       ¦   ¦   ¦       NiTexture.cpp
+¦   ¦       ¦   ¦   ¦       NiTimeController.cpp
+¦   ¦       ¦   ¦   ¦       NiTransform.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---O
+¦   ¦       ¦   ¦   ¦       Object.cpp
+¦   ¦       ¦   ¦   ¦       ObjectiveState.cpp
+¦   ¦       ¦   ¦   ¦       ObjectTypeInfo.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---P
+¦   ¦       ¦   ¦   ¦       PackedInstructionStream.cpp
+¦   ¦       ¦   ¦   ¦       PackUnpack.cpp
+¦   ¦       ¦   ¦   ¦       PlayerCamera.cpp
+¦   ¦       ¦   ¦   ¦       PlayerCharacter.cpp
+¦   ¦       ¦   ¦   ¦       PlayerControls.cpp
+¦   ¦       ¦   ¦   ¦       PlayerInputHandler.cpp
+¦   ¦       ¦   ¦   ¦       ProcessLists.cpp
+¦   ¦       ¦   ¦   ¦       Projectile.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---Q
+¦   ¦       ¦   ¦   ¦       QuestStatus.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---R
+¦   ¦       ¦   ¦   ¦       RaceSexMenu.cpp
+¦   ¦       ¦   ¦   ¦       ReferenceEffectController.cpp
+¦   ¦       ¦   ¦   ¦       RemoveCallbackVisitor.cpp
+¦   ¦       ¦   ¦   ¦       Renderer.cpp
+¦   ¦       ¦   ¦   ¦       Rumble.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---S
+¦   ¦       ¦   ¦   ¦       ScrapHeap.cpp
+¦   ¦       ¦   ¦   ¦       Script.cpp
+¦   ¦       ¦   ¦   ¦       ScriptEventSourceHolder.cpp
+¦   ¦       ¦   ¦   ¦       SendUIMessage.cpp
+¦   ¦       ¦   ¦   ¦       Setting.cpp
+¦   ¦       ¦   ¦   ¦       ShoutAttack.cpp
+¦   ¦       ¦   ¦   ¦       SkillIncrease.cpp
+¦   ¦       ¦   ¦   ¦       Sky.cpp
+¦   ¦       ¦   ¦   ¦       SkyrimVM.cpp
+¦   ¦       ¦   ¦   ¦       SoulsTrapped.cpp
+¦   ¦       ¦   ¦   ¦       SourceActionMap.cpp
+¦   ¦       ¦   ¦   ¦       SpellsLearned.cpp
+¦   ¦       ¦   ¦   ¦       Stack.cpp
+¦   ¦       ¦   ¦   ¦       StackFrame.cpp
+¦   ¦       ¦   ¦   ¦       Stream.cpp
+¦   ¦       ¦   ¦   ¦       StreamBase.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---T
+¦   ¦       ¦   ¦   ¦       TaskQueueInterface.cpp
+¦   ¦       ¦   ¦   ¦       TES.cpp
+¦   ¦       ¦   ¦   ¦       TESActorBase.cpp
+¦   ¦       ¦   ¦   ¦       TESAIForm.cpp
+¦   ¦       ¦   ¦   ¦       TESAmmo.cpp
+¦   ¦       ¦   ¦   ¦       TESCamera.cpp
+¦   ¦       ¦   ¦   ¦       TESClimate.cpp
+¦   ¦       ¦   ¦   ¦       TESCondition.cpp
+¦   ¦       ¦   ¦   ¦       TESContainer.cpp
+¦   ¦       ¦   ¦   ¦       TESDataHandler.cpp
+¦   ¦       ¦   ¦   ¦       TESDescription.cpp
+¦   ¦       ¦   ¦   ¦       TESFaction.cpp
+¦   ¦       ¦   ¦   ¦       TESFile.cpp
+¦   ¦       ¦   ¦   ¦       TESForm.cpp
+¦   ¦       ¦   ¦   ¦       TESHavokUtilities.cpp
+¦   ¦       ¦   ¦   ¦       TESHitEvent.cpp
+¦   ¦       ¦   ¦   ¦       TESLeveledList.cpp
+¦   ¦       ¦   ¦   ¦       TESNPC.cpp
+¦   ¦       ¦   ¦   ¦       TESObjectARMA.cpp
+¦   ¦       ¦   ¦   ¦       TESObjectARMO.cpp
+¦   ¦       ¦   ¦   ¦       TESObjectBOOK.cpp
+¦   ¦       ¦   ¦   ¦       TESObjectCELL.cpp
+¦   ¦       ¦   ¦   ¦       TESObjectREFR.cpp
+¦   ¦       ¦   ¦   ¦       TESObjectSTAT.cpp
+¦   ¦       ¦   ¦   ¦       TESObjectWEAP.cpp
+¦   ¦       ¦   ¦   ¦       TESQuest.cpp
+¦   ¦       ¦   ¦   ¦       TESRace.cpp
+¦   ¦       ¦   ¦   ¦       TESSpellList.cpp
+¦   ¦       ¦   ¦   ¦       TESTopic.cpp
+¦   ¦       ¦   ¦   ¦       TESTopicInfo.cpp
+¦   ¦       ¦   ¦   ¦       TESWorldSpace.cpp
+¦   ¦       ¦   ¦   ¦       ThumbstickEvent.cpp
+¦   ¦       ¦   ¦   ¦       TypeInfo.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---U
+¦   ¦       ¦   ¦   ¦       UI.cpp
+¦   ¦       ¦   ¦   ¦       UI3DSceneManager.cpp
+¦   ¦       ¦   ¦   ¦       UIBlurManager.cpp
+¦   ¦       ¦   ¦   ¦       UIMessageQueue.cpp
+¦   ¦       ¦   ¦   ¦       UnlinkedTypes.cpp
+¦   ¦       ¦   ¦   ¦       UserEvents.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---V
+¦   ¦       ¦   ¦   ¦       Variable.cpp
+¦   ¦       ¦   ¦   ¦       VirtualMachine.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---Z
+¦   ¦       ¦   ¦           ZeroFunctionArguments.cpp
+¦   ¦       ¦   ¦           
+¦   ¦       ¦   +---REL
+¦   ¦       ¦   ¦       ID.cpp
+¦   ¦       ¦   ¦       Module.cpp
+¦   ¦       ¦   ¦       Relocation.cpp
+¦   ¦       ¦   ¦       Version.cpp
+¦   ¦       ¦   ¦       
+¦   ¦       ¦   +---REX
+¦   ¦       ¦   ¦   +---W32
+¦   ¦       ¦   ¦           ADVAPI32.cpp
+¦   ¦       ¦   ¦           D3D11.cpp
+¦   ¦       ¦   ¦           D3DCOMPILER.cpp
+¦   ¦       ¦   ¦           DBGHELP.cpp
+¦   ¦       ¦   ¦           DXGI.cpp
+¦   ¦       ¦   ¦           KERNEL32.cpp
+¦   ¦       ¦   ¦           OLE32.cpp
+¦   ¦       ¦   ¦           SHELL32.cpp
+¦   ¦       ¦   ¦           USER32.cpp
+¦   ¦       ¦   ¦           VERSION.cpp
+¦   ¦       ¦   ¦           
+¦   ¦       ¦   +---SKSE
+¦   ¦       ¦       ¦   API.cpp
+¦   ¦       ¦       ¦   IAT.cpp
+¦   ¦       ¦       ¦   InputMap.cpp
+¦   ¦       ¦       ¦   Interfaces.cpp
+¦   ¦       ¦       ¦   Logger.cpp
+¦   ¦       ¦       ¦   RegistrationSet.cpp
+¦   ¦       ¦       ¦   RegistrationSetUnique.cpp
+¦   ¦       ¦       ¦   Trampoline.cpp
+¦   ¦       ¦       ¦   Translation.cpp
+¦   ¦       ¦       ¦   
+¦   ¦       ¦       +---Impl
+¦   ¦       ¦               PCH.cpp
+¦   ¦       ¦               
+¦   ¦       +---tests
+¦   ¦       ¦   ¦   Main.cpp
+¦   ¦       ¦   ¦   
+¦   ¦       ¦   +---RE
+¦   ¦       ¦   ¦   +---A
+¦   ¦       ¦   ¦   ¦       ActorValues.test.cpp
+¦   ¦       ¦   ¦   ¦       
+¦   ¦       ¦   ¦   +---F
+¦   ¦       ¦   ¦           FormTypes.test.cpp
+¦   ¦       ¦   ¦           
+¦   ¦       ¦   +---REL
+¦   ¦       ¦   ¦       Relocation.test.cpp
+¦   ¦       ¦   ¦       version-1-4-15-0.csv
+¦   ¦       ¦   ¦       version-1-5-97-0.bin
+¦   ¦       ¦   ¦       versionlib-1-6-353-0.bin
+¦   ¦       ¦   ¦       
+¦   ¦       ¦   +---SKSE
+¦   ¦       ¦           Interfaces.test.cpp
+¦   ¦       ¦           Trampoline.test.cpp
+¦   ¦       ¦           
+¦   ¦       +---test_package
+¦   ¦               CMakeLists.txt
+¦   ¦               conanfile.txt
+¦   ¦               Main.cpp
+¦   ¦               
+¦   +---output
+¦   ¦       SkyrimMCPPlugin.dll
+¦   ¦       
+¦   +---src
+¦           CombatAnalysis.cpp
+¦           CombatAnalysis.h
+¦           EventSystem.cpp
+¦           EventSystem.h
+¦           GameInterface.h
+¦           Helpers.h
+¦           InventoryManager.cpp
+¦           InventoryManager.h
+¦           Main.cpp
+¦           NPCManager.cpp
+¦           NPCManager.h
+¦           PipeServer.cpp
+¦           PipeServer.h
+¦           PlayerQueries.cpp
+¦           PlayerQueries.h
+¦           Protocol.cpp
+¦           Protocol.h
+¦           QuestManager.cpp
+¦           QuestManager.h
+¦           TaskQueue.cpp
+¦           TaskQueue.h
+¦           UtilityManager.cpp
+¦           UtilityManager.h
+¦           WorldManager.cpp
+¦           WorldManager.h
+¦           
++---src
+        console-injector.ts
+        index.ts
+        memory-reader.ts
+        skyrim-offsets.ts
+        types.ts
+        

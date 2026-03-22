@@ -6,6 +6,7 @@
 // (Protocol.cpp) continue to work without modification.
 
 #include "Helpers.h"
+#include "CombatAnalysis.h"
 #include "PlayerQueries.h"
 #include "InventoryManager.h"
 #include "QuestManager.h"
@@ -25,6 +26,11 @@ namespace SkyrimMCP {
 
         // === Helpers / Console ===
         inline json ExecuteConsoleCommand(const std::string& command) { return Helpers::ExecuteConsoleCommand(command); }
+
+        // === Combat (CombatAnalysis) ===
+        inline json GetCombatState() { return CombatAnalysis::GetCombatState(); }
+        inline json GetDamageStats() { return CombatAnalysis::GetDamageStats(); }
+        inline json GetThreats(float radius) { return CombatAnalysis::GetThreats(radius); }
 
         // === Player State (PlayerQueries) ===
         inline json GetPlayerInfo() { return PlayerQueries::GetPlayerInfo(); }

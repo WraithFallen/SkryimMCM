@@ -33,12 +33,14 @@ set(SOURCES
     src/UtilityManager.cpp
     src/TaskQueue.cpp
     src/EventSystem.cpp
+    src/CombatAnalysis.cpp
 )
 
 set(HEADERS
     src/PipeServer.h
     src/Protocol.h
     src/GameInterface.h
+    src/CombatAnalysis.h
     src/Helpers.h
     src/PlayerQueries.h
     src/InventoryManager.h

@@ -14,6 +14,14 @@ namespace {
         switch (a_msg->type) {
             case SKSE::MessagingInterface::kDataLoaded:
                 SKSE::log::info("Game data loaded, starting systems...");
+
+                // Install console output hook (late — after engine is initialized)
+                try {
+                    SkyrimMCP::Helpers::InstallConsoleHook();
+                } catch (...) {
+                    SKSE::log::warn("Console output hook failed to install — output capture disabled");
+                }
+
                 SkyrimMCP::EventSystem::GetSingleton().Register();
                 SKSE::log::info("Event system registered");
                 g_pipeServer = std::make_unique<SkyrimMCP::PipeServer>();
@@ -58,10 +66,7 @@ SKSEPluginLoad(const SKSE::LoadInterface* a_skse) {
 
     SKSE::Init(a_skse);
 
-    // NOTE: VPrint hook disabled — write_branch<6> crashes because the
-    // function prologue isn't suitable for relocation. Console output
-    // capture falls back to lastMessage. See BUG-006.
-    // SkyrimMCP::Helpers::InstallConsoleHook();
+    // VPrint hook is installed later in kDataLoaded callback
 
     auto messaging = SKSE::GetMessagingInterface();
     if (!messaging->RegisterListener(MessageCallback)) {

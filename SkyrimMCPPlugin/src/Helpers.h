@@ -110,10 +110,13 @@ namespace SkyrimMCP::Helpers {
     inline ConsolePrint_t* OriginalVPrint = nullptr;
 
     // Our detour — captures output then calls original
+    // NOTE: This function replaces VPrint in memory. It MUST have the same
+    // calling convention and signature. On x64, member functions use
+    // RCX=this, RDX=fmt, R8=va_list (fastcall).
     inline void HookedVPrint(RE::ConsoleLog* a_this, const char* a_fmt, std::va_list a_args) {
+        // Capture output if active
         if (IsCapturing() && a_fmt) {
             try {
-                // Copy va_list since we need it twice (once for capture, once for original)
                 va_list argsCopy;
                 va_copy(argsCopy, a_args);
                 char buf[4096];
@@ -121,30 +124,53 @@ namespace SkyrimMCP::Helpers {
                 va_end(argsCopy);
                 if (len > 0) {
                     std::lock_guard lock(GetCaptureMutex());
-                    GetCaptureBuffer().append(buf, std::min(len, (int)sizeof(buf) - 1));
-                    GetCaptureBuffer() += "\n";
+                    auto& capBuf = GetCaptureBuffer();
+                    if (capBuf.size() < 65536) {
+                        capBuf.append(buf, std::min(len, (int)sizeof(buf) - 1));
+                        capBuf += "\n";
+                    }
                 }
             } catch (...) {}
         }
-        // Call original
+        // Call original — critical: if null, output is lost but no crash
         if (OriginalVPrint) {
             OriginalVPrint(a_this, a_fmt, a_args);
         }
     }
 
-    // Install the hook — call once during plugin init
+    // Install the hook — call once after engine init (kDataLoaded)
     inline void InstallConsoleHook() {
         // VPrint is at RELOCATION_ID(50180, 51110)
         REL::Relocation<std::uintptr_t> target{ RELOCATION_ID(50180, 51110) };
 
+        SKSE::log::info("Attempting console hook at {:X}", target.address());
+
+        // Verify the target looks valid
+        auto* ptr = reinterpret_cast<std::uint8_t*>(target.address());
+        if (!ptr) {
+            SKSE::log::error("Console hook target is null");
+            return;
+        }
+
         auto& trampoline = SKSE::GetTrampoline();
-        trampoline.create(64);
+        trampoline.create(128);
 
-        // Write a 6-byte branch (jmp) at the start of VPrint to our hook
-        OriginalVPrint = reinterpret_cast<ConsolePrint_t*>(
-            trampoline.write_branch<6>(target.address(), reinterpret_cast<std::uintptr_t>(&HookedVPrint)));
+        // Try write_branch<5> (standard 5-byte jmp rel32)
+        try {
+            OriginalVPrint = reinterpret_cast<ConsolePrint_t*>(
+                trampoline.write_branch<5>(target.address(), reinterpret_cast<std::uintptr_t>(&HookedVPrint)));
 
-        SKSE::log::info("Console output hook installed at {:X}", target.address());
+            // Validate the returned original pointer
+            if (OriginalVPrint) {
+                SKSE::log::info("Console output hook installed successfully, original at {:X}",
+                    reinterpret_cast<std::uintptr_t>(OriginalVPrint));
+            } else {
+                SKSE::log::error("Console hook installed but original function pointer is null");
+            }
+        } catch (const std::exception& e) {
+            SKSE::log::error("Console hook failed: {}", e.what());
+            OriginalVPrint = nullptr;
+        }
     }
 
     inline void BeginCapture() {

@@ -22,6 +22,7 @@ namespace SkyrimMCP {
         json GetCharacterBlueprint();
         json IsInCombat();
         json GetMagicResistances();
+        json GetDiseaseStatus();
     }
 
 }

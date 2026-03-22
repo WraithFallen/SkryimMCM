@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using ModelContextProtocol.Server;
 
@@ -213,5 +214,77 @@ public class WorldTools : ToolBase
         var data = await _pipe.SendRequestAsync("clear_bounty", new JsonObject { ["factionFormId"] = factionFormId });
         await NotifyInGame("Bounty cleared");
         return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
+    [Description("Scan nearby containers for valuable loot. Finds all containers within radius, " +
+        "reads their inventories, and returns items sorted by value. " +
+        "Shows container name, distance, locked status, and top items by value.")]
+    public async Task<object> ScanLoot(float radius = 2048, int minValue = 10)
+    {
+        // Step 1: find nearby containers
+        var objectsData = await _pipe.SendRequestAsync("get_nearby_objects", new JsonObject
+        {
+            ["radius"] = radius,
+            ["type"] = "container"
+        });
+
+        var objects = objectsData?["objects"]?.AsArray();
+        if (objects == null || objects.Count == 0)
+            return new { containers = Array.Empty<object>(), message = "No containers nearby" };
+
+        var results = new List<object>();
+
+        // Step 2: read each container's inventory
+        foreach (var obj in objects)
+        {
+            var refId = obj?["refId"]?.GetValue<string>();
+            if (string.IsNullOrEmpty(refId)) continue;
+
+            try
+            {
+                var invData = await _pipe.SendRequestAsync("get_container_inventory", new JsonObject
+                {
+                    ["refId"] = refId
+                });
+
+                var items = invData?["items"]?.AsArray();
+                if (items == null || items.Count == 0) continue;
+
+                // Filter and sort by value
+                var valuableItems = items
+                    .Where(i => (i?["value"]?.GetValue<int>() ?? 0) >= minValue)
+                    .OrderByDescending(i => i?["value"]?.GetValue<int>() ?? 0)
+                    .Take(10)
+                    .Select(i => new
+                    {
+                        name = i?["name"]?.GetValue<string>() ?? "",
+                        value = i?["value"]?.GetValue<int>() ?? 0,
+                        count = i?["count"]?.GetValue<int>() ?? 0,
+                        formId = i?["formId"]?.GetValue<string>() ?? ""
+                    })
+                    .ToList();
+
+                if (valuableItems.Count == 0) continue;
+
+                var totalValue = valuableItems.Sum(i => i.value * i.count);
+
+                results.Add(new
+                {
+                    container = obj?["name"]?.GetValue<string>() ?? "Unknown",
+                    refId,
+                    distance = obj?["distance"]?.GetValue<float>() ?? 0,
+                    isLocked = obj?["isLocked"]?.GetValue<bool>() ?? false,
+                    totalValue,
+                    topItems = valuableItems
+                });
+            }
+            catch { continue; }
+        }
+
+        // Sort containers by total value
+        var sorted = results.OrderByDescending(r => ((dynamic)r).totalValue).ToList();
+
+        return new { containers = sorted, count = sorted.Count };
     }
 }

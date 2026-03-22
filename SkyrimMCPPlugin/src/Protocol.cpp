@@ -149,9 +149,7 @@ namespace SkyrimMCP::Protocol {
                 return MakeResponse(id, false, {}, result["error"].get<std::string>()).dump() + "\n";
             return MakeResponse(id, true, result).dump() + "\n";
         };
-        formIdParam("get_script_functions", "className", [](const std::string& c) {
-            return GameInterface::GetScriptFunctions(c);
-        });
+        // get_script_functions is registered below with other formIdParam entries
         registry["call_papyrus_function"] = [](const std::string& id, const json& params) {
             std::string className = params.value("className", "");
             std::string functionName = params.value("functionName", "");
@@ -209,6 +207,7 @@ namespace SkyrimMCP::Protocol {
         formIdParam("clear_bounty", "factionFormId", [](const std::string& f) { return GameInterface::ClearBounty(f); });
         formIdParam("get_spell_details", "formId", [](const std::string& f) { return GameInterface::GetSpellDetails(f); });
         formIdParam("get_enchantment_info", "formId", [](const std::string& f) { return GameInterface::GetEnchantmentInfo(f); });
+        formIdParam("get_script_functions", "className", [](const std::string& c) { return GameInterface::GetScriptFunctions(c); });
 
         // === Multi-param handlers ===
 

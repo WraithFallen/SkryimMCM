@@ -39,7 +39,7 @@ namespace SkyrimMCP::PapyrusBridge {
         // Match: [ReturnType] function FuncName(params) [global] native
         std::regex funcRegex(
             R"(^\s*(?:(\w+)\s+)?function\s+(\w+)\s*\(([^)]*)\)\s*(.*?native.*?)$)",
-            std::regex::icase | std::regex::multiline);
+            std::regex::icase);
 
         std::regex paramRegex(R"((\w+)\s+(\w+))");
 
@@ -107,7 +107,7 @@ namespace SkyrimMCP::PapyrusBridge {
 
                 // Get script name from scriptName declaration or filename
                 std::string scriptName = entry.path().stem().string();
-                std::regex scriptNameRegex(R"(^\s*scriptName\s+(\w+))", std::regex::icase | std::regex::multiline);
+                std::regex scriptNameRegex(R"(^\s*scriptName\s+(\w+))", std::regex::icase);
                 std::smatch snMatch;
                 if (std::regex_search(content, snMatch, scriptNameRegex)) {
                     scriptName = snMatch[1].str();
@@ -223,17 +223,17 @@ namespace SkyrimMCP::PapyrusBridge {
         void operator()(RE::BSScript::Variable a_result) override {
             try {
                 json result;
-                auto type = a_result.GetType();
+                auto rawType = a_result.GetType().GetRawType();
 
-                if (type == RE::BSScript::TypeInfo::RawType::kNone) {
+                if (rawType == RE::BSScript::TypeInfo::RawType::kNone) {
                     result = nullptr;
-                } else if (type == RE::BSScript::TypeInfo::RawType::kString) {
+                } else if (rawType == RE::BSScript::TypeInfo::RawType::kString) {
                     result = std::string(a_result.GetString());
-                } else if (type == RE::BSScript::TypeInfo::RawType::kInt) {
+                } else if (rawType == RE::BSScript::TypeInfo::RawType::kInt) {
                     result = a_result.GetSInt();
-                } else if (type == RE::BSScript::TypeInfo::RawType::kFloat) {
+                } else if (rawType == RE::BSScript::TypeInfo::RawType::kFloat) {
                     result = a_result.GetFloat();
-                } else if (type == RE::BSScript::TypeInfo::RawType::kBool) {
+                } else if (rawType == RE::BSScript::TypeInfo::RawType::kBool) {
                     result = a_result.GetBool();
                 } else {
                     result = "complex_type";

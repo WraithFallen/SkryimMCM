@@ -87,9 +87,10 @@ namespace SkyrimMCP::Helpers {
 
     // ==================== Console Output Capture ====================
     //
-    // Console commands only write output to ConsoleLog when the console
-    // menu is active. We briefly open the console UI before executing,
-    // then read lastMessage and close it.
+    // Best-effort capture via lastMessage. Console output is not reliably
+    // captured — commands execute silently via CompileAndRun without writing
+    // to ConsoleLog. Use dedicated query tools instead of relying on console
+    // output (GetPlayerInfo, GetSkillLevels, GetQuestStages, etc.).
 
     inline void ClearConsoleOutput() {
         auto* console = RE::ConsoleLog::GetSingleton();
@@ -102,28 +103,6 @@ namespace SkyrimMCP::Helpers {
         auto* console = RE::ConsoleLog::GetSingleton();
         if (!console) return "";
         return std::string(console->lastMessage);
-    }
-
-    // Open the console menu so Print calls write to lastMessage
-    inline void OpenConsoleMenu() {
-        auto* ui = RE::UI::GetSingleton();
-        if (ui && !ui->IsMenuOpen(RE::Console::MENU_NAME)) {
-            auto* queue = RE::UIMessageQueue::GetSingleton();
-            if (queue) {
-                queue->AddMessage(RE::Console::MENU_NAME, RE::UI_MESSAGE_TYPE::kShow, nullptr);
-            }
-        }
-    }
-
-    // Close the console menu
-    inline void CloseConsoleMenu() {
-        auto* ui = RE::UI::GetSingleton();
-        if (ui && ui->IsMenuOpen(RE::Console::MENU_NAME)) {
-            auto* queue = RE::UIMessageQueue::GetSingleton();
-            if (queue) {
-                queue->AddMessage(RE::Console::MENU_NAME, RE::UI_MESSAGE_TYPE::kHide, nullptr);
-            }
-        }
     }
 
     // ==================== Console Command Execution ====================

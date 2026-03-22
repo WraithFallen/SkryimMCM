@@ -649,6 +649,66 @@ namespace SkyrimMCP::PlayerQueries {
         }
     }
 
+    json GetEnchantmentInfo(const std::string& formIdHex) {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        try {
+            auto formId = Helpers::ParseFormId(formIdHex);
+
+            // Search player inventory for this item
+            auto inv = player->GetInventory();
+            for (auto& [form, data] : inv) {
+                if (!form || form->GetFormID() != formId) continue;
+
+                auto& entryData = data.second;
+                if (!entryData) continue;
+
+                json result;
+                result["formId"] = formIdHex;
+                result["name"] = form->GetName();
+
+                const char* displayName = entryData->GetDisplayName();
+                if (displayName && displayName[0]) {
+                    result["displayName"] = displayName;
+                }
+
+                auto* enchantment = entryData->GetEnchantment();
+                if (!enchantment) {
+                    result["enchanted"] = false;
+                    return result;
+                }
+
+                result["enchanted"] = true;
+                result["enchantmentName"] = enchantment->GetName();
+                result["enchantmentFormId"] = std::format("{:08X}", enchantment->GetFormID());
+
+                auto charge = entryData->GetEnchantmentCharge();
+                if (charge.has_value()) {
+                    result["charge"] = charge.value();
+                }
+
+                json effects = json::array();
+                for (auto* effect : enchantment->effects) {
+                    if (!effect || !effect->baseEffect) continue;
+                    json e;
+                    e["name"] = effect->baseEffect->GetName();
+                    e["magnitude"] = effect->effectItem.magnitude;
+                    e["duration"] = effect->effectItem.duration;
+                    e["area"] = effect->effectItem.area;
+                    effects.push_back(e);
+                }
+                result["effects"] = effects;
+
+                return result;
+            }
+
+            return {{"error", "Item not found in inventory: " + formIdHex}};
+        } catch (...) {
+            return {{"error", "Failed to get enchantment info: " + formIdHex}};
+        }
+    }
+
     json GetDiseaseStatus() {
         auto* player = RE::PlayerCharacter::GetSingleton();
         if (!player) return {{"error", "Player not available"}};

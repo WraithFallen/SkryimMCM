@@ -165,6 +165,16 @@ public class PlayerTools : ToolBase
     }
 
     [McpServerTool]
+    [Description("Get enchantment details for an item in the player's inventory by FormID. " +
+        "Returns enchantment name, charge level, and full effect list with magnitudes. " +
+        "Also returns the item's display name if it was custom-renamed.")]
+    public async Task<object> GetEnchantmentInfo(string formId)
+    {
+        var data = await _pipe.SendRequestAsync("get_enchantment_info", new JsonObject { ["formId"] = formId });
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
     [Description("Get the player's magic resistance values — magic, fire, frost, shock, poison, and disease resistance percentages.")]
     public async Task<object> GetMagicResistances()
     {

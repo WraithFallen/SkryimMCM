@@ -4,6 +4,8 @@
 #include <RE/Skyrim.h>
 #include <SKSE/SKSE.h>
 
+#include <unordered_set>
+
 #include <format>
 
 namespace SkyrimMCP::NPCManager {
@@ -470,9 +472,11 @@ namespace SkyrimMCP::NPCManager {
         if (!player) return {{"error", "Player not available"}};
 
         json factions = json::array();
+        std::unordered_set<RE::FormID> seen;
 
-        player->VisitFactions([&](RE::TESFaction* faction, std::int8_t rank) -> bool {
-            if (!faction) return true;
+        auto addFaction = [&](RE::TESFaction* faction, std::int8_t rank) {
+            if (!faction || seen.count(faction->GetFormID())) return;
+            seen.insert(faction->GetFormID());
             try {
                 json f;
                 f["formId"] = std::format("{:08X}", faction->GetFormID());
@@ -481,7 +485,35 @@ namespace SkyrimMCP::NPCManager {
                 f["rank"] = rank;
                 factions.push_back(f);
             } catch (...) {}
-            return true;  // continue visiting
+        };
+
+        // 1. Base TESNPC factions (from race/class/record)
+        auto* base = player->GetActorBase();
+        if (base) {
+            for (auto& factionRank : base->factions) {
+                if (factionRank.faction) {
+                    addFaction(factionRank.faction, factionRank.rank);
+                }
+            }
+        }
+
+        // 2. Runtime faction changes (via ExtraData)
+        auto* extraList = &player->extraList;
+        if (extraList) {
+            auto* factionChanges = extraList->GetByType<RE::ExtraFactionChanges>();
+            if (factionChanges) {
+                for (auto& factionRank : factionChanges->factionChanges) {
+                    if (factionRank.faction) {
+                        addFaction(factionRank.faction, factionRank.rank);
+                    }
+                }
+            }
+        }
+
+        // 3. VisitFactions as fallback for any we missed
+        player->VisitFactions([&](RE::TESFaction* faction, std::int8_t rank) -> bool {
+            if (faction) addFaction(faction, rank);
+            return true;
         });
 
         return {{"factions", factions}, {"count", factions.size()}};

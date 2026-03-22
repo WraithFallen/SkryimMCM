@@ -191,4 +191,52 @@ public class PlayerTools : ToolBase
         var data = await _pipe.SendRequestAsync("get_magic_resistances");
         return DeserializeResponse(data);
     }
+
+    [McpServerTool]
+    [Description("Take a full game state snapshot — exports character blueprint to a file AND saves the game. " +
+        "Pass an outputDir (e.g., 'C:\\Users\\cory\\Downloads') and the snapshot is timestamped automatically. " +
+        "Creates both a .json blueprint file and an in-game save with matching names.")]
+    public async Task<object> TakeSnapshot(string outputDir)
+    {
+        try
+        {
+            // Get player info for naming
+            var playerData = await _pipe.SendRequestAsync("get_player_info");
+            var name = playerData?["name"]?.GetValue<string>() ?? "Player";
+            var level = playerData?["level"]?.GetValue<int>() ?? 0;
+            var cell = playerData?["cellName"]?.GetValue<string>() ?? "Unknown";
+            var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+
+            var cleanName = string.Join("_", name.Split(Path.GetInvalidFileNameChars()));
+            var cleanCell = string.Join("_", cell.Split(Path.GetInvalidFileNameChars()));
+            var baseName = $"Snapshot_{cleanName}_Lv{level}_{cleanCell}_{timestamp}";
+
+            // Export blueprint to file
+            var blueprintPath = Path.Combine(outputDir, baseName + ".json");
+            var blueprintData = await _pipe.SendRequestAsync("get_character_blueprint");
+            if (blueprintData != null)
+            {
+                var jsonString = blueprintData.ToJsonString(new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+                await File.WriteAllTextAsync(blueprintPath, jsonString);
+            }
+
+            // Save the game
+            await _pipe.SendRequestAsync("save_game", new JsonObject { ["saveName"] = baseName });
+
+            await NotifyInGame("Snapshot saved");
+
+            return new
+            {
+                success = true,
+                snapshotName = baseName,
+                blueprintPath,
+                saveName = baseName,
+                message = $"Snapshot saved: {baseName}"
+            };
+        }
+        catch (Exception ex)
+        {
+            return new { error = $"Snapshot failed: {ex.Message}" };
+        }
+    }
 }

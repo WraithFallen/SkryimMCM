@@ -545,6 +545,11 @@ namespace SkyrimMCP::PlayerQueries {
         // Favorites
         blueprint["favorites"] = GetFavorites();
 
+        // Phase 6+ additions
+        blueprint["resistances"] = GetMagicResistances();
+        blueprint["diseaseStatus"] = GetDiseaseStatus();
+        blueprint["powers"] = GetPowers();
+
         return blueprint;
     }
 

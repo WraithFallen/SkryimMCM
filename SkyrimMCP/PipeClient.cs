@@ -7,7 +7,7 @@ namespace SkyrimMCP;
 /// <summary>
 /// Named pipe client that communicates with the SKSE plugin running inside Skyrim
 /// </summary>
-public class PipeClient : IDisposable
+public class PipeClient : IPipeClient
 {
     private const string PipeName = "SkyrimMCP";
     private const int ConnectTimeoutMs = 3000;

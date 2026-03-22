@@ -25,7 +25,12 @@ set(SOURCES
     src/Main.cpp
     src/PipeServer.cpp
     src/Protocol.cpp
-    src/GameInterface.cpp
+    src/PlayerQueries.cpp
+    src/InventoryManager.cpp
+    src/QuestManager.cpp
+    src/NPCManager.cpp
+    src/WorldManager.cpp
+    src/UtilityManager.cpp
     src/TaskQueue.cpp
     src/EventSystem.cpp
 )
@@ -34,6 +39,13 @@ set(HEADERS
     src/PipeServer.h
     src/Protocol.h
     src/GameInterface.h
+    src/Helpers.h
+    src/PlayerQueries.h
+    src/InventoryManager.h
+    src/QuestManager.h
+    src/NPCManager.h
+    src/WorldManager.h
+    src/UtilityManager.h
     src/TaskQueue.h
     src/EventSystem.h
 )

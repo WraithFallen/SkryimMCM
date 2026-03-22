@@ -1,4 +1,5 @@
 #include "EventSystem.h"
+#include "Helpers.h"
 
 #include <format>
 
@@ -108,18 +109,9 @@ namespace SkyrimMCP {
         return !_eventQueue.empty();
     }
 
-    static std::string GetRefName(RE::TESObjectREFR* ref) {
-        if (!ref) return "unknown";
-        auto name = ref->GetName();
-        return (name && name[0]) ? name : std::format("{:08X}", ref->GetFormID());
-    }
-
-    static std::string GetFormName(RE::FormID formId) {
-        auto* form = RE::TESForm::LookupByID(formId);
-        if (!form) return std::format("{:08X}", formId);
-        auto name = form->GetName();
-        return (name && name[0]) ? name : std::format("{:08X}", formId);
-    }
+    // Use shared helpers from Helpers.h
+    using Helpers::GetRefName;
+    using Helpers::GetFormName;
 
     // ==================== Event Handlers ====================
 

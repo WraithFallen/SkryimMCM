@@ -1,5 +1,18 @@
 #pragma once
 
+// GameInterface.h — Facade header for backward compatibility with Protocol.cpp
+// All functions are now in domain-specific modules under namespace SkyrimMCP.
+// This header re-exports them under SkyrimMCP::GameInterface so existing callers
+// (Protocol.cpp) continue to work without modification.
+
+#include "Helpers.h"
+#include "PlayerQueries.h"
+#include "InventoryManager.h"
+#include "QuestManager.h"
+#include "NPCManager.h"
+#include "WorldManager.h"
+#include "UtilityManager.h"
+
 #include <nlohmann/json.hpp>
 #include <string>
 
@@ -9,102 +22,142 @@ namespace SkyrimMCP {
 
     // All functions MUST be called on the game thread (via TaskQueue)
     namespace GameInterface {
-        // Player state
-        json GetPlayerInfo();
-        json GetInventory();
-        json GetGoldCount();
-        json GetActiveEffects();
 
-        // World interaction
-        json ExecuteConsoleCommand(const std::string& command);
-        json ToggleGodMode();
-        json ToggleCollision();
-        json AddItem(const std::string& formIdHex, int count);
-        json RemoveItem(const std::string& formIdHex, int count);
-        json SetActorValue(const std::string& attribute, float value);
-        json Teleport(const std::string& cellId);
-        json GetNearbyNPCs(float radius);
+        // === Helpers / Console ===
+        inline json ExecuteConsoleCommand(const std::string& command) { return Helpers::ExecuteConsoleCommand(command); }
 
-        // Quest management
-        json GetQuestInfo();
-        json GetQuestStage(const std::string& formIdHex);
-        json SetQuestStage(const std::string& formIdHex, int stage);
-        json CompleteQuest(const std::string& formIdHex);
-        json StartQuest(const std::string& formIdHex);
-        json StopQuest(const std::string& formIdHex);
+        // === Player State (PlayerQueries) ===
+        inline json GetPlayerInfo() { return PlayerQueries::GetPlayerInfo(); }
+        inline json GetInventory() { return PlayerQueries::GetInventory(); }
+        inline json GetGoldCount() { return PlayerQueries::GetGoldCount(); }
+        inline json GetActiveEffects() { return PlayerQueries::GetActiveEffects(); }
+        inline json GetEquippedItems() { return PlayerQueries::GetEquippedItems(); }
+        inline json GetKnownSpells() { return PlayerQueries::GetKnownSpells(); }
+        inline json GetKnownShouts() { return PlayerQueries::GetKnownShouts(); }
+        inline json GetSkillLevels() { return PlayerQueries::GetSkillLevels(); }
+        inline json GetPerks() { return PlayerQueries::GetPerks(); }
+        inline json GetAppearance() { return PlayerQueries::GetAppearance(); }
+        inline json GetFavorites() { return PlayerQueries::GetFavorites(); }
+        inline json GetCharacterBlueprint() { return PlayerQueries::GetCharacterBlueprint(); }
+        inline json IsInCombat() { return PlayerQueries::IsInCombat(); }
 
-        // Quest Intelligence (Phase 4)
-        json GetQuestStages(const std::string& formIdHex);
-        json GetQuestAliases(const std::string& formIdHex);
-        json GetQuestItems();
+        // === Inventory (InventoryManager) ===
+        inline json AddItem(const std::string& formIdHex, int count) { return InventoryManager::AddItem(formIdHex, count); }
+        inline json RemoveItem(const std::string& formIdHex, int count) { return InventoryManager::RemoveItem(formIdHex, count); }
+        inline json EquipItem(const std::string& formIdHex) { return InventoryManager::EquipItem(formIdHex); }
+        inline json UnequipItem(const std::string& formIdHex) { return InventoryManager::UnequipItem(formIdHex); }
 
-        // Spells / perks / effects
-        json AddSpell(const std::string& formIdHex);
-        json RemoveSpell(const std::string& formIdHex);
-        json AddPerk(const std::string& formIdHex);
-        json RemovePerk(const std::string& formIdHex);
+        // === Quests (QuestManager) ===
+        inline json GetQuestInfo() { return QuestManager::GetQuestInfo(); }
+        inline json GetQuestStage(const std::string& formIdHex) { return QuestManager::GetQuestStage(formIdHex); }
+        inline json GetQuestStages(const std::string& formIdHex) { return QuestManager::GetQuestStages(formIdHex); }
+        inline json SetQuestStage(const std::string& formIdHex, int stage) { return QuestManager::SetQuestStage(formIdHex, stage); }
+        inline json CompleteQuest(const std::string& formIdHex) { return QuestManager::CompleteQuest(formIdHex); }
+        inline json StartQuest(const std::string& formIdHex) { return QuestManager::StartQuest(formIdHex); }
+        inline json StopQuest(const std::string& formIdHex) { return QuestManager::StopQuest(formIdHex); }
+        inline json GetQuestAliases(const std::string& formIdHex) { return QuestManager::GetQuestAliases(formIdHex); }
+        inline json GetQuestItems() { return QuestManager::GetQuestItems(); }
 
-        // NPC interaction
-        json GetActorInfo(const std::string& formIdHex);
-        json SetActorValueOn(const std::string& actorFormIdHex, const std::string& attribute, float value);
-        json MoveActorTo(const std::string& actorFormIdHex, const std::string& targetCellOrRefId);
-        json SetRelationshipRank(const std::string& actorFormIdHex, int rank);
+        // === Spells / Perks (still use console commands via Helpers) ===
+        inline json AddSpell(const std::string& formIdHex) {
+            try {
+                auto* spell = RE::TESForm::LookupByID<RE::SpellItem>(Helpers::ParseFormId(formIdHex));
+                if (!spell) return {{"error", "Spell not found: " + formIdHex}};
+                auto* player = RE::PlayerCharacter::GetSingleton();
+                if (!player) return {{"error", "Player not available"}};
+                player->AddSpell(spell);
+                return {{"added", true}, {"formId", formIdHex}, {"name", spell->GetName()}};
+            } catch (...) {
+                return {{"error", "Invalid FormID: " + formIdHex}};
+            }
+        }
+        inline json RemoveSpell(const std::string& formIdHex) {
+            return Helpers::ExecuteConsoleCommand(std::format("player.removespell {}", formIdHex));
+        }
+        inline json AddPerk(const std::string& formIdHex) {
+            try {
+                auto* perk = RE::TESForm::LookupByID<RE::BGSPerk>(Helpers::ParseFormId(formIdHex));
+                if (!perk) return {{"error", "Perk not found: " + formIdHex}};
+                auto* player = RE::PlayerCharacter::GetSingleton();
+                if (!player) return {{"error", "Player not available"}};
+                player->AddPerk(perk);
+                return {{"added", true}, {"formId", formIdHex}, {"name", perk->GetName()}};
+            } catch (...) {
+                return {{"error", "Invalid FormID: " + formIdHex}};
+            }
+        }
+        inline json RemovePerk(const std::string& formIdHex) {
+            return Helpers::ExecuteConsoleCommand(std::format("player.removeperk {}", formIdHex));
+        }
+        inline json UnlockShout(const std::string& formIdHex) {
+            try {
+                auto formId = Helpers::ParseFormId(formIdHex);
+                auto* form = RE::TESForm::LookupByID(formId);
+                if (!form) return {{"error", "Form not found: " + formIdHex}};
 
-        // NPC & Faction (Phase 5)
-        json GetPlayerFactions();
-        json GetNPCDetailedInfo(const std::string& refFormIdHex);
-        json GetNPCInventory(const std::string& refFormIdHex);
-        json GetFollowers();
-        json GetDetectionLevel(const std::string& refFormIdHex);
+                auto* shout = form->As<RE::TESShout>();
+                if (shout) {
+                    for (int i = 0; i < 3; i++) {
+                        if (shout->variations[i].word) {
+                            auto wordId = std::format("{:08X}", shout->variations[i].word->GetFormID());
+                            Helpers::ExecuteConsoleCommand("player.teachword " + wordId);
+                            Helpers::ExecuteConsoleCommand("player.unlockword " + wordId);
+                        }
+                    }
+                    return {{"unlocked", true}, {"formId", formIdHex}, {"name", shout->GetName()}, {"type", "shout"}};
+                }
 
-        // Equipment
-        json EquipItem(const std::string& formIdHex);
-        json UnequipItem(const std::string& formIdHex);
+                auto* word = form->As<RE::TESWordOfPower>();
+                if (word) {
+                    Helpers::ExecuteConsoleCommand("player.teachword " + formIdHex);
+                    Helpers::ExecuteConsoleCommand("player.unlockword " + formIdHex);
+                    return {{"unlocked", true}, {"formId", formIdHex}, {"name", word->GetName()}, {"type", "word"}};
+                }
 
-        // World state
-        json GetGameTime();
-        json SetGameTime(float hours);
+                return {{"error", "Not a shout or word of power: " + formIdHex}};
+            } catch (...) {
+                return {{"error", "Failed to unlock: " + formIdHex}};
+            }
+        }
 
-        // World (Phase 3)
-        json GetWeather();
-        json SetWeather(const std::string& weatherFormIdOrName);
-        json ListWeathers();
-        json GetCellInfo();
-        json GetNearbyObjects(float radius, const std::string& typeFilter);
-        json UnlockDoor(const std::string& refFormIdHex);
-        json LockDoor(const std::string& refFormIdHex, int lockLevel);
-        json GetContainerInventory(const std::string& refFormIdHex);
-        json DiscoverAllMapMarkers();
+        // === NPC / Actor (NPCManager) ===
+        inline json GetNearbyNPCs(float radius) { return NPCManager::GetNearbyNPCs(radius); }
+        inline json GetActorInfo(const std::string& formIdHex) { return NPCManager::GetActorInfo(formIdHex); }
+        inline json GetNPCDetailedInfo(const std::string& refFormIdHex) { return NPCManager::GetNPCDetailedInfo(refFormIdHex); }
+        inline json GetNPCInventory(const std::string& refFormIdHex) { return NPCManager::GetNPCInventory(refFormIdHex); }
+        inline json GetFollowers() { return NPCManager::GetFollowers(); }
+        inline json GetDetectionLevel(const std::string& refFormIdHex) { return NPCManager::GetDetectionLevel(refFormIdHex); }
+        inline json MoveActorTo(const std::string& actorFormIdHex, const std::string& targetCellOrRefId) { return NPCManager::MoveActorTo(actorFormIdHex, targetCellOrRefId); }
+        inline json SetRelationshipRank(const std::string& actorFormIdHex, int rank) { return NPCManager::SetRelationshipRank(actorFormIdHex, rank); }
+        inline json KillActor(const std::string& refFormIdHex) { return NPCManager::KillActor(refFormIdHex); }
+        inline json GetCrosshairRef() { return NPCManager::GetCrosshairRef(); }
+        inline json SetActorValue(const std::string& attribute, float value) { return NPCManager::SetActorValue(attribute, value); }
+        inline json SetActorValueOn(const std::string& actorFormIdHex, const std::string& attribute, float value) { return NPCManager::SetActorValueOn(actorFormIdHex, attribute, value); }
+        inline json GetPlayerFactions() { return NPCManager::GetPlayerFactions(); }
 
-        // Targeting
-        json GetCrosshairRef();
-        json KillActor(const std::string& refFormIdHex);
-        json GetEquippedItems();
+        // === World (WorldManager) ===
+        inline json Teleport(const std::string& cellId) { return WorldManager::Teleport(cellId); }
+        inline json GetWeather() { return WorldManager::GetWeather(); }
+        inline json SetWeather(const std::string& weatherFormIdOrName) { return WorldManager::SetWeather(weatherFormIdOrName); }
+        inline json ListWeathers() { return WorldManager::ListWeathers(); }
+        inline json GetCellInfo() { return WorldManager::GetCellInfo(); }
+        inline json GetNearbyObjects(float radius, const std::string& typeFilter) { return WorldManager::GetNearbyObjects(radius, typeFilter); }
+        inline json UnlockDoor(const std::string& refFormIdHex) { return WorldManager::UnlockDoor(refFormIdHex); }
+        inline json LockDoor(const std::string& refFormIdHex, int lockLevel) { return WorldManager::LockDoor(refFormIdHex, lockLevel); }
+        inline json GetContainerInventory(const std::string& refFormIdHex) { return WorldManager::GetContainerInventory(refFormIdHex); }
+        inline json DiscoverAllMapMarkers() { return WorldManager::DiscoverAllMapMarkers(); }
+        inline json GetGameTime() { return WorldManager::GetGameTime(); }
+        inline json SetGameTime(float hours) { return WorldManager::SetGameTime(hours); }
+        inline json ToggleGodMode() { return WorldManager::ToggleGodMode(); }
+        inline json ToggleCollision() { return WorldManager::ToggleCollision(); }
 
-        // Character Blueprint (Phase 2)
-        json GetKnownSpells();
-        json GetKnownShouts();
-        json GetSkillLevels();
-        json GetPerks();
-        json UnlockShout(const std::string& formIdHex);
-        json GetCharacterBlueprint();
-        json GetAppearance();
-        json GetFavorites();
-
-        // Utility
-        json IsInCombat();
-        json GetLoadOrder();
-        json GetModFormIdPrefix(const std::string& modName);
-        json SaveGame(const std::string& saveName);
-
-        // Notifications
-        json ShowNotification(const std::string& message);
-
-        // Search
-        json SearchForms(const std::string& query, const std::string& formTypeFilter, int maxResults);
-
-        // Plugin detection
-        json GetLoadedSKSEPlugins();
+        // === Utility (UtilityManager) ===
+        inline json ShowNotification(const std::string& message) { return UtilityManager::ShowNotification(message); }
+        inline json SearchForms(const std::string& query, const std::string& formTypeFilter, int maxResults) { return UtilityManager::SearchForms(query, formTypeFilter, maxResults); }
+        inline json GetLoadedSKSEPlugins() { return UtilityManager::GetLoadedSKSEPlugins(); }
+        inline json SaveGame(const std::string& saveName) { return UtilityManager::SaveGame(saveName); }
+        inline json GetLoadOrder() { return UtilityManager::GetLoadOrder(); }
+        inline json GetModFormIdPrefix(const std::string& modName) { return UtilityManager::GetModFormIdPrefix(modName); }
     }
 
 }

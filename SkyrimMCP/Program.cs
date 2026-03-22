@@ -17,8 +17,9 @@ class Program
             consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace;
         });
 
-        // Register pipe client as singleton
+        // Register pipe client as singleton (concrete + interface)
         builder.Services.AddSingleton<PipeClient>();
+        builder.Services.AddSingleton<IPipeClient>(sp => sp.GetRequiredService<PipeClient>());
 
         // Configure MCP server with stdio transport and auto-discover tools
         builder.Services

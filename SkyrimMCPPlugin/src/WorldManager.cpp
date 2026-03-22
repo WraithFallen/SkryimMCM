@@ -45,34 +45,46 @@ namespace SkyrimMCP::WorldManager {
             weather = RE::TESForm::LookupByID<RE::TESWeather>(formId);
         } catch (...) {}
 
-        // Try by name or editor ID keyword
+        // Try by category keyword (snow, rain, clear, cloudy) using weather data flags
         if (!weather) {
             std::string lower = weatherFormIdOrName;
             std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+
+            // Map keywords to weather flags
+            std::optional<RE::TESWeather::WeatherDataFlag> targetFlag;
+            if (lower == "snow" || lower == "snowy") targetFlag = RE::TESWeather::WeatherDataFlag::kSnow;
+            else if (lower == "rain" || lower == "rainy") targetFlag = RE::TESWeather::WeatherDataFlag::kRainy;
+            else if (lower == "clear" || lower == "sunny" || lower == "pleasant") targetFlag = RE::TESWeather::WeatherDataFlag::kPleasant;
+            else if (lower == "cloudy" || lower == "overcast" || lower == "cloud") targetFlag = RE::TESWeather::WeatherDataFlag::kCloudy;
 
             auto* dataHandler = RE::TESDataHandler::GetSingleton();
             if (dataHandler) {
                 for (auto* form : dataHandler->GetFormArray<RE::TESWeather>()) {
                     if (!form) continue;
 
-                    // Check display name
+                    // Match by category flag
+                    if (targetFlag.has_value() && form->data.flags.all(*targetFlag)) {
+                        // Prefer Skyrim.esm weathers for basic categories
+                        auto* file = form->GetFile(0);
+                        if (file && std::string(file->fileName) == "Skyrim.esm") {
+                            weather = form;
+                            break;
+                        }
+                        if (!weather) weather = form;  // take first match as fallback
+                        continue;
+                    }
+
+                    // Also try name/editorId/formId matching
                     std::string name = form->GetName() ? form->GetName() : "";
                     std::string lowerName = name;
                     std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
 
-                    // Check editor ID (most weather forms use editor IDs like "SkyrimClear", "SkyrimSnow")
                     std::string editorId = form->GetFormEditorID() ? form->GetFormEditorID() : "";
                     std::string lowerEditorId = editorId;
                     std::transform(lowerEditorId.begin(), lowerEditorId.end(), lowerEditorId.begin(), ::tolower);
 
-                    // Also check FormID as string
-                    std::string formIdStr = std::format("{:08X}", form->GetFormID());
-                    std::string lowerFormId = formIdStr;
-                    std::transform(lowerFormId.begin(), lowerFormId.end(), lowerFormId.begin(), ::tolower);
-
                     if ((!lowerName.empty() && lowerName.find(lower) != std::string::npos) ||
-                        (!lowerEditorId.empty() && lowerEditorId.find(lower) != std::string::npos) ||
-                        lowerFormId.find(lower) != std::string::npos) {
+                        (!lowerEditorId.empty() && lowerEditorId.find(lower) != std::string::npos)) {
                         weather = form;
                         break;
                     }
@@ -93,10 +105,7 @@ namespace SkyrimMCP::WorldManager {
 
         json weathers = json::array();
 
-        auto& weatherArray = dataHandler->GetFormArray<RE::TESWeather>();
-        SKSE::log::info("ListWeathers: GetFormArray returned {} entries", weatherArray.size());
-
-        for (auto* form : weatherArray) {
+        for (auto* form : dataHandler->GetFormArray<RE::TESWeather>()) {
             if (!form) continue;
             try {
                 std::string name = form->GetName() ? form->GetName() : "";
@@ -107,20 +116,16 @@ namespace SkyrimMCP::WorldManager {
                 if (!name.empty()) w["name"] = name;
                 if (!editorId.empty()) w["editorId"] = editorId;
 
-                // Infer weather type from editor ID keywords
-                std::string lowerEditorId = editorId;
-                std::transform(lowerEditorId.begin(), lowerEditorId.end(), lowerEditorId.begin(), ::tolower);
-
-                if (lowerEditorId.find("clear") != std::string::npos) w["category"] = "clear";
-                else if (lowerEditorId.find("snow") != std::string::npos) w["category"] = "snow";
-                else if (lowerEditorId.find("rain") != std::string::npos) w["category"] = "rain";
-                else if (lowerEditorId.find("storm") != std::string::npos || lowerEditorId.find("thunder") != std::string::npos) w["category"] = "storm";
-                else if (lowerEditorId.find("fog") != std::string::npos) w["category"] = "fog";
-                else if (lowerEditorId.find("cloud") != std::string::npos || lowerEditorId.find("overcast") != std::string::npos) w["category"] = "cloudy";
-                else if (lowerEditorId.find("ash") != std::string::npos) w["category"] = "ash";
+                // Classify from actual weather data flags (not editor IDs)
+                auto flags = form->data.flags;
+                if (flags.all(RE::TESWeather::WeatherDataFlag::kSnow)) w["category"] = "snow";
+                else if (flags.all(RE::TESWeather::WeatherDataFlag::kRainy)) w["category"] = "rain";
+                else if (flags.all(RE::TESWeather::WeatherDataFlag::kCloudy)) w["category"] = "cloudy";
+                else if (flags.all(RE::TESWeather::WeatherDataFlag::kPleasant)) w["category"] = "clear";
                 else w["category"] = "other";
 
-                // Get source mod
+                w["windSpeed"] = form->data.windSpeed;
+
                 auto* file = form->GetFile(0);
                 if (file) w["mod"] = file->fileName;
 

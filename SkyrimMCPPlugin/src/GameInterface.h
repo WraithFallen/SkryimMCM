@@ -12,6 +12,7 @@
 #include "QuestManager.h"
 #include "NPCManager.h"
 #include "WorldManager.h"
+#include "PapyrusBridge.h"
 #include "UIManager.h"
 #include "UtilityManager.h"
 
@@ -167,6 +168,12 @@ namespace SkyrimMCP {
         inline json GetMerchantInventory(const std::string& refFormIdHex) { return WorldManager::GetMerchantInventory(refFormIdHex); }
         inline json GetBounties() { return WorldManager::GetBounties(); }
         inline json ClearBounty(const std::string& factionFormIdHex) { return WorldManager::ClearBounty(factionFormIdHex); }
+
+        // === Papyrus Bridge ===
+        inline json GetPapyrusCatalog() { return PapyrusBridge::GetPapyrusCatalog(); }
+        inline json ScanPapyrusSources() { return PapyrusBridge::ScanPapyrusSources(); }
+        inline json GetScriptFunctions(const std::string& className) { return PapyrusBridge::GetScriptFunctions(className); }
+        inline json CallPapyrusFunction(const std::string& className, const std::string& functionName, const json& args) { return PapyrusBridge::CallPapyrusFunction(className, functionName, args); }
 
         // === UI (UIManager) ===
         inline json GetMenuState() { return UIManager::GetMenuState(); }

@@ -113,7 +113,10 @@ namespace SkyrimMCP::Protocol {
         noParam("get_quest_info", []() { return GameInterface::GetQuestInfo(); });
         noParam("get_quest_items", []() { return GameInterface::GetQuestItems(); });
         noParam("toggle_god_mode", []() { return GameInterface::ToggleGodMode(); });
-        noParam("toggle_collision", []() { return GameInterface::ToggleCollision(); });
+        registry["toggle_collision"] = [](const std::string& id, const json& params) {
+            std::string refId = params.value("refId", "");
+            return GameThread(id, [refId]() { return GameInterface::ToggleCollision(refId); });
+        };
         noParam("get_weather", []() { return GameInterface::GetWeather(); });
         noParam("list_weathers", []() { return GameInterface::ListWeathers(); });
         noParam("get_cell_info", []() { return GameInterface::GetCellInfo(); });
@@ -128,6 +131,7 @@ namespace SkyrimMCP::Protocol {
         noParam("get_disease_status", []() { return GameInterface::GetDiseaseStatus(); });
         noParam("get_powers", []() { return GameInterface::GetPowers(); });
         noParam("get_followers", []() { return GameInterface::GetFollowers(); });
+        noParam("toggle_immortal_mode", []() { return GameInterface::ToggleImmortalMode(); });
         noParam("get_combat_state", []() { return GameInterface::GetCombatState(); });
         noParam("get_menu_state", []() { return GameInterface::GetMenuState(); });
         noParam("get_damage_stats", []() { return GameInterface::GetDamageStats(); });

@@ -129,16 +129,32 @@ public class WorldTools : ToolBase
     }
 
     [McpServerTool]
-    [Description("Toggle collision to walk through walls. Uses direct engine API — no console command. " +
-        "CAUTION: Disabling collision can cause the player to fall through the world. " +
-        "Remind the user to save before using and to re-enable collision when done.")]
-    public async Task<object> ToggleCollision()
+    [Description("Toggle immortal mode (TIM) — player takes damage but cannot die. " +
+        "Different from god mode: god mode prevents all damage, immortal mode allows damage but prevents death.")]
+    public async Task<object> ToggleImmortalMode()
     {
-        var data = await _pipe.SendRequestAsync("toggle_collision");
-        var enabled = data?["collisionEnabled"]?.GetValue<bool>() ?? true;
-        var msg = enabled ? "Collision On" : "No Clip";
+        var data = await _pipe.SendRequestAsync("toggle_immortal_mode");
+        var immortal = data?["immortalMode"]?.GetValue<bool>() ?? false;
+        var msg = immortal ? "Immortal Mode On" : "Immortal Mode Off";
         await NotifyInGame(msg);
-        return new { success = true, collisionEnabled = enabled, message = msg };
+        return new { success = true, immortalMode = immortal, message = msg };
+    }
+
+    [McpServerTool]
+    [Description("Toggle collision for the player or a specific actor/object. Uses direct engine API. " +
+        "Pass refId to toggle collision on a specific target, or leave empty for the player. " +
+        "CAUTION: Disabling collision can cause the target to fall through the world. " +
+        "Remind the user to save before using and to re-enable collision when done.")]
+    public async Task<object> ToggleCollision(string? refId = null)
+    {
+        var parms = new JsonObject();
+        if (!string.IsNullOrEmpty(refId)) parms["refId"] = refId;
+        var data = await _pipe.SendRequestAsync("toggle_collision", parms);
+        var enabled = data?["collisionEnabled"]?.GetValue<bool>() ?? true;
+        var target = data?["target"]?.GetValue<string>() ?? "Player";
+        var msg = enabled ? $"Collision On ({target})" : $"No Clip ({target})";
+        await NotifyInGame(msg);
+        return new { success = true, collisionEnabled = enabled, target, message = msg };
     }
 
     [McpServerTool]

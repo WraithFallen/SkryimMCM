@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <format>
+#include <unordered_map>
 
 namespace SkyrimMCP::WorldManager {
 
@@ -368,20 +369,46 @@ namespace SkyrimMCP::WorldManager {
     }
 
     json ToggleGodMode() {
-        // God mode is a static bool — just flip it
         REL::Relocation<bool*> godMode{ RELOCATION_ID(517711, 404238) };
         *godMode = !*godMode;
         return {{"godMode", *godMode}};
     }
 
-    json ToggleCollision() {
-        auto* player = RE::PlayerCharacter::GetSingleton();
-        if (!player) return {{"error", "Player not available"}};
+    json ToggleImmortalMode() {
+        // TIM — toggle immortal mode via console command
+        // Unlike god mode, there's no direct static bool for immortal mode
+        static bool immortalMode = false;
+        immortalMode = !immortalMode;
+        Helpers::ExecuteConsoleCommand("tim");
+        return {{"immortalMode", immortalMode}};
+    }
 
-        static bool collisionEnabled = true;
-        collisionEnabled = !collisionEnabled;
-        player->SetCollision(collisionEnabled);
-        return {{"collisionEnabled", collisionEnabled}};
+    json ToggleCollision(const std::string& refFormIdHex) {
+        RE::TESObjectREFR* target = nullptr;
+
+        if (refFormIdHex.empty() || refFormIdHex == "player") {
+            target = RE::PlayerCharacter::GetSingleton();
+        } else {
+            try {
+                auto* form = RE::TESForm::LookupByID(Helpers::ParseFormId(refFormIdHex));
+                if (form) target = form->As<RE::TESObjectREFR>();
+            } catch (...) {}
+        }
+
+        if (!target) return {{"error", "Target not found"}};
+
+        static std::unordered_map<RE::FormID, bool> collisionState;
+        auto formId = target->GetFormID();
+        bool& enabled = collisionState[formId];
+        if (collisionState.find(formId) == collisionState.end()) {
+            enabled = true; // assume collision starts enabled
+        }
+        enabled = !enabled;
+        target->SetCollision(enabled);
+
+        return {{"collisionEnabled", enabled},
+                {"target", target->GetName() ? target->GetName() : ""},
+                {"refId", std::format("{:08X}", formId)}};
     }
 
     // ==================== Economy (Phase 7) ====================

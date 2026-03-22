@@ -21,7 +21,8 @@ namespace SkyrimMCP {
         json GetGameTime();
         json SetGameTime(float hours);
         json ToggleGodMode();
-        json ToggleCollision();
+        json ToggleImmortalMode();
+        json ToggleCollision(const std::string& refFormIdHex = "");
 
         // Economy (Phase 7)
         json GetNearbyMerchants(float radius);

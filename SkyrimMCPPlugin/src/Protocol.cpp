@@ -128,6 +128,13 @@ namespace SkyrimMCP::Protocol {
         noParam("get_disease_status", []() { return GameInterface::GetDiseaseStatus(); });
         noParam("get_powers", []() { return GameInterface::GetPowers(); });
         noParam("get_followers", []() { return GameInterface::GetFollowers(); });
+        noParam("get_combat_state", []() { return GameInterface::GetCombatState(); });
+        noParam("get_damage_stats", []() { return GameInterface::GetDamageStats(); });
+
+        registry["get_threats"] = [](const std::string& id, const json& params) {
+            float radius = params.value("radius", 4096.0f);
+            return GameThread(id, [radius]() { return GameInterface::GetThreats(radius); });
+        };
 
         registry["get_nearby_merchants"] = [](const std::string& id, const json& params) {
             float radius = params.value("radius", 4096.0f);

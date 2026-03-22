@@ -5,6 +5,7 @@
 
 #include <excpt.h>
 #include <format>
+#include <mutex>
 #include <optional>
 #include <string>
 #include <unordered_map>
@@ -85,37 +86,98 @@ namespace SkyrimMCP::Helpers {
     }
 
     // ==================== Console Output Capture ====================
+    //
+    // Hooks ConsoleLog's internal print function to capture all output.
+    // The hook intercepts every call to ConsoleLog::Print/VPrint and
+    // appends output to a capture buffer when capturing is active.
 
+    // Global capture state
+    inline std::mutex& GetCaptureMutex() {
+        static std::mutex mutex;
+        return mutex;
+    }
+    inline std::string& GetCaptureBuffer() {
+        static std::string buffer;
+        return buffer;
+    }
+    inline bool& IsCapturing() {
+        static bool capturing = false;
+        return capturing;
+    }
+
+    // Original function pointer — set by InstallConsoleHook
+    using ConsolePrint_t = void(RE::ConsoleLog*, const char*, std::va_list);
+    inline ConsolePrint_t* OriginalVPrint = nullptr;
+
+    // Our detour — captures output then calls original
+    inline void HookedVPrint(RE::ConsoleLog* a_this, const char* a_fmt, std::va_list a_args) {
+        if (IsCapturing() && a_fmt) {
+            try {
+                // Copy va_list since we need it twice (once for capture, once for original)
+                va_list argsCopy;
+                va_copy(argsCopy, a_args);
+                char buf[4096];
+                int len = vsnprintf(buf, sizeof(buf), a_fmt, argsCopy);
+                va_end(argsCopy);
+                if (len > 0) {
+                    std::lock_guard lock(GetCaptureMutex());
+                    GetCaptureBuffer().append(buf, std::min(len, (int)sizeof(buf) - 1));
+                    GetCaptureBuffer() += "\n";
+                }
+            } catch (...) {}
+        }
+        // Call original
+        if (OriginalVPrint) {
+            OriginalVPrint(a_this, a_fmt, a_args);
+        }
+    }
+
+    // Install the hook — call once during plugin init
+    inline void InstallConsoleHook() {
+        // VPrint is at RELOCATION_ID(50180, 51110)
+        REL::Relocation<std::uintptr_t> target{ RELOCATION_ID(50180, 51110) };
+
+        auto& trampoline = SKSE::GetTrampoline();
+        trampoline.create(64);
+
+        // Write a 6-byte branch (jmp) at the start of VPrint to our hook
+        OriginalVPrint = reinterpret_cast<ConsolePrint_t*>(
+            trampoline.write_branch<6>(target.address(), reinterpret_cast<std::uintptr_t>(&HookedVPrint)));
+
+        SKSE::log::info("Console output hook installed at {:X}", target.address());
+    }
+
+    inline void BeginCapture() {
+        std::lock_guard lock(GetCaptureMutex());
+        GetCaptureBuffer().clear();
+        GetCaptureBuffer().reserve(65536);
+        IsCapturing() = true;
+    }
+
+    inline std::string EndCapture() {
+        std::lock_guard lock(GetCaptureMutex());
+        IsCapturing() = false;
+        auto& buf = GetCaptureBuffer();
+        if (buf.size() > 65536) {
+            buf.resize(65536);
+            buf += "\n... [output truncated at 64KB]";
+        }
+        return std::move(buf);
+    }
+
+    // Fallback — read lastMessage directly
     inline std::string CaptureConsoleOutput() {
+        // If hook is installed, this shouldn't be needed
+        // but serves as fallback
         auto* console = RE::ConsoleLog::GetSingleton();
         if (!console) return "";
-
-        // Try the BSString buffer first — may contain more than lastMessage
-        std::string bufferStr;
-        try {
-            if (console->buffer.size() > 0) {
-                bufferStr = std::string(console->buffer.c_str(), console->buffer.size());
-            }
-        } catch (...) {}
-
-        // Also get lastMessage
-        std::string lastMsg(console->lastMessage);
-
-        // Return whichever has more content
-        if (bufferStr.size() > lastMsg.size()) {
-            return bufferStr;
-        }
-        return lastMsg;
+        return std::string(console->lastMessage);
     }
 
     inline void ClearConsoleOutput() {
         auto* console = RE::ConsoleLog::GetSingleton();
         if (console) {
             std::memset(console->lastMessage, 0, sizeof(console->lastMessage));
-            // Clear the BSString buffer too
-            try {
-                console->buffer = "";
-            } catch (...) {}
         }
     }
 
@@ -156,9 +218,6 @@ namespace SkyrimMCP::Helpers {
     inline json ExecuteConsoleCommand(const std::string& command) {
         // Console command execution using the approach from ConsoleUtilSSE
         // by VersuchDrei (https://github.com/VersuchDrei/ConsoleUtilSSE, MIT License)
-        //
-        // Uses version-conditional relocation IDs that work on Skyrim >= 1.6.1130,
-        // unlike CommonLibSSE-NG's built-in CompileAndRun which crashes on newer versions.
 
         auto* player = RE::PlayerCharacter::GetSingleton();
         if (!player) return {{"error", "Player not available"}};
@@ -169,12 +228,20 @@ namespace SkyrimMCP::Helpers {
         auto* script = factory->Create();
         if (!script) return {{"error", "Failed to create script"}};
 
+        // Clear and start capturing console output
         ClearConsoleOutput();
+        BeginCapture();
 
         script->SetCommand(command);
         bool ok = RunScriptSEH(script, player);
 
-        std::string output = CaptureConsoleOutput();
+        // Get captured output from hook
+        std::string hookOutput = EndCapture();
+        // Also get lastMessage as fallback
+        std::string lastMsg = CaptureConsoleOutput();
+
+        // Use whichever has more content
+        std::string output = hookOutput.size() >= lastMsg.size() ? hookOutput : lastMsg;
 
         if (!ok) {
             SKSE::log::error("Command '{}' caused an access violation — caught by SEH", command);
@@ -183,7 +250,8 @@ namespace SkyrimMCP::Helpers {
                     {"partialOutput", output}};
         }
 
-        SKSE::log::info("Command '{}' executed successfully, output: {} bytes", command, output.size());
+        SKSE::log::info("Command '{}' — hook: {} bytes, lastMsg: {} bytes",
+            command, hookOutput.size(), lastMsg.size());
 
         json result;
         result["executed"] = true;

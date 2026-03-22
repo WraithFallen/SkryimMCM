@@ -155,20 +155,36 @@ namespace SkyrimMCP::Helpers {
         auto& trampoline = SKSE::GetTrampoline();
         trampoline.create(128);
 
-        // Try write_branch<5> (standard 5-byte jmp rel32)
+        // Try write_branch<5> first, fall back to <6>
+        bool hooked = false;
         try {
             OriginalVPrint = reinterpret_cast<ConsolePrint_t*>(
                 trampoline.write_branch<5>(target.address(), reinterpret_cast<std::uintptr_t>(&HookedVPrint)));
-
-            // Validate the returned original pointer
-            if (OriginalVPrint) {
-                SKSE::log::info("Console output hook installed successfully, original at {:X}",
+            hooked = (OriginalVPrint != nullptr);
+            if (hooked) {
+                SKSE::log::info("Console hook installed (branch<5>), original at {:X}",
                     reinterpret_cast<std::uintptr_t>(OriginalVPrint));
-            } else {
-                SKSE::log::error("Console hook installed but original function pointer is null");
             }
-        } catch (const std::exception& e) {
-            SKSE::log::error("Console hook failed: {}", e.what());
+        } catch (...) {
+            SKSE::log::warn("write_branch<5> failed, trying <6>");
+        }
+
+        if (!hooked) {
+            try {
+                OriginalVPrint = reinterpret_cast<ConsolePrint_t*>(
+                    trampoline.write_branch<6>(target.address(), reinterpret_cast<std::uintptr_t>(&HookedVPrint)));
+                hooked = (OriginalVPrint != nullptr);
+                if (hooked) {
+                    SKSE::log::info("Console hook installed (branch<6>), original at {:X}",
+                        reinterpret_cast<std::uintptr_t>(OriginalVPrint));
+                }
+            } catch (...) {
+                SKSE::log::error("write_branch<6> also failed — console output capture disabled");
+            }
+        }
+
+        if (!hooked) {
+            SKSE::log::error("Console hook could not be installed — output capture disabled");
             OriginalVPrint = nullptr;
         }
     }

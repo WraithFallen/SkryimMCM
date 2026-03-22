@@ -573,6 +573,82 @@ namespace SkyrimMCP::PlayerQueries {
         return result;
     }
 
+    static std::string DeliveryToString(RE::MagicSystem::Delivery d) {
+        switch (d) {
+            case RE::MagicSystem::Delivery::kSelf: return "self";
+            case RE::MagicSystem::Delivery::kAimed: return "aimed";
+            case RE::MagicSystem::Delivery::kTargetActor: return "targetActor";
+            case RE::MagicSystem::Delivery::kTargetLocation: return "targetLocation";
+            default: return "other";
+        }
+    }
+
+    static std::string CastingTypeToString(RE::MagicSystem::CastingType c) {
+        switch (c) {
+            case RE::MagicSystem::CastingType::kConstantEffect: return "constantEffect";
+            case RE::MagicSystem::CastingType::kFireAndForget: return "fireAndForget";
+            case RE::MagicSystem::CastingType::kConcentration: return "concentration";
+            default: return "other";
+        }
+    }
+
+    json GetSpellDetails(const std::string& formIdHex) {
+        try {
+            auto* form = RE::TESForm::LookupByID(Helpers::ParseFormId(formIdHex));
+            if (!form) return {{"error", "Form not found: " + formIdHex}};
+
+            auto* spell = form->As<RE::SpellItem>();
+            if (!spell) return {{"error", "Not a spell: " + formIdHex}};
+
+            auto* player = RE::PlayerCharacter::GetSingleton();
+
+            json result;
+            result["formId"] = formIdHex;
+            result["name"] = spell->GetName();
+            result["type"] = Helpers::SpellTypeToString(spell->GetSpellType());
+            result["castingType"] = CastingTypeToString(spell->GetCastingType());
+            result["delivery"] = DeliveryToString(spell->GetDelivery());
+
+            // Cost
+            if (player) {
+                result["cost"] = spell->CalculateMagickaCost(player);
+            }
+            result["costOverride"] = spell->data.costOverride;
+
+            // Casting perk
+            if (spell->data.castingPerk) {
+                result["castingPerk"] = spell->data.castingPerk->GetName();
+                result["castingPerkFormId"] = std::format("{:08X}", spell->data.castingPerk->GetFormID());
+            }
+
+            // School from costliest effect
+            auto* costliest = spell->GetCostliestEffectItem();
+            if (costliest && costliest->baseEffect) {
+                result["school"] = Helpers::ActorValueToSchool(costliest->baseEffect->GetMagickSkill());
+            }
+
+            // All effects
+            json effects = json::array();
+            for (auto* effect : spell->effects) {
+                if (!effect || !effect->baseEffect) continue;
+                json e;
+                e["name"] = effect->baseEffect->GetName();
+                e["formId"] = std::format("{:08X}", effect->baseEffect->GetFormID());
+                e["magnitude"] = effect->effectItem.magnitude;
+                e["duration"] = effect->effectItem.duration;
+                e["area"] = effect->effectItem.area;
+                e["school"] = Helpers::ActorValueToSchool(effect->baseEffect->GetMagickSkill());
+                e["isHostile"] = effect->IsHostile();
+                effects.push_back(e);
+            }
+            result["effects"] = effects;
+
+            return result;
+        } catch (...) {
+            return {{"error", "Failed to get spell details: " + formIdHex}};
+        }
+    }
+
     json GetDiseaseStatus() {
         auto* player = RE::PlayerCharacter::GetSingleton();
         if (!player) return {{"error", "Player not available"}};

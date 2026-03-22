@@ -125,6 +125,8 @@ namespace SkyrimMCP::Protocol {
         noParam("get_player_factions", []() { return GameInterface::GetPlayerFactions(); });
         noParam("get_magic_resistances", []() { return GameInterface::GetMagicResistances(); });
         noParam("get_disease_status", []() { return GameInterface::GetDiseaseStatus(); });
+
+        formIdParam("get_spell_details", "formId", [](const std::string& f) { return GameInterface::GetSpellDetails(f); });
         noParam("get_followers", []() { return GameInterface::GetFollowers(); });
 
         // === Single formId/refId param handlers ===

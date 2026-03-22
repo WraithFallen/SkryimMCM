@@ -155,6 +155,16 @@ public class PlayerTools : ToolBase
     }
 
     [McpServerTool]
+    [Description("Get detailed info about a specific spell by FormID — school, casting type (fire-and-forget, concentration, constant), " +
+        "delivery (self, aimed, target), magicka cost, casting perk, and full effect list with magnitudes/durations. " +
+        "Use SearchForms to find spell FormIDs first.")]
+    public async Task<object> GetSpellDetails(string formId)
+    {
+        var data = await _pipe.SendRequestAsync("get_spell_details", new JsonObject { ["formId"] = formId });
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
     [Description("Get the player's magic resistance values — magic, fire, frost, shock, poison, and disease resistance percentages.")]
     public async Task<object> GetMagicResistances()
     {

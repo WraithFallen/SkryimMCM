@@ -155,6 +155,10 @@ namespace SkyrimMCP {
         inline json SetGameTime(float hours) { return WorldManager::SetGameTime(hours); }
         inline json ToggleGodMode() { return WorldManager::ToggleGodMode(); }
         inline json ToggleCollision() { return WorldManager::ToggleCollision(); }
+        inline json GetNearbyMerchants(float radius) { return WorldManager::GetNearbyMerchants(radius); }
+        inline json GetMerchantInventory(const std::string& refFormIdHex) { return WorldManager::GetMerchantInventory(refFormIdHex); }
+        inline json GetBounties() { return WorldManager::GetBounties(); }
+        inline json ClearBounty(const std::string& factionFormIdHex) { return WorldManager::ClearBounty(factionFormIdHex); }
 
         // === Utility (UtilityManager) ===
         inline json ShowNotification(const std::string& message) { return UtilityManager::ShowNotification(message); }

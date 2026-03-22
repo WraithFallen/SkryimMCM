@@ -178,4 +178,40 @@ public class WorldTools : ToolBase
         await NotifyInGame($"Stamina set to {value}");
         return new { success = true, message = $"Set stamina to {value}" };
     }
+
+    [McpServerTool]
+    [Description("Find nearby merchants/vendors within a given radius. Returns their name, merchant faction, " +
+        "distance, and refId for use with GetMerchantInventory.")]
+    public async Task<object> GetNearbyMerchants(float radius = 4096)
+    {
+        var data = await _pipe.SendRequestAsync("get_nearby_merchants", new JsonObject { ["radius"] = radius });
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
+    [Description("Read a merchant's inventory — what they have for sale. Pass the refId from GetNearbyMerchants. " +
+        "Shows items with name, FormID, count, value, weight, and type.")]
+    public async Task<object> GetMerchantInventory(string refId)
+    {
+        var data = await _pipe.SendRequestAsync("get_merchant_inventory", new JsonObject { ["refId"] = refId });
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
+    [Description("Get all active bounties across all holds/factions. Shows which factions have bounties on the player and how much.")]
+    public async Task<object> GetBounties()
+    {
+        var data = await _pipe.SendRequestAsync("get_bounties");
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
+    [Description("Clear the player's bounty with a specific faction. Pass the factionFormId from GetBounties. " +
+        "CAUTION: This removes the bounty without paying — guards will still be hostile until you leave and return.")]
+    public async Task<object> ClearBounty(string factionFormId)
+    {
+        var data = await _pipe.SendRequestAsync("clear_bounty", new JsonObject { ["factionFormId"] = factionFormId });
+        await NotifyInGame("Bounty cleared");
+        return DeserializeResponse(data);
+    }
 }

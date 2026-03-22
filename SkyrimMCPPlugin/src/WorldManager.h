@@ -22,6 +22,12 @@ namespace SkyrimMCP {
         json SetGameTime(float hours);
         json ToggleGodMode();
         json ToggleCollision();
+
+        // Economy (Phase 7)
+        json GetNearbyMerchants(float radius);
+        json GetMerchantInventory(const std::string& refFormIdHex);
+        json GetBounties();
+        json ClearBounty(const std::string& factionFormIdHex);
     }
 
 }

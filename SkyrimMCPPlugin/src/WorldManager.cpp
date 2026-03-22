@@ -384,4 +384,151 @@ namespace SkyrimMCP::WorldManager {
         return {{"collisionEnabled", collisionEnabled}};
     }
 
+    // ==================== Economy (Phase 7) ====================
+
+    json GetNearbyMerchants(float radius) {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        auto* processLists = RE::ProcessLists::GetSingleton();
+        if (!processLists) return {{"error", "Process lists not available"}};
+
+        auto playerPos = player->GetPosition();
+        json merchants = json::array();
+
+        for (auto& actorHandle : processLists->highActorHandles) {
+            auto actorPtr = actorHandle.get();
+            if (!actorPtr) continue;
+
+            auto* actor = actorPtr.get();
+            if (!actor || actor == player || actor->IsDead()) continue;
+
+            auto actorPos = actor->GetPosition();
+            float dx = actorPos.x - playerPos.x;
+            float dy = actorPos.y - playerPos.y;
+            float dz = actorPos.z - playerPos.z;
+            float distance = std::sqrt(dx * dx + dy * dy + dz * dz);
+            if (distance > radius) continue;
+
+            // Check if this actor is a merchant via their factions
+            bool isMerchant = false;
+            std::string merchantType;
+
+            actor->VisitFactions([&](RE::TESFaction* faction, std::int8_t) -> bool {
+                if (faction && faction->IsVendor()) {
+                    isMerchant = true;
+                    merchantType = faction->GetName() ? faction->GetName() : "";
+                }
+                return true;
+            });
+
+            if (!isMerchant) continue;
+
+            auto* base = actor->GetActorBase();
+            json m;
+            m["refId"] = std::format("{:08X}", actor->GetFormID());
+            m["baseId"] = base ? std::format("{:08X}", base->GetFormID()) : "";
+            m["name"] = actor->GetName();
+            m["merchantFaction"] = merchantType;
+            m["distance"] = distance;
+
+            merchants.push_back(m);
+        }
+
+        return {{"merchants", merchants}, {"count", merchants.size()}};
+    }
+
+    json GetMerchantInventory(const std::string& refFormIdHex) {
+        try {
+            auto* form = RE::TESForm::LookupByID(Helpers::ParseFormId(refFormIdHex));
+            if (!form) return {{"error", "Reference not found: " + refFormIdHex}};
+
+            auto* actor = form->As<RE::Actor>();
+            if (!actor) return {{"error", "Not an actor: " + refFormIdHex}};
+
+            // Get the merchant's inventory (what they carry for sale)
+            auto inv = actor->GetInventory();
+            json items = json::array();
+
+            for (auto& [itemForm, data] : inv) {
+                if (!itemForm || data.first <= 0) continue;
+                try {
+                    json item;
+                    item["formId"] = std::format("{:08X}", itemForm->GetFormID());
+                    item["name"] = itemForm->GetName();
+                    item["count"] = data.first;
+
+                    if (auto* boundObj = itemForm->As<RE::TESBoundObject>()) {
+                        item["value"] = boundObj->GetGoldValue();
+                        item["weight"] = boundObj->GetWeight();
+                    }
+
+                    switch (itemForm->GetFormType()) {
+                        case RE::FormType::Weapon: item["type"] = "weapon"; break;
+                        case RE::FormType::Armor: item["type"] = "armor"; break;
+                        case RE::FormType::AlchemyItem: item["type"] = "potion"; break;
+                        case RE::FormType::Ingredient: item["type"] = "ingredient"; break;
+                        case RE::FormType::Book: item["type"] = "book"; break;
+                        case RE::FormType::Misc: item["type"] = "misc"; break;
+                        default: item["type"] = "other"; break;
+                    }
+
+                    items.push_back(item);
+                } catch (...) { continue; }
+            }
+
+            return {{"refId", refFormIdHex},
+                    {"name", actor->GetName() ? actor->GetName() : ""},
+                    {"items", items}, {"count", items.size()}};
+        } catch (...) {
+            return {{"error", "Failed to get merchant inventory: " + refFormIdHex}};
+        }
+    }
+
+    json GetBounties() {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        auto* dataHandler = RE::TESDataHandler::GetSingleton();
+        if (!dataHandler) return {{"error", "Data handler not available"}};
+
+        json bounties = json::array();
+
+        for (auto* faction : dataHandler->GetFormArray<RE::TESFaction>()) {
+            if (!faction) continue;
+            try {
+                auto gold = player->GetCrimeGoldValue(faction);
+                if (gold > 0) {
+                    json b;
+                    b["faction"] = faction->GetName() ? faction->GetName() : "";
+                    b["factionFormId"] = std::format("{:08X}", faction->GetFormID());
+                    b["bounty"] = gold;
+                    bounties.push_back(b);
+                }
+            } catch (...) { continue; }
+        }
+
+        return {{"bounties", bounties}, {"totalBounties", bounties.size()}};
+    }
+
+    json ClearBounty(const std::string& factionFormIdHex) {
+        try {
+            auto* player = RE::PlayerCharacter::GetSingleton();
+            if (!player) return {{"error", "Player not available"}};
+
+            auto* faction = RE::TESForm::LookupByID<RE::TESFaction>(Helpers::ParseFormId(factionFormIdHex));
+            if (!faction) return {{"error", "Faction not found: " + factionFormIdHex}};
+
+            auto oldBounty = player->GetCrimeGoldValue(faction);
+            player->SetCrimeGoldValue(faction, false, 0);
+            player->SetCrimeGoldValue(faction, true, 0);
+
+            return {{"cleared", true},
+                    {"faction", faction->GetName() ? faction->GetName() : ""},
+                    {"oldBounty", oldBounty}};
+        } catch (...) {
+            return {{"error", "Failed to clear bounty: " + factionFormIdHex}};
+        }
+    }
+
 }

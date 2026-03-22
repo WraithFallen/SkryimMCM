@@ -13,14 +13,19 @@ public class UtilityTools : ToolBase
     public UtilityTools(IPipeClient pipe) : base(pipe) { }
 
     [McpServerTool]
-    [Description("Execute a console command in Skyrim (e.g., 'tgm', 'player.additem 0000000f 1000'). " +
-        "IMPORTANT — TARGETING NPCs/OBJECTS: Use dot-notation with the REFERENCE ID (refId), NOT prid. " +
-        "Example: 'FE124B0E.kill' or 'FE124B0E.setav health 500'. The prid command does NOT persist between calls. " +
-        "Get refIds from GetNearbyNPCs or GetCrosshairRef. " +
-        "For player-targeted commands use 'player.' prefix: 'player.additem 0000000F 100'. " +
-        "CAUTION: Commands referencing invalid FormIDs will crash the game. Always verify FormIDs before use. " +
-        "Avoid running commands during loading screens, combat, or scripted events. " +
-        "Prefer dedicated tools (AddItem, Teleport, KillActor, etc.) over raw console commands when available.")]
+    [Description("FALLBACK ONLY — Execute a raw Skyrim console command when NO dedicated tool exists. " +
+        "ALWAYS check dedicated tools first: " +
+        "Player: GetPlayerInfo, GetSkillLevels, GetPerks, GetKnownSpells, GetKnownShouts, GetAppearance, GetFavorites, GetPlayerFactions. " +
+        "Items: GetInventory, GetEquippedItems, AddItem, RemoveItem, BulkAddItems. " +
+        "Quests: GetQuestInfo, GetQuestStages, GetQuestAliases, GetQuestItems, SetQuestStage. " +
+        "NPCs: GetNearbyNPCs, GetNPCDetailedInfo, GetNPCInventory, GetFollowers, GetDetectionLevel, GetCrosshairRef, KillActor. " +
+        "World: Teleport, GetWeather, SetWeather, GetCellInfo, GetNearbyObjects, UnlockDoor, LockDoor, GetContainerInventory. " +
+        "Actions: ToggleGodMode, ToggleCollision, SetHealth, SetMagicka, SetStamina, SaveGame, SearchForms, ShowNotification. " +
+        "Only use this tool if none of the above cover your need. " +
+        "TARGETING: Use dot-notation with refId (e.g., 'FE124B0E.kill'), NOT prid — prid does not persist between calls. " +
+        "Player commands: use 'player.' prefix (e.g., 'player.additem 0000000F 100'). " +
+        "CAUTION: Invalid FormIDs crash the game. Avoid during loading screens or scripted events. " +
+        "Console output may be captured if the command produces text output.")]
     public async Task<object> ExecuteConsoleCommand(string command)
     {
         var data = await _pipe.SendRequestAsync("execute_command", new JsonObject

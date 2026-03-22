@@ -24,10 +24,10 @@ public class WorldTools : ToolBase
     [McpServerTool]
     [Description("List all available weather types with FormIDs, editor IDs, categories (clear, snow, rain, storm, fog, cloudy, ash), " +
         "and which mod they come from. Use the FormID or editor ID with SetWeather to change the weather.")]
-    public async Task<object> ListWeathers()
+    public async Task<object> ListWeathers(int page = 1, int pageSize = 50)
     {
         var data = await _pipe.SendRequestAsync("list_weathers");
-        return DeserializeResponse(data);
+        return PageResponse(data, "weathers", page, pageSize);
     }
 
     [McpServerTool]
@@ -54,14 +54,14 @@ public class WorldTools : ToolBase
     [Description("Find nearby objects like containers, doors, furniture, crafting stations, activators, and flora. " +
         "Filter by type: 'all', 'container', 'chest', 'door', 'furniture', 'crafting', 'activator', 'flora', 'light'. " +
         "Returns refId, name, type, distance, and locked status. Use this for 'what's nearby?' or 'find a forge'.")]
-    public async Task<object> GetNearbyObjects(float radius = 2048, string type = "all")
+    public async Task<object> GetNearbyObjects(float radius = 2048, string type = "all", int page = 1, int pageSize = 50)
     {
         var data = await _pipe.SendRequestAsync("get_nearby_objects", new JsonObject
         {
             ["radius"] = radius,
             ["type"] = type
         });
-        return DeserializeResponse(data);
+        return PageResponse(data, "objects", page, pageSize);
     }
 
     [McpServerTool]

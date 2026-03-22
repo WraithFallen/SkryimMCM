@@ -13,11 +13,12 @@ public class InventoryTools : ToolBase
     public InventoryTools(IPipeClient pipe) : base(pipe) { }
 
     [McpServerTool]
-    [Description("Get the player's full inventory with item names, counts, types, weights, and values")]
-    public async Task<object> GetInventory()
+    [Description("Get the player's inventory. Supports paging: page (default 1), pageSize (default 50). " +
+        "Set page=0 for summary only. Includes item names, counts, types, weights, values, display names, enchantments.")]
+    public async Task<object> GetInventory(int page = 1, int pageSize = 50)
     {
         var data = await _pipe.SendRequestAsync("get_inventory");
-        return DeserializeResponse(data);
+        return PageResponse(data, "items", page, pageSize);
     }
 
     [McpServerTool]

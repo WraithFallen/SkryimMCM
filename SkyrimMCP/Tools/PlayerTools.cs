@@ -49,18 +49,19 @@ public class PlayerTools : ToolBase
 
     [McpServerTool]
     [Description("Get all perks the player has acquired, with rank information.")]
-    public async Task<object> GetPerks()
+    public async Task<object> GetPerks(int page = 1, int pageSize = 50)
     {
         var data = await _pipe.SendRequestAsync("get_perks");
-        return DeserializeResponse(data);
+        return PageResponse(data, "perks", page, pageSize);
     }
 
     [McpServerTool]
-    [Description("Get all spells the player has learned, organized by school (Alteration, Conjuration, etc.) and type (spell, power, ability).")]
-    public async Task<object> GetKnownSpells()
+    [Description("Get spells the player has learned. Supports paging: page (default 1), pageSize (default 50). " +
+        "Set page=0 for summary only (just totalItems count). Returns school, type, magnitude per spell.")]
+    public async Task<object> GetKnownSpells(int page = 1, int pageSize = 50)
     {
         var data = await _pipe.SendRequestAsync("get_known_spells");
-        return DeserializeResponse(data);
+        return PageResponse(data, "spells", page, pageSize);
     }
 
     [McpServerTool]

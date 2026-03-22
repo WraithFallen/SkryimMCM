@@ -13,6 +13,15 @@ public class UtilityTools : ToolBase
     public UtilityTools(IPipeClient pipe) : base(pipe) { }
 
     [McpServerTool]
+    [Description("Check which menus are currently open and whether the game is paused. " +
+        "Shows open menus like InventoryMenu, MapMenu, DialogueMenu, Console, etc.")]
+    public async Task<object> GetMenuState()
+    {
+        var data = await _pipe.SendRequestAsync("get_menu_state");
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
     [Description("FALLBACK ONLY — Execute a raw Skyrim console command when NO dedicated tool exists. " +
         "ALWAYS check dedicated tools first: " +
         "Player: GetPlayerInfo, GetSkillLevels, GetPerks, GetKnownSpells, GetKnownShouts, GetAppearance, GetFavorites, GetPlayerFactions. " +

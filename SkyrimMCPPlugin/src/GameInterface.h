@@ -12,6 +12,7 @@
 #include "QuestManager.h"
 #include "NPCManager.h"
 #include "WorldManager.h"
+#include "UIManager.h"
 #include "UtilityManager.h"
 
 #include <nlohmann/json.hpp>
@@ -165,6 +166,9 @@ namespace SkyrimMCP {
         inline json GetMerchantInventory(const std::string& refFormIdHex) { return WorldManager::GetMerchantInventory(refFormIdHex); }
         inline json GetBounties() { return WorldManager::GetBounties(); }
         inline json ClearBounty(const std::string& factionFormIdHex) { return WorldManager::ClearBounty(factionFormIdHex); }
+
+        // === UI (UIManager) ===
+        inline json GetMenuState() { return UIManager::GetMenuState(); }
 
         // === Utility (UtilityManager) ===
         inline json ShowNotification(const std::string& message) { return UtilityManager::ShowNotification(message); }

@@ -129,6 +129,7 @@ namespace SkyrimMCP::Protocol {
         noParam("get_powers", []() { return GameInterface::GetPowers(); });
         noParam("get_followers", []() { return GameInterface::GetFollowers(); });
         noParam("get_combat_state", []() { return GameInterface::GetCombatState(); });
+        noParam("get_menu_state", []() { return GameInterface::GetMenuState(); });
         noParam("get_damage_stats", []() { return GameInterface::GetDamageStats(); });
 
         registry["get_threats"] = [](const std::string& id, const json& params) {

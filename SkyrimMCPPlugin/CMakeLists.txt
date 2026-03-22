@@ -34,6 +34,7 @@ set(SOURCES
     src/TaskQueue.cpp
     src/EventSystem.cpp
     src/CombatAnalysis.cpp
+    src/UIManager.cpp
 )
 
 set(HEADERS
@@ -41,6 +42,7 @@ set(HEADERS
     src/Protocol.h
     src/GameInterface.h
     src/CombatAnalysis.h
+    src/UIManager.h
     src/Helpers.h
     src/PlayerQueries.h
     src/InventoryManager.h

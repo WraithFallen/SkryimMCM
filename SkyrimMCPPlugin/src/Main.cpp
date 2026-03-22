@@ -15,9 +15,7 @@ namespace {
             case SKSE::MessagingInterface::kDataLoaded:
                 SKSE::log::info("Game data loaded, starting systems...");
 
-                // VPrint hook disabled — trampoline produces invalid original function pointer.
-                // Console output capture uses lastMessage fallback only.
-                // TODO: try vtable swap or polling approach instead.
+                // Console output: no hook needed — commands open console menu briefly
 
                 SkyrimMCP::EventSystem::GetSingleton().Register();
                 SKSE::log::info("Event system registered");
@@ -63,7 +61,7 @@ SKSEPluginLoad(const SKSE::LoadInterface* a_skse) {
 
     SKSE::Init(a_skse);
 
-    // VPrint hook is installed later in kDataLoaded callback
+    // Console output capture: opens console menu briefly during command execution
 
     auto messaging = SKSE::GetMessagingInterface();
     if (!messaging->RegisterListener(MessageCallback)) {

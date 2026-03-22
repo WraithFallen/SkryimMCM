@@ -87,139 +87,42 @@ namespace SkyrimMCP::Helpers {
 
     // ==================== Console Output Capture ====================
     //
-    // Hooks ConsoleLog's internal print function to capture all output.
-    // The hook intercepts every call to ConsoleLog::Print/VPrint and
-    // appends output to a capture buffer when capturing is active.
-
-    // Global capture state
-    inline std::mutex& GetCaptureMutex() {
-        static std::mutex mutex;
-        return mutex;
-    }
-    inline std::string& GetCaptureBuffer() {
-        static std::string buffer;
-        return buffer;
-    }
-    inline bool& IsCapturing() {
-        static bool capturing = false;
-        return capturing;
-    }
-
-    // Original function pointer — set by InstallConsoleHook
-    using ConsolePrint_t = void(RE::ConsoleLog*, const char*, std::va_list);
-    inline ConsolePrint_t* OriginalVPrint = nullptr;
-
-    // Our detour — captures output then calls original
-    // NOTE: This function replaces VPrint in memory. It MUST have the same
-    // calling convention and signature. On x64, member functions use
-    // RCX=this, RDX=fmt, R8=va_list (fastcall).
-    inline void HookedVPrint(RE::ConsoleLog* a_this, const char* a_fmt, std::va_list a_args) {
-        // Capture output if active
-        if (IsCapturing() && a_fmt) {
-            try {
-                va_list argsCopy;
-                va_copy(argsCopy, a_args);
-                char buf[4096];
-                int len = vsnprintf(buf, sizeof(buf), a_fmt, argsCopy);
-                va_end(argsCopy);
-                if (len > 0) {
-                    std::lock_guard lock(GetCaptureMutex());
-                    auto& capBuf = GetCaptureBuffer();
-                    if (capBuf.size() < 65536) {
-                        capBuf.append(buf, std::min(len, (int)sizeof(buf) - 1));
-                        capBuf += "\n";
-                    }
-                }
-            } catch (...) {}
-        }
-        // Call original — critical: if null, output is lost but no crash
-        if (OriginalVPrint) {
-            OriginalVPrint(a_this, a_fmt, a_args);
-        }
-    }
-
-    // Install the hook — call once after engine init (kDataLoaded)
-    inline void InstallConsoleHook() {
-        // VPrint is at RELOCATION_ID(50180, 51110)
-        REL::Relocation<std::uintptr_t> target{ RELOCATION_ID(50180, 51110) };
-
-        SKSE::log::info("Attempting console hook at {:X}", target.address());
-
-        // Verify the target looks valid
-        auto* ptr = reinterpret_cast<std::uint8_t*>(target.address());
-        if (!ptr) {
-            SKSE::log::error("Console hook target is null");
-            return;
-        }
-
-        auto& trampoline = SKSE::GetTrampoline();
-        trampoline.create(128);
-
-        // Try write_branch<5> first, fall back to <6>
-        bool hooked = false;
-        try {
-            OriginalVPrint = reinterpret_cast<ConsolePrint_t*>(
-                trampoline.write_branch<5>(target.address(), reinterpret_cast<std::uintptr_t>(&HookedVPrint)));
-            hooked = (OriginalVPrint != nullptr);
-            if (hooked) {
-                SKSE::log::info("Console hook installed (branch<5>), original at {:X}",
-                    reinterpret_cast<std::uintptr_t>(OriginalVPrint));
-            }
-        } catch (...) {
-            SKSE::log::warn("write_branch<5> failed, trying <6>");
-        }
-
-        if (!hooked) {
-            try {
-                OriginalVPrint = reinterpret_cast<ConsolePrint_t*>(
-                    trampoline.write_branch<6>(target.address(), reinterpret_cast<std::uintptr_t>(&HookedVPrint)));
-                hooked = (OriginalVPrint != nullptr);
-                if (hooked) {
-                    SKSE::log::info("Console hook installed (branch<6>), original at {:X}",
-                        reinterpret_cast<std::uintptr_t>(OriginalVPrint));
-                }
-            } catch (...) {
-                SKSE::log::error("write_branch<6> also failed — console output capture disabled");
-            }
-        }
-
-        if (!hooked) {
-            SKSE::log::error("Console hook could not be installed — output capture disabled");
-            OriginalVPrint = nullptr;
-        }
-    }
-
-    inline void BeginCapture() {
-        std::lock_guard lock(GetCaptureMutex());
-        GetCaptureBuffer().clear();
-        GetCaptureBuffer().reserve(65536);
-        IsCapturing() = true;
-    }
-
-    inline std::string EndCapture() {
-        std::lock_guard lock(GetCaptureMutex());
-        IsCapturing() = false;
-        auto& buf = GetCaptureBuffer();
-        if (buf.size() > 65536) {
-            buf.resize(65536);
-            buf += "\n... [output truncated at 64KB]";
-        }
-        return std::move(buf);
-    }
-
-    // Fallback — read lastMessage directly
-    inline std::string CaptureConsoleOutput() {
-        // If hook is installed, this shouldn't be needed
-        // but serves as fallback
-        auto* console = RE::ConsoleLog::GetSingleton();
-        if (!console) return "";
-        return std::string(console->lastMessage);
-    }
+    // Console commands only write output to ConsoleLog when the console
+    // menu is active. We briefly open the console UI before executing,
+    // then read lastMessage and close it.
 
     inline void ClearConsoleOutput() {
         auto* console = RE::ConsoleLog::GetSingleton();
         if (console) {
             std::memset(console->lastMessage, 0, sizeof(console->lastMessage));
+        }
+    }
+
+    inline std::string CaptureConsoleOutput() {
+        auto* console = RE::ConsoleLog::GetSingleton();
+        if (!console) return "";
+        return std::string(console->lastMessage);
+    }
+
+    // Open the console menu so Print calls write to lastMessage
+    inline void OpenConsoleMenu() {
+        auto* ui = RE::UI::GetSingleton();
+        if (ui && !ui->IsMenuOpen(RE::Console::MENU_NAME)) {
+            auto* queue = RE::UIMessageQueue::GetSingleton();
+            if (queue) {
+                queue->AddMessage(RE::Console::MENU_NAME, RE::UI_MESSAGE_TYPE::kShow, nullptr);
+            }
+        }
+    }
+
+    // Close the console menu
+    inline void CloseConsoleMenu() {
+        auto* ui = RE::UI::GetSingleton();
+        if (ui && ui->IsMenuOpen(RE::Console::MENU_NAME)) {
+            auto* queue = RE::UIMessageQueue::GetSingleton();
+            if (queue) {
+                queue->AddMessage(RE::Console::MENU_NAME, RE::UI_MESSAGE_TYPE::kHide, nullptr);
+            }
         }
     }
 
@@ -270,20 +173,18 @@ namespace SkyrimMCP::Helpers {
         auto* script = factory->Create();
         if (!script) return {{"error", "Failed to create script"}};
 
-        // Clear and start capturing console output
+        // Open console menu so output is written to lastMessage
+        OpenConsoleMenu();
+
         ClearConsoleOutput();
-        BeginCapture();
 
         script->SetCommand(command);
         bool ok = RunScriptSEH(script, player);
 
-        // Get captured output from hook
-        std::string hookOutput = EndCapture();
-        // Also get lastMessage as fallback
-        std::string lastMsg = CaptureConsoleOutput();
+        std::string output = CaptureConsoleOutput();
 
-        // Use whichever has more content
-        std::string output = hookOutput.size() >= lastMsg.size() ? hookOutput : lastMsg;
+        // Close console menu
+        CloseConsoleMenu();
 
         if (!ok) {
             SKSE::log::error("Command '{}' caused an access violation — caught by SEH", command);
@@ -292,8 +193,8 @@ namespace SkyrimMCP::Helpers {
                     {"partialOutput", output}};
         }
 
-        SKSE::log::info("Command '{}' — hook: {} bytes, lastMsg: {} bytes",
-            command, hookOutput.size(), lastMsg.size());
+        SKSE::log::info("Command '{}' executed, output: '{}' ({} bytes)",
+            command, output.substr(0, 100), output.size());
 
         json result;
         result["executed"] = true;

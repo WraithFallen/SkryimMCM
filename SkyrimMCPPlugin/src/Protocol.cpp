@@ -123,6 +123,15 @@ namespace SkyrimMCP::Protocol {
         noParam("get_loaded_skse_plugins", []() { return GameInterface::GetLoadedSKSEPlugins(); });
         noParam("discover_all_map_markers", []() { return GameInterface::DiscoverAllMapMarkers(); });
         noParam("get_player_factions", []() { return GameInterface::GetPlayerFactions(); });
+        noParam("get_bounties", []() { return GameInterface::GetBounties(); });
+
+        registry["get_nearby_merchants"] = [](const std::string& id, const json& params) {
+            float radius = params.value("radius", 4096.0f);
+            return GameThread(id, [radius]() { return GameInterface::GetNearbyMerchants(radius); });
+        };
+
+        formIdParam("get_merchant_inventory", "refId", [](const std::string& r) { return GameInterface::GetMerchantInventory(r); });
+        formIdParam("clear_bounty", "factionFormId", [](const std::string& f) { return GameInterface::ClearBounty(f); });
         noParam("get_magic_resistances", []() { return GameInterface::GetMagicResistances(); });
         noParam("get_disease_status", []() { return GameInterface::GetDiseaseStatus(); });
         noParam("get_powers", []() { return GameInterface::GetPowers(); });

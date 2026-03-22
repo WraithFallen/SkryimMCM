@@ -58,8 +58,10 @@ SKSEPluginLoad(const SKSE::LoadInterface* a_skse) {
 
     SKSE::Init(a_skse);
 
-    // Install console output capture hook
-    SkyrimMCP::Helpers::InstallConsoleHook();
+    // NOTE: VPrint hook disabled — write_branch<6> crashes because the
+    // function prologue isn't suitable for relocation. Console output
+    // capture falls back to lastMessage. See BUG-006.
+    // SkyrimMCP::Helpers::InstallConsoleHook();
 
     auto messaging = SKSE::GetMessagingInterface();
     if (!messaging->RegisterListener(MessageCallback)) {

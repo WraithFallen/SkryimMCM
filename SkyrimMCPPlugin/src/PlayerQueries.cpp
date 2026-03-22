@@ -573,4 +573,75 @@ namespace SkyrimMCP::PlayerQueries {
         return result;
     }
 
+    json GetDiseaseStatus() {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        // Check race for vampire/werewolf
+        auto* base = player->GetActorBase();
+        auto* race = base ? base->GetRace() : nullptr;
+        std::string raceName = race ? race->GetName() : "";
+        std::string raceEditorId = race ? (race->GetFormEditorID() ? race->GetFormEditorID() : "") : "";
+
+        bool isVampire = false;
+        bool isWerewolf = false;
+
+        // Check by race editor ID
+        std::string lowerRace = raceEditorId;
+        std::transform(lowerRace.begin(), lowerRace.end(), lowerRace.begin(), ::tolower);
+        if (lowerRace.find("vampire") != std::string::npos) isVampire = true;
+        if (lowerRace.find("werewolf") != std::string::npos) isWerewolf = true;
+
+        // Also check vampire/werewolf perk counts as indicator
+        auto* avo = player->AsActorValueOwner();
+        if (avo) {
+            if (avo->GetActorValue(RE::ActorValue::kVampirePerks) > 0) isVampire = true;
+            if (avo->GetActorValue(RE::ActorValue::kWerewolfPerks) > 0) isWerewolf = true;
+        }
+
+        // Scan active effects for diseases
+        auto* magicTarget = player->AsMagicTarget();
+        json diseases = json::array();
+
+        if (magicTarget) {
+            auto* effectList = magicTarget->GetActiveEffectList();
+            if (effectList) {
+                for (auto& effect : *effectList) {
+                    if (!effect || !effect->GetBaseObject()) continue;
+                    auto* baseEffect = effect->GetBaseObject();
+
+                    // Check if the effect's spell is a disease type
+                    auto* spell = effect->spell;
+                    if (!spell) continue;
+
+                    bool isDisease = false;
+                    auto spellType = spell->GetSpellType();
+                    if (spellType == RE::MagicSystem::SpellType::kDisease) isDisease = true;
+
+                    // Also check by keyword — some diseases aren't typed as kDisease
+                    if (baseEffect->HasKeywordString("MagicDamageDiseased")) isDisease = true;
+
+                    if (isDisease) {
+                        json d;
+                        d["name"] = spell->GetName();
+                        d["formId"] = std::format("{:08X}", spell->GetFormID());
+                        d["effectName"] = baseEffect->GetName();
+                        d["magnitude"] = effect->magnitude;
+                        d["duration"] = effect->duration;
+                        diseases.push_back(d);
+                    }
+                }
+            }
+        }
+
+        json result;
+        result["isVampire"] = isVampire;
+        result["isWerewolf"] = isWerewolf;
+        result["diseases"] = diseases;
+        result["diseaseCount"] = diseases.size();
+        result["race"] = raceName;
+
+        return result;
+    }
+
 }

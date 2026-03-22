@@ -146,6 +146,15 @@ public class PlayerTools : ToolBase
     }
 
     [McpServerTool]
+    [Description("Check for diseases, vampirism, and lycanthropy. Returns vampire/werewolf status, " +
+        "active diseases with names and effects, and the player's current race.")]
+    public async Task<object> GetDiseaseStatus()
+    {
+        var data = await _pipe.SendRequestAsync("get_disease_status");
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
     [Description("Get the player's magic resistance values — magic, fire, frost, shock, poison, and disease resistance percentages.")]
     public async Task<object> GetMagicResistances()
     {

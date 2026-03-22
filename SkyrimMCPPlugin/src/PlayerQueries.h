@@ -21,6 +21,7 @@ namespace SkyrimMCP {
         json GetFavorites();
         json GetCharacterBlueprint();
         json IsInCombat();
+        json GetMagicResistances();
     }
 
 }

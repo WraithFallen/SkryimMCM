@@ -40,6 +40,7 @@ namespace SkyrimMCP {
         inline json GetFavorites() { return PlayerQueries::GetFavorites(); }
         inline json GetCharacterBlueprint() { return PlayerQueries::GetCharacterBlueprint(); }
         inline json IsInCombat() { return PlayerQueries::IsInCombat(); }
+        inline json GetMagicResistances() { return PlayerQueries::GetMagicResistances(); }
 
         // === Inventory (InventoryManager) ===
         inline json AddItem(const std::string& formIdHex, int count) { return InventoryManager::AddItem(formIdHex, count); }

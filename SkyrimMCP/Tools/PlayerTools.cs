@@ -144,4 +144,12 @@ public class PlayerTools : ToolBase
         var data = await _pipe.SendRequestAsync("get_player_factions");
         return DeserializeResponse(data);
     }
+
+    [McpServerTool]
+    [Description("Get the player's magic resistance values — magic, fire, frost, shock, poison, and disease resistance percentages.")]
+    public async Task<object> GetMagicResistances()
+    {
+        var data = await _pipe.SendRequestAsync("get_magic_resistances");
+        return DeserializeResponse(data);
+    }
 }

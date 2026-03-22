@@ -123,6 +123,7 @@ namespace SkyrimMCP::Protocol {
         noParam("get_loaded_skse_plugins", []() { return GameInterface::GetLoadedSKSEPlugins(); });
         noParam("discover_all_map_markers", []() { return GameInterface::DiscoverAllMapMarkers(); });
         noParam("get_player_factions", []() { return GameInterface::GetPlayerFactions(); });
+        noParam("get_magic_resistances", []() { return GameInterface::GetMagicResistances(); });
         noParam("get_followers", []() { return GameInterface::GetFollowers(); });
 
         // === Single formId/refId param handlers ===

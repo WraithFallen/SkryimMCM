@@ -555,4 +555,22 @@ namespace SkyrimMCP::PlayerQueries {
         return {{"inCombat", player->IsInCombat()}};
     }
 
+    json GetMagicResistances() {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        auto* avo = player->AsActorValueOwner();
+        if (!avo) return {{"error", "Actor value owner not available"}};
+
+        json result;
+        result["magicResist"] = avo->GetActorValue(RE::ActorValue::kResistMagic);
+        result["fireResist"] = avo->GetActorValue(RE::ActorValue::kResistFire);
+        result["frostResist"] = avo->GetActorValue(RE::ActorValue::kResistFrost);
+        result["shockResist"] = avo->GetActorValue(RE::ActorValue::kResistShock);
+        result["poisonResist"] = avo->GetActorValue(RE::ActorValue::kPoisonResist);
+        result["diseaseResist"] = avo->GetActorValue(RE::ActorValue::kResistDisease);
+
+        return result;
+    }
+
 }

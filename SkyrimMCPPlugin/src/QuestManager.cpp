@@ -120,25 +120,31 @@ namespace SkyrimMCP::QuestManager {
                     a["isEssential"] = alias->IsEssential();
                     a["isProtected"] = alias->IsProtected();
 
-                    // Try to resolve to a reference (BGSRefAlias)
-                    auto* refAlias = dynamic_cast<RE::BGSRefAlias*>(alias);
-                    if (refAlias) {
+                    // Resolve alias to a reference
+                    // Use VMTypeID check instead of dynamic_cast (RTTI can fail in SKSE plugins)
+                    if (alias->GetVMTypeID() == RE::BGSRefAlias::VMTYPEID) {
+                        auto* refAlias = static_cast<RE::BGSRefAlias*>(alias);
                         a["type"] = "reference";
                         auto* ref = refAlias->GetReference();
                         if (ref) {
                             a["refId"] = std::format("{:08X}", ref->GetFormID());
                             a["refName"] = ref->GetName() ? ref->GetName() : "";
+                            auto* baseObj = ref->GetBaseObject();
+                            if (baseObj) a["baseId"] = std::format("{:08X}", baseObj->GetFormID());
 
                             auto* actor = ref->As<RE::Actor>();
                             if (actor) {
                                 a["isActor"] = true;
                                 a["isDead"] = actor->IsDead();
+                                a["level"] = actor->GetLevel();
                             }
                         } else {
-                            a["refId"] = "unresolved";
+                            a["refId"] = "none";
+                            a["note"] = "Alias is empty — no NPC/object filling this slot";
                         }
                     } else {
                         a["type"] = "other";
+                        a["vmTypeId"] = alias->GetVMTypeID();
                     }
 
                     aliases.push_back(a);

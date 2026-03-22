@@ -35,6 +35,7 @@ set(SOURCES
     src/EventSystem.cpp
     src/CombatAnalysis.cpp
     src/UIManager.cpp
+    src/PapyrusBridge.cpp
 )
 
 set(HEADERS
@@ -43,6 +44,7 @@ set(HEADERS
     src/GameInterface.h
     src/CombatAnalysis.h
     src/UIManager.h
+    src/PapyrusBridge.h
     src/Helpers.h
     src/PlayerQueries.h
     src/InventoryManager.h

@@ -134,6 +134,35 @@ namespace SkyrimMCP::Protocol {
         noParam("toggle_immortal_mode", []() { return GameInterface::ToggleImmortalMode(); });
         noParam("get_combat_state", []() { return GameInterface::GetCombatState(); });
         noParam("get_menu_state", []() { return GameInterface::GetMenuState(); });
+
+        // Papyrus Bridge — these run on pipe thread (no game thread needed for catalog)
+        registry["get_papyrus_catalog"] = [](const std::string& id, const json&) {
+            // Catalog scan is file I/O, safe on any thread
+            auto result = GameInterface::GetPapyrusCatalog();
+            if (result.contains("error"))
+                return MakeResponse(id, false, {}, result["error"].get<std::string>()).dump() + "\n";
+            return MakeResponse(id, true, result).dump() + "\n";
+        };
+        registry["scan_papyrus_sources"] = [](const std::string& id, const json&) {
+            auto result = GameInterface::ScanPapyrusSources();
+            if (result.contains("error"))
+                return MakeResponse(id, false, {}, result["error"].get<std::string>()).dump() + "\n";
+            return MakeResponse(id, true, result).dump() + "\n";
+        };
+        formIdParam("get_script_functions", "className", [](const std::string& c) {
+            return GameInterface::GetScriptFunctions(c);
+        });
+        registry["call_papyrus_function"] = [](const std::string& id, const json& params) {
+            std::string className = params.value("className", "");
+            std::string functionName = params.value("functionName", "");
+            auto args = params.value("args", json::array());
+            if (className.empty() || functionName.empty())
+                return MakeResponse(id, false, {}, "Missing className or functionName").dump() + "\n";
+            // Papyrus calls need the game thread
+            return GameThread(id, [className, functionName, args]() {
+                return GameInterface::CallPapyrusFunction(className, functionName, args);
+            });
+        };
         noParam("get_damage_stats", []() { return GameInterface::GetDamageStats(); });
 
         registry["get_threats"] = [](const std::string& id, const json& params) {

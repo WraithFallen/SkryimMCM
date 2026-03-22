@@ -32,7 +32,7 @@ public class UtilityTools : ToolBase
         {
             ["command"] = command
         });
-        return new { success = true, message = $"Executed command: {command}" };
+        return DeserializeResponse(data);
     }
 
     [McpServerTool]

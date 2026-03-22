@@ -124,21 +124,15 @@ namespace SkyrimMCP::Protocol {
         noParam("discover_all_map_markers", []() { return GameInterface::DiscoverAllMapMarkers(); });
         noParam("get_player_factions", []() { return GameInterface::GetPlayerFactions(); });
         noParam("get_bounties", []() { return GameInterface::GetBounties(); });
+        noParam("get_magic_resistances", []() { return GameInterface::GetMagicResistances(); });
+        noParam("get_disease_status", []() { return GameInterface::GetDiseaseStatus(); });
+        noParam("get_powers", []() { return GameInterface::GetPowers(); });
+        noParam("get_followers", []() { return GameInterface::GetFollowers(); });
 
         registry["get_nearby_merchants"] = [](const std::string& id, const json& params) {
             float radius = params.value("radius", 4096.0f);
             return GameThread(id, [radius]() { return GameInterface::GetNearbyMerchants(radius); });
         };
-
-        formIdParam("get_merchant_inventory", "refId", [](const std::string& r) { return GameInterface::GetMerchantInventory(r); });
-        formIdParam("clear_bounty", "factionFormId", [](const std::string& f) { return GameInterface::ClearBounty(f); });
-        noParam("get_magic_resistances", []() { return GameInterface::GetMagicResistances(); });
-        noParam("get_disease_status", []() { return GameInterface::GetDiseaseStatus(); });
-        noParam("get_powers", []() { return GameInterface::GetPowers(); });
-
-        formIdParam("get_spell_details", "formId", [](const std::string& f) { return GameInterface::GetSpellDetails(f); });
-        formIdParam("get_enchantment_info", "formId", [](const std::string& f) { return GameInterface::GetEnchantmentInfo(f); });
-        noParam("get_followers", []() { return GameInterface::GetFollowers(); });
 
         // === Single formId/refId param handlers ===
 
@@ -170,6 +164,10 @@ namespace SkyrimMCP::Protocol {
         formIdParam("get_detection_level", "refId", [](const std::string& r) { return GameInterface::GetDetectionLevel(r); });
         formIdParam("get_mod_formid_prefix", "modName", [](const std::string& m) { return GameInterface::GetModFormIdPrefix(m); });
         formIdParam("set_weather", "weather", [](const std::string& w) { return GameInterface::SetWeather(w); });
+        formIdParam("get_merchant_inventory", "refId", [](const std::string& r) { return GameInterface::GetMerchantInventory(r); });
+        formIdParam("clear_bounty", "factionFormId", [](const std::string& f) { return GameInterface::ClearBounty(f); });
+        formIdParam("get_spell_details", "formId", [](const std::string& f) { return GameInterface::GetSpellDetails(f); });
+        formIdParam("get_enchantment_info", "formId", [](const std::string& f) { return GameInterface::GetEnchantmentInfo(f); });
 
         // === Multi-param handlers ===
 

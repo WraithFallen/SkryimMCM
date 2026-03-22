@@ -152,18 +152,12 @@ namespace SkyrimMCP::Helpers {
         auto* script = factory->Create();
         if (!script) return {{"error", "Failed to create script"}};
 
-        // Open console menu so output is written to lastMessage
-        OpenConsoleMenu();
-
         ClearConsoleOutput();
 
         script->SetCommand(command);
         bool ok = RunScriptSEH(script, player);
 
         std::string output = CaptureConsoleOutput();
-
-        // Close console menu
-        CloseConsoleMenu();
 
         if (!ok) {
             SKSE::log::error("Command '{}' caused an access violation — caught by SEH", command);

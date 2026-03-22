@@ -33,10 +33,53 @@ public abstract class ToolBase
 
     /// <summary>
     /// Deserialize a JsonNode response to an object suitable for MCP tool return.
-    /// Replaces the repeated pattern: (object?)JsonSerializer.Deserialize&lt;JsonElement&gt;(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" }
     /// </summary>
     protected static object DeserializeResponse(JsonNode? data)
     {
         return (object?)JsonSerializer.Deserialize<JsonElement>(data?.ToJsonString() ?? "{}") ?? new { error = "No data returned" };
+    }
+
+    /// <summary>
+    /// Apply paging to a response that contains an array field.
+    /// Returns a paged envelope with items, page, pageSize, totalItems, totalPages, hasMore.
+    /// If page=0 or pageSize=0, returns summary only (no items).
+    /// </summary>
+    protected static object PageResponse(JsonNode? data, string arrayField, int page = 1, int pageSize = 50)
+    {
+        if (data == null) return new { error = "No data returned" };
+
+        var array = data[arrayField]?.AsArray();
+        if (array == null) return DeserializeResponse(data);
+
+        int totalItems = array.Count;
+        int totalPages = pageSize > 0 ? (int)Math.Ceiling((double)totalItems / pageSize) : 1;
+
+        // Summary only mode
+        if (page == 0 || pageSize == 0)
+        {
+            return new
+            {
+                totalItems,
+                totalPages = pageSize > 0 ? totalPages : 0,
+                summaryOnly = true
+            };
+        }
+
+        // Slice the array
+        var items = array
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(i => JsonSerializer.Deserialize<JsonElement>(i?.ToJsonString() ?? "{}"))
+            .ToArray();
+
+        return new
+        {
+            items,
+            page,
+            pageSize,
+            totalItems,
+            totalPages,
+            hasMore = page < totalPages
+        };
     }
 }

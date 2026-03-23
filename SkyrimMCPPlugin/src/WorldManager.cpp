@@ -375,23 +375,35 @@ namespace SkyrimMCP::WorldManager {
     }
 
     json ToggleImmortalMode() {
-        // TIM crashes via CompileAndRun (BUG-010).
-        // Instead, toggle the player's essential flag — same effect as TIM
-        // (takes damage but cannot die). Uses setessential on the player base ID.
         auto* player = RE::PlayerCharacter::GetSingleton();
         if (!player) return {{"error", "Player not available"}};
 
         static bool immortalMode = false;
         immortalMode = !immortalMode;
 
-        auto* base = player->GetActorBase();
-        if (base) {
-            std::string baseId = std::format("{:08X}", base->GetFormID());
-            Helpers::ExecuteConsoleCommand(
-                std::format("setessential {} {}", baseId, immortalMode ? 1 : 0));
+        std::string method;
+        auto safety = Helpers::CheckGameSafety();
+
+        if (safety.safe) {
+            // Preferred: use tim command when VM is in a clean state
+            Helpers::ExecuteConsoleCommand("tim");
+            method = "tim";
+        } else {
+            // Fallback: setessential when VM state is risky
+            auto* base = player->GetActorBase();
+            if (base) {
+                std::string baseId = std::format("{:08X}", base->GetFormID());
+                Helpers::ExecuteConsoleCommand(
+                    std::format("setessential {} {}", baseId, immortalMode ? 1 : 0));
+                method = "setessential";
+            } else {
+                return {{"error", "Could not toggle immortal mode — no safe method available"}};
+            }
+            SKSE::log::info("ToggleImmortalMode: used fallback '{}' due to: {}",
+                method, safety.warning);
         }
 
-        return {{"immortalMode", immortalMode}};
+        return {{"immortalMode", immortalMode}, {"method", method}};
     }
 
     json ToggleCollision(const std::string& refFormIdHex) {

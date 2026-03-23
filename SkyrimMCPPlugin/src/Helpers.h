@@ -212,13 +212,10 @@ namespace SkyrimMCP::Helpers {
         // Console command execution using the approach from ConsoleUtilSSE
         // by VersuchDrei (https://github.com/VersuchDrei/ConsoleUtilSSE, MIT License)
 
-        // Safety check — refuse to execute during dangerous game states
+        // Log safety state but don't block — individual functions handle their own fallbacks
         auto safety = CheckGameSafety();
         if (!safety.safe) {
-            SKSE::log::warn("Command '{}' blocked — unsafe state: {}", command, safety.warning);
-            return {{"error", "Command blocked: " + safety.warning},
-                    {"command", command},
-                    {"gameState", GetGameSafetyJson()}};
+            SKSE::log::warn("Command '{}' executing in unsafe state: {}", command, safety.warning);
         }
 
         auto* player = RE::PlayerCharacter::GetSingleton();

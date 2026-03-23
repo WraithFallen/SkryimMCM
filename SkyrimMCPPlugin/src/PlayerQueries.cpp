@@ -1,5 +1,7 @@
 #include "PlayerQueries.h"
 #include "Helpers.h"
+#include "NPCManager.h"
+#include "CombatAnalysis.h"
 
 #include <RE/Skyrim.h>
 #include <SKSE/SKSE.h>
@@ -566,6 +568,10 @@ namespace SkyrimMCP::PlayerQueries {
         blueprint["resistances"] = GetMagicResistances();
         blueprint["diseaseStatus"] = GetDiseaseStatus();
         blueprint["powers"] = GetPowers();
+
+        // Cross-module data
+        blueprint["factions"] = NPCManager::GetPlayerFactions();
+        blueprint["damageStats"] = CombatAnalysis::GetDamageStats();
 
         return blueprint;
     }

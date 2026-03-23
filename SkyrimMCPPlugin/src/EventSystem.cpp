@@ -2,6 +2,7 @@
 #include "Helpers.h"
 
 #include <format>
+#include <unordered_set>
 
 namespace SkyrimMCP {
 
@@ -62,19 +63,17 @@ namespace SkyrimMCP {
         try { holder->RemoveEventSink<RE::TESFastTravelEndEvent>(this); } catch (...) {}
     }
 
-    // Suppress noisy framework events
-    static bool ShouldSuppressEvent(const std::string& eventType, const json& data) {
-        // Suppress framework quest start/stop cycling (NFF, follower frameworks, etc.)
-        if (eventType == "quest_start_stop") {
-            auto formId = data.value("questFormId", "");
-            // These are known framework quests that cycle constantly
-            if (formId == "FEBD3801" || formId == "000F9075") return true;
-        }
+    // Known framework quests that fire events constantly
+    static const std::unordered_set<std::string> SUPPRESSED_QUEST_FORMIDS = {
+        "FEBD3801",  // NFF Quest Alias NPC — cycles start/stop dozens of times
+        "000F9075",  // Framework quest — cycles start/stop and stage 0 constantly
+    };
 
-        // Suppress generic door lock_changed (only interesting for player-picked locks)
-        if (eventType == "lock_changed") {
-            // We don't have enough info to know if player-initiated, so keep all for now
-            // but could add filtering here later
+    static bool ShouldSuppressEvent(const std::string& eventType, const json& data) {
+        // Suppress framework quest noise on both start/stop AND stage events
+        if (eventType == "quest_start_stop" || eventType == "quest_stage") {
+            auto formId = data.value("questFormId", "");
+            if (SUPPRESSED_QUEST_FORMIDS.count(formId)) return true;
         }
 
         return false;

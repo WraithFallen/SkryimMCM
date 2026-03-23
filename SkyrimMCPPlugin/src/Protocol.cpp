@@ -157,10 +157,13 @@ namespace SkyrimMCP::Protocol {
             auto args = params.value("args", json::array());
             if (className.empty() || functionName.empty())
                 return MakeResponse(id, false, {}, "Missing className or functionName").dump() + "\n";
-            // Papyrus calls need the game thread
-            return GameThread(id, [className, functionName, args]() {
-                return GameInterface::CallPapyrusFunction(className, functionName, args);
-            });
+            // DO NOT use GameThread — DispatchStaticCall queues onto the VM which
+            // executes on the game thread. If we block the game thread waiting for
+            // the result, we deadlock. Call directly from the pipe thread instead.
+            auto result = GameInterface::CallPapyrusFunction(className, functionName, args);
+            if (result.contains("error"))
+                return MakeResponse(id, false, {}, result["error"].get<std::string>()).dump() + "\n";
+            return MakeResponse(id, true, result).dump() + "\n";
         };
         noParam("get_damage_stats", []() { return GameInterface::GetDamageStats(); });
 

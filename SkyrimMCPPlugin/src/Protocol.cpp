@@ -167,6 +167,11 @@ namespace SkyrimMCP::Protocol {
         };
         noParam("get_damage_stats", []() { return GameInterface::GetDamageStats(); });
 
+        registry["set_level"] = [](const std::string& id, const json& params) {
+            int level = params.value("level", 1);
+            return GameThread(id, [level]() { return GameInterface::SetLevel(level); });
+        };
+
         registry["get_threats"] = [](const std::string& id, const json& params) {
             float radius = params.value("radius", 4096.0f);
             return GameThread(id, [radius]() { return GameInterface::GetThreats(radius); });

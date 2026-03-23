@@ -240,4 +240,13 @@ public class PlayerTools : ToolBase
             return new { error = $"Snapshot failed: {ex.Message}" };
         }
     }
+
+    [McpServerTool]
+    [Description("Set the player's level. CAUTION: Does not add perks or skill points — just changes the level number.")]
+    public async Task<object> SetLevel(int level)
+    {
+        var data = await _pipe.SendRequestAsync("set_level", new JsonObject { ["level"] = level });
+        await NotifyInGame($"Level set to {level}");
+        return DeserializeResponse(data);
+    }
 }

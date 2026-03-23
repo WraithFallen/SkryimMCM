@@ -51,6 +51,7 @@ namespace SkyrimMCP {
         inline json IsInCombat() { return PlayerQueries::IsInCombat(); }
         inline json GetMagicResistances() { return PlayerQueries::GetMagicResistances(); }
         inline json GetPowers() { return PlayerQueries::GetPowers(); }
+        inline json SetLevel(int level) { return PlayerQueries::SetLevel(level); }
         inline json GetDiseaseStatus() { return PlayerQueries::GetDiseaseStatus(); }
         inline json GetEnchantmentInfo(const std::string& formIdHex) { return PlayerQueries::GetEnchantmentInfo(formIdHex); }
         inline json GetSpellDetails(const std::string& formIdHex) { return PlayerQueries::GetSpellDetails(formIdHex); }

@@ -27,4 +27,8 @@ SkyrimMCPPlugin/extern/
 Thumbs.db
 .DS_Store
 *.zip
+*.pfx
+*.key
+*.cer
+*.snk
 papyrus_catalog.json

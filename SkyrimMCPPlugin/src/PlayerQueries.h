@@ -9,7 +9,7 @@ namespace SkyrimMCP {
 
     namespace PlayerQueries {
         json GetPlayerInfo();
-        json GetInventory();
+        json GetInventory(const std::string& refId = "");
         json GetGoldCount();
         json GetActiveEffects();
         json GetEquippedItems();
@@ -27,6 +27,8 @@ namespace SkyrimMCP {
         json GetEnchantmentInfo(const std::string& formIdHex);
         json GetPowers();
         json SetLevel(int level);
+        json ToggleGodMode();
+        json ToggleImmortalMode();
     }
 
 }

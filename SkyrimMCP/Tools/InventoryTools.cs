@@ -13,11 +13,14 @@ public class InventoryTools : ToolBase
     public InventoryTools(IPipeClient pipe) : base(pipe) { }
 
     [McpServerTool]
-    [Description("Get the player's inventory. Supports paging: page (default 1), pageSize (default 50). " +
+    [Description("Get an actor's inventory. Defaults to the player if no refId is given. " +
+        "Pass a refId to read any NPC's inventory. Supports paging: page (default 1), pageSize (default 50). " +
         "Set page=0 for summary only. Includes item names, counts, types, weights, values, display names, enchantments.")]
-    public async Task<object> GetInventory(int page = 1, int pageSize = 50)
+    public async Task<object> GetInventory(string? refId = null, int page = 1, int pageSize = 50)
     {
-        var data = await _pipe.SendRequestAsync("get_inventory");
+        var parms = new JsonObject();
+        if (!string.IsNullOrEmpty(refId)) parms["refId"] = refId;
+        var data = await _pipe.SendRequestAsync("get_inventory", parms);
         return PageResponse(data, "items", page, pageSize);
     }
 

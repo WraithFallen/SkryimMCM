@@ -36,10 +36,11 @@ public class NPCTools : ToolBase
 
     [McpServerTool]
     [Description("Read an NPC's inventory by reference ID. Shows what items they're carrying — " +
-        "weapons, armor, potions, misc items with FormIDs, counts, and values.")]
+        "weapons, armor, potions, misc items with FormIDs, counts, and values. " +
+        "Alias for GetInventory with a refId — kept for convenience.")]
     public async Task<object> GetNPCInventory(string refId)
     {
-        var data = await _pipe.SendRequestAsync("get_npc_inventory", new JsonObject { ["refId"] = refId });
+        var data = await _pipe.SendRequestAsync("get_inventory", new JsonObject { ["refId"] = refId });
         return DeserializeResponse(data);
     }
 

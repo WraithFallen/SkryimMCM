@@ -98,7 +98,11 @@ namespace SkyrimMCP::Protocol {
         };
 
         noParam("get_player_info", []() { return GameInterface::GetPlayerInfo(); });
-        noParam("get_inventory", []() { return GameInterface::GetInventory(); });
+
+        registry["get_inventory"] = [](const std::string& id, const json& params) {
+            std::string refId = params.value("refId", "");
+            return GameThread(id, [refId]() { return GameInterface::GetInventory(refId); });
+        };
         noParam("get_gold_count", []() { return GameInterface::GetGoldCount(); });
         noParam("get_active_effects", []() { return GameInterface::GetActiveEffects(); });
         noParam("get_equipped_items", []() { return GameInterface::GetEquippedItems(); });
@@ -125,7 +129,11 @@ namespace SkyrimMCP::Protocol {
         noParam("get_load_order", []() { return GameInterface::GetLoadOrder(); });
         noParam("get_loaded_skse_plugins", []() { return GameInterface::GetLoadedSKSEPlugins(); });
         noParam("discover_all_map_markers", []() { return GameInterface::DiscoverAllMapMarkers(); });
-        noParam("get_player_factions", []() { return GameInterface::GetPlayerFactions(); });
+        registry["get_factions"] = [](const std::string& id, const json& params) {
+            std::string refId = params.value("refId", "");
+            return GameThread(id, [refId]() { return GameInterface::GetFactions(refId); });
+        };
+        registry["get_player_factions"] = registry["get_factions"];  // backward compat alias
         noParam("get_bounties", []() { return GameInterface::GetBounties(); });
         noParam("get_magic_resistances", []() { return GameInterface::GetMagicResistances(); });
         noParam("get_disease_status", []() { return GameInterface::GetDiseaseStatus(); });
@@ -208,7 +216,7 @@ namespace SkyrimMCP::Protocol {
         formIdParam("unlock_door", "refId", [](const std::string& r) { return GameInterface::UnlockDoor(r); });
         formIdParam("kill_actor", "refId", [](const std::string& r) { return GameInterface::KillActor(r); });
         formIdParam("get_npc_detailed_info", "refId", [](const std::string& r) { return GameInterface::GetNPCDetailedInfo(r); });
-        formIdParam("get_npc_inventory", "refId", [](const std::string& r) { return GameInterface::GetNPCInventory(r); });
+        formIdParam("get_npc_inventory", "refId", [](const std::string& r) { return GameInterface::GetInventory(r); });
         formIdParam("get_container_inventory", "refId", [](const std::string& r) { return GameInterface::GetContainerInventory(r); });
         formIdParam("get_detection_level", "refId", [](const std::string& r) { return GameInterface::GetDetectionLevel(r); });
         formIdParam("get_mod_formid_prefix", "modName", [](const std::string& m) { return GameInterface::GetModFormIdPrefix(m); });
@@ -245,8 +253,9 @@ namespace SkyrimMCP::Protocol {
         registry["set_actor_value"] = [](const std::string& id, const json& params) {
             std::string attribute = params.value("attribute", "");
             float value = params.value("value", 0.0f);
+            std::string refId = params.value("refId", "");
             if (attribute.empty()) return MakeResponse(id, false, {}, "Missing 'attribute' parameter").dump() + "\n";
-            return GameThread(id, [attribute, value]() { return GameInterface::SetActorValue(attribute, value); });
+            return GameThread(id, [attribute, value, refId]() { return GameInterface::SetActorValue(attribute, value, refId); });
         };
 
         registry["teleport"] = [](const std::string& id, const json& params) {
@@ -267,7 +276,7 @@ namespace SkyrimMCP::Protocol {
             std::string attribute = params.value("attribute", "");
             float value = params.value("value", 0.0f);
             if (actorId.empty() || attribute.empty()) return MakeResponse(id, false, {}, "Missing parameters").dump() + "\n";
-            return GameThread(id, [actorId, attribute, value]() { return GameInterface::SetActorValueOn(actorId, attribute, value); });
+            return GameThread(id, [actorId, attribute, value]() { return GameInterface::SetActorValue(attribute, value, actorId); });
         };
 
         registry["move_actor_to"] = [](const std::string& id, const json& params) {

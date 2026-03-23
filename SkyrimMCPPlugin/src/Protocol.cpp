@@ -78,7 +78,17 @@ namespace SkyrimMCP::Protocol {
                 }
                 arr.push_back(e);
             }
-            return MakeResponse(id, true, {{"events", arr}, {"count", arr.size()}}).dump() + "\n";
+
+            // Include muted event summary
+            auto mutedSummary = EventSystem::GetSingleton().GetMutedSummary();
+            json result;
+            result["events"] = arr;
+            result["count"] = arr.size();
+            result["mutedTotal"] = mutedSummary.value("mutedTotal", 0);
+            if (mutedSummary.contains("muted") && !mutedSummary["muted"].empty()) {
+                result["muted"] = mutedSummary["muted"];
+            }
+            return MakeResponse(id, true, result).dump() + "\n";
         };
 
         registry["save_game"] = [](const std::string& id, const json& params) {

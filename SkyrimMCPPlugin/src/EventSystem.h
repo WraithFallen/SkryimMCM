@@ -39,6 +39,7 @@ namespace SkyrimMCP {
         void Unregister();
 
         std::vector<json> DrainEvents();
+        json GetMutedSummary();  // Returns counts of suppressed events
         bool HasEvents() const;
 
     protected:
@@ -66,6 +67,7 @@ namespace SkyrimMCP {
 
         mutable std::mutex _mutex;
         std::queue<json> _eventQueue;
+        std::unordered_map<std::string, int> _mutedCounts;
         static constexpr size_t MAX_QUEUE_SIZE = 500;
     };
 

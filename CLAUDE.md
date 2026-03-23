@@ -15,18 +15,36 @@ Claude Desktop <--stdio/MCP--> C# MCP Server <--named pipe--> SKSE Plugin (insid
 ### SKSE Plugin (`SkyrimMCPPlugin/` — C++)
 - **Main.cpp** — SKSE entry point, starts pipe server + event system on kDataLoaded
 - **PipeServer.h/cpp** — Named pipe server (`\\.\pipe\SkyrimMCP`) on background thread
-- **Protocol.h/cpp** — JSON request/response parsing, routes ~35 actions to GameInterface
-- **GameInterface.h/cpp** — All game state functions using CommonLibSSE-NG
+- **Protocol.h/cpp** — Command registry (std::unordered_map) routing ~50 actions
+- **Helpers.h** — Shared utilities: ParseFormId, ResolveActor, ActorValue resolution, console command execution, game safety checker, console output capture
+- **PlayerQueries.h/cpp** — Player state: info, inventory, skills, perks, spells, shouts, appearance, blueprint, toggles (god mode, immortal), combat status
+- **NPCManager.h/cpp** — NPC operations: nearby NPCs, actor info, followers, detection, factions, move/kill/crosshair targeting
+- **InventoryManager.h/cpp** — Item operations: add, remove, equip, unequip
+- **QuestManager.h/cpp** — Quest operations: info, stages, aliases, items, start/stop/complete
+- **WorldManager.h/cpp** — World interaction: weather, time, cells, objects, doors, containers, merchants, bounties, collision, teleport
+- **CombatAnalysis.h/cpp** — Combat: state, damage stats, threat assessment
+- **UIManager.h/cpp** — Menu state queries
+- **UtilityManager.h/cpp** — Notifications, form search, SKSE plugins, save/load, load order
+- **PapyrusBridge.h/cpp** — Runtime .psc scanner, Papyrus VM call bridge, function catalog
+- **EventSystem.h/cpp** — 17 game event sinks with noise filtering
 - **TaskQueue.h/cpp** — Marshals pipe-thread calls to game thread via SKSE task interface
-- **EventSystem.h/cpp** — 17 game event sinks (combat, death, quests, location, inventory, etc.)
 
 Uses CommonLibSSE-NG (main branch, local shallow clone in `extern/`), nlohmann-json, spdlog, fmt. Statically linked (x64-windows-static).
 
-### C# MCP Server (`SkyrimMCP/` — .NET 8)
-- **Program.cs** — MCP server host, registers PipeClient singleton, auto-discovers tools
-- **SkyrimTools.cs** — 27+ MCP tools using `[McpServerTool]` attributes
-- **PipeClient.cs** — Named pipe client, handles connection, reconnection, timeouts
+### C# MCP Server (`SkyrimMCP/` — .NET 10)
+- **Program.cs** — MCP server host, registers IPipeClient singleton, auto-discovers tools
+- **IPipeClient.cs** — Interface for pipe communication (testability)
+- **PipeClient.cs** — Named pipe client implementation
 - **SkyrimOffsets.cs** — FormID database (30+ items, 20+ locations) for name→ID resolution
+- **Tools/ToolBase.cs** — Base class with DeserializeResponse(), NotifyInGame(), PageResponse() helpers
+- **Tools/PlayerTools.cs** — 15 tools: player info, skills, perks, spells, shouts, appearance, factions, blueprint, toggles
+- **Tools/InventoryTools.cs** — 6 tools: inventory (paged), equipped, add/remove, bulk add
+- **Tools/QuestTools.cs** — 4 tools: quest info, stages, aliases, items
+- **Tools/NPCTools.cs** — 7 tools: nearby NPCs, NPC detail, inventory, followers, detection, crosshair, kill
+- **Tools/WorldTools.cs** — 15 tools: weather, cell, objects, doors, containers, merchants, bounties, teleport, collision, loot scan
+- **Tools/CombatTools.cs** — 3 tools: combat state, damage stats, threats
+- **Tools/UtilityTools.cs** — 12 tools: console commands, notifications, search, load order, save/load, events, menu state, game safety
+- **Tools/PapyrusTools.cs** — 4 tools: catalog, function lookup, VM call, rescan
 
 ## Build Commands
 
@@ -43,9 +61,12 @@ dotnet build X:\_work\skyrim_mcp\SkyrimMCP
 
 # Deploy DLL to Skyrim
 copy X:\_work\skyrim_mcp\SkyrimMCPPlugin\output\SkyrimMCPPlugin.dll "C:\Steam\steamapps\common\Skyrim Special Edition\Data\SKSE\Plugins\" -Force
+
+# Release build for Nexus
+.\build_release.ps1 -Version "1.0.0"
 ```
 
-**Requires:** Visual Studio 2022 C++ workload, CMake 3.21+, vcpkg at `C:\vcpkg`, .NET 8 SDK
+**Requires:** Visual Studio 2022 C++ workload, CMake 3.21+, vcpkg at `C:\vcpkg`, .NET 10 SDK
 
 ## Protocol
 
@@ -58,29 +79,44 @@ Response: `{"id":"uuid","success":bool,"data":{},"error":"..."}`
 
 - **Console commands:** Use ConsoleUtilSSE-style `CompileAndRunImpl` with `RELOCATION_ID(21416, patch < 1130 ? 21890 : 441582)`. Credit: VersuchDrei/ConsoleUtilSSE (MIT License). CommonLibSSE-NG's built-in CompileAndRun crashes on Skyrim >= 1.6.1130.
 - **NPC targeting:** Use dot-notation `refId.command` (e.g., `FE124B0E.kill`). The `prid` command does NOT persist between separate ExecuteConsoleCommand calls.
-- **Thread safety:** All game API calls go through TaskQueue to run on the game thread. Only `ping` and `poll_events` are handled directly on the pipe thread.
+- **Thread safety:** All game API calls go through TaskQueue to run on the game thread. Only `ping`, `poll_events`, and Papyrus catalog operations are handled directly on the pipe thread.
+- **Papyrus VM calls:** DispatchStaticCall must NOT go through TaskQueue (deadlock). Called from pipe thread, callback fires on game thread.
 - **SEH crash protection:** `__try/__except` around CompileAndRun catches access violations safely.
 - **Static linking:** `x64-windows-static` vcpkg triplet required — dynamic linking causes SKSE load failure (0x0000007E).
 - **CommonLibSSE-NG includes:** Must come BEFORE any Windows API headers. Use `void*` for HANDLE in headers, include `<windows.h>` only in .cpp files after CommonLibSSE.
 - **Async save:** Fire-and-forget from Protocol layer — BGSSaveLoadManager::Save() blocks game thread for 10+ seconds with heavy mod lists.
+- **Actor polymorphism:** `Helpers::ResolveActor(refId)` returns player if empty, specific actor by FormID otherwise. Used by GetInventory, GetFactions, SetActorValue.
+- **Game safety checker:** `Helpers::CheckGameSafety()` detects loading, kill moves, saves. Functions like ToggleImmortalMode use it for fallback strategies.
 
 ## Key API Patterns (CommonLibSSE-NG main branch)
 
 - Actor values: `AsActorValueOwner()->GetActorValue()`, not `Actor::GetActorValue()`
 - Base actor value: `GetBaseActorValue()`, not `GetPermanentActorValue()`
 - Quest objectives: use `state` field, not `IsCompleted()`
+- Quest aliases: use `GetVMTypeID() == BGSRefAlias::VMTYPEID` with `static_cast`, not `dynamic_cast`
 - Plugin entry: `SKSEPluginInfo()` / `SKSEPluginLoad()` macros, not manual constinit
 - Logging: needs `#include <spdlog/sinks/basic_file_sink.h>`
 - Always grep actual headers in `extern/CommonLibSSE-NG/include/` when in doubt
 
 ## Project Tracking
 
-- **`project_work_items.json`** — Single source of truth for all features, bugs, and status (72+ items, 11 phases)
+- **`project_work_items.json`** — Single source of truth for all features, bugs, and status (72+ items, 12 phases)
 - **`ROADMAP.md`** — Human-readable feature roadmap
 - **`CHARACTER_BLUEPRINT_SPEC.json`** — Character export/import specification
+- **`project_dashboard.html`** — Visual dashboard for project_work_items.json
+
+## Git Workflow
+
+- **`main`** — Release-ready code only (README + .gitignore currently)
+- **`develop`** — Active development branch
+- **Feature branches:** `feature/XXX-name` for new features
+- **Bugfix branches:** `bugfix/XXX-description` for bug fixes
+- **Refactor branches:** `refactor/description` for code restructuring
+- All branches merge to develop via `--no-ff`
 
 ## Prerequisites for Running
 - SKSE64 installed in Skyrim
 - Address Library for SKSE (SE or AE version)
 - SkyrimMCPPlugin.dll in `<Skyrim>/Data/SKSE/Plugins/`
+- .NET 10 Runtime
 - Claude Desktop config pointing to the C# MCP server

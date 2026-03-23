@@ -105,6 +105,75 @@ namespace SkyrimMCP::Helpers {
         return std::string(console->lastMessage);
     }
 
+    // ==================== Game State Safety Check ====================
+    //
+    // Check if the game is in a safe state for executing commands.
+    // Returns a JSON object with safety status and active risk flags.
+
+    struct GameSafetyState {
+        bool safe = true;
+        bool isLoading = false;
+        bool isPaused = false;
+        bool isInCombat = false;
+        bool isInKillMove = false;
+        bool isInDialogue = false;
+        bool isInScene = false;
+        bool isMenuOpen = false;
+        bool isSaving = false;
+        std::string warning;
+    };
+
+    inline GameSafetyState CheckGameSafety() {
+        GameSafetyState state;
+
+        auto* ui = RE::UI::GetSingleton();
+        if (ui) {
+            state.isPaused = ui->GameIsPaused();
+            state.isSaving = !ui->IsSavingAllowed();  // if saving not allowed, save is in progress
+            state.isMenuOpen = ui->IsMenuOpen("Loading Menu");
+            state.isLoading = state.isMenuOpen;
+
+            // Check for dialogue
+            if (ui->IsMenuOpen("Dialogue Menu")) {
+                state.isInDialogue = true;
+            }
+        }
+
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (player) {
+            state.isInCombat = player->IsInCombat();
+            state.isInKillMove = player->IsInKillMove();
+        }
+
+        // Determine overall safety
+        if (state.isLoading) {
+            state.safe = false;
+            state.warning = "Game is loading — commands will crash";
+        } else if (state.isInKillMove) {
+            state.safe = false;
+            state.warning = "Player is in a kill move — commands may crash";
+        } else if (state.isSaving) {
+            state.safe = false;
+            state.warning = "Game is saving — commands may corrupt save";
+        }
+
+        return state;
+    }
+
+    inline json GetGameSafetyJson() {
+        auto state = CheckGameSafety();
+        json result;
+        result["safe"] = state.safe;
+        result["isLoading"] = state.isLoading;
+        result["isPaused"] = state.isPaused;
+        result["isInCombat"] = state.isInCombat;
+        result["isInKillMove"] = state.isInKillMove;
+        result["isInDialogue"] = state.isInDialogue;
+        result["isSaving"] = state.isSaving;
+        if (!state.warning.empty()) result["warning"] = state.warning;
+        return result;
+    }
+
     // ==================== Console Command Execution ====================
     //
     // Console command execution approach adapted from ConsoleUtilSSE by VersuchDrei
@@ -142,6 +211,15 @@ namespace SkyrimMCP::Helpers {
     inline json ExecuteConsoleCommand(const std::string& command) {
         // Console command execution using the approach from ConsoleUtilSSE
         // by VersuchDrei (https://github.com/VersuchDrei/ConsoleUtilSSE, MIT License)
+
+        // Safety check — refuse to execute during dangerous game states
+        auto safety = CheckGameSafety();
+        if (!safety.safe) {
+            SKSE::log::warn("Command '{}' blocked — unsafe state: {}", command, safety.warning);
+            return {{"error", "Command blocked: " + safety.warning},
+                    {"command", command},
+                    {"gameState", GetGameSafetyJson()}};
+        }
 
         auto* player = RE::PlayerCharacter::GetSingleton();
         if (!player) return {{"error", "Player not available"}};

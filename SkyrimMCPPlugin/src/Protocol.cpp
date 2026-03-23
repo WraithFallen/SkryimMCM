@@ -134,6 +134,7 @@ namespace SkyrimMCP::Protocol {
         noParam("toggle_immortal_mode", []() { return GameInterface::ToggleImmortalMode(); });
         noParam("get_combat_state", []() { return GameInterface::GetCombatState(); });
         noParam("get_menu_state", []() { return GameInterface::GetMenuState(); });
+        noParam("get_game_safety", []() { return GameInterface::GetGameSafety(); });
 
         // Papyrus Bridge — these run on pipe thread (no game thread needed for catalog)
         registry["get_papyrus_catalog"] = [](const std::string& id, const json&) {

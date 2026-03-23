@@ -15,6 +15,18 @@ public class UtilityTools : ToolBase
     [McpServerTool]
     [Description("Check which menus are currently open and whether the game is paused. " +
         "Shows open menus like InventoryMenu, MapMenu, DialogueMenu, Console, etc.")]
+    [McpServerTool]
+    [Description("Check if the game is in a safe state for executing commands. " +
+        "Returns safety flags: isLoading, isPaused, isInCombat, isInKillMove, isInDialogue, isSaving. " +
+        "If safe=false, the warning field explains why commands should be avoided. " +
+        "Call this before risky operations like spawning NPCs, teleporting, or quest manipulation.")]
+    public async Task<object> GetGameSafety()
+    {
+        var data = await _pipe.SendRequestAsync("get_game_safety");
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
     public async Task<object> GetMenuState()
     {
         var data = await _pipe.SendRequestAsync("get_menu_state");

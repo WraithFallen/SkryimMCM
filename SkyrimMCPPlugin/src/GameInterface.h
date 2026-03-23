@@ -28,6 +28,7 @@ namespace SkyrimMCP {
 
         // === Helpers / Console ===
         inline json ExecuteConsoleCommand(const std::string& command) { return Helpers::ExecuteConsoleCommand(command); }
+        inline json GetGameSafety() { return Helpers::GetGameSafetyJson(); }
 
         // === Combat (CombatAnalysis) ===
         inline json GetCombatState() { return CombatAnalysis::GetCombatState(); }

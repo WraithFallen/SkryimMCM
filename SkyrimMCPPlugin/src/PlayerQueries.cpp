@@ -860,4 +860,8 @@ namespace SkyrimMCP::PlayerQueries {
         return result;
     }
 
+    json SetLevel(int level) {
+        return Helpers::ExecuteConsoleCommand(std::format("player.setlevel {}", level));
+    }
+
 }

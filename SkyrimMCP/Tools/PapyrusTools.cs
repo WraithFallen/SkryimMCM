@@ -44,11 +44,25 @@ public class PapyrusTools : ToolBase
     [McpServerTool]
     [Description("Call any Papyrus function from any installed mod via the Papyrus VM. " +
         "Pass className (script class), functionName, and args (JSON array of values). " +
-        "Supports string, int, float, bool arguments (up to 2 args currently). " +
-        "Returns the function's return value. " +
-        "Example: className='ConsoleUtil', functionName='ExecuteCommand', args=['tgm'] " +
-        "IMPORTANT: Use GetScriptFunctions first to check available functions and their parameter types. " +
-        "CAUTION: Calling unknown functions or with wrong argument types may cause errors.")]
+        "Supports string, int, float, bool arguments. Returns the function's return value. " +
+        "WORKFLOW: Use GetScriptFunctions(className) first to see available functions and parameter types. " +
+        "KEY PLUGINS AVAILABLE: " +
+        "ConsoleUtil (6 funcs): ExecuteCommand, ReadMessage, GetVersion, SetSelectedReference. " +
+        "PapyrusUtil (21 funcs): MorphManager for face/body morphs, array utilities, file I/O. " +
+        "StorageUtil (171 funcs): Persistent key-value storage per form — SetIntValue, GetStringValue, etc. " +
+        "JsonUtil (123 funcs): Read/write JSON files — Load, Save, SetStringValue, GetIntValue. " +
+        "JContainers (431 funcs): Advanced data structures — JArray, JMap, JValue, JDB for persistent databases. " +
+        "Experience (13 funcs): AddExperience, GetSkillCap, ShowNotification for XP-based leveling. " +
+        "OActor (40 funcs): PlayExpression, Undress/Redress, EquipObject for character interaction. " +
+        "IED (112 funcs): Equipment display management — show weapons/shields on character model. " +
+        "DbSkseFunctions (159 funcs): Extended utilities — clipboard, save management, form queries. " +
+        "Input (8 funcs): IsKeyPressed, TapKey, HoldKey for input simulation. " +
+        "Camera (6 funcs): GetCameraState, SetWorldFieldOfView for camera control. " +
+        "EXAMPLES: " +
+        "Get ConsoleUtil version: className='ConsoleUtil', functionName='GetVersion', args=[] " +
+        "Execute console command: className='ConsoleUtil', functionName='ExecuteCommand', args=['tgm'] " +
+        "Add experience: className='Experience', functionName='AddExperience', args=[100, true] " +
+        "CAUTION: Functions requiring Actor/Form type arguments need FormID resolution (not yet supported for all types).")]
     public async Task<object> CallPapyrusFunction(string className, string functionName, string? args = null)
     {
         var parms = new JsonObject

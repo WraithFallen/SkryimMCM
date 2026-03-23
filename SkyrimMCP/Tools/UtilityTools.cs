@@ -161,8 +161,10 @@ public class UtilityTools : ToolBase
         "Events: combat, death, quest_stage, quest_start_stop, location_change, cell_loaded, " +
         "inventory_change, equip, hit, spell_cast, activate, open_close, sleep_ended, wait_ended, " +
         "fast_travel, lock_changed, stat_change. " +
-        "Framework quest noise is auto-filtered. For focused polling, pass eventTypes (array of types to include) " +
-        "or excludeTypes (array to exclude) as parameters.")]
+        "Framework quest noise is auto-muted (not dropped). Response includes 'muted' summary showing " +
+        "suppressed event counts — check mutedTotal to know if framework quests are cycling. " +
+        "For focused polling, pass eventTypes (comma-separated types to include) " +
+        "or excludeTypes (comma-separated types to exclude).")]
     public async Task<object> PollEvents(string? eventTypes = null, string? excludeTypes = null)
     {
         var parms = new JsonObject();

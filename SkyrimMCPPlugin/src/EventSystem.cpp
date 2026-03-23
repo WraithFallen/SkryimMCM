@@ -69,20 +69,26 @@ namespace SkyrimMCP {
         "000F9075",  // Framework quest — cycles start/stop and stage 0 constantly
     };
 
-    static bool ShouldSuppressEvent(const std::string& eventType, const json& data) {
-        // Suppress framework quest noise on both start/stop AND stage events
+    static bool IsMutedEvent(const std::string& eventType, const json& data) {
         if (eventType == "quest_start_stop" || eventType == "quest_stage") {
             auto formId = data.value("questFormId", "");
             if (SUPPRESSED_QUEST_FORMIDS.count(formId)) return true;
         }
-
         return false;
     }
 
     void EventSystem::PushEvent(const std::string& eventType, json data) {
-        if (ShouldSuppressEvent(eventType, data)) return;
+        bool muted = IsMutedEvent(eventType, data);
 
         std::lock_guard lock(_mutex);
+
+        // Track muted event counts
+        if (muted) {
+            std::string key = data.value("questFormId", eventType);
+            _mutedCounts[key]++;
+            return;  // Don't add to main queue
+        }
+
         if (_eventQueue.size() >= MAX_QUEUE_SIZE) {
             _eventQueue.pop();
         }
@@ -101,6 +107,18 @@ namespace SkyrimMCP {
             _eventQueue.pop();
         }
         return events;
+    }
+
+    json EventSystem::GetMutedSummary() {
+        std::lock_guard lock(_mutex);
+        json summary = json::object();
+        int total = 0;
+        for (auto& [key, count] : _mutedCounts) {
+            summary[key] = count;
+            total += count;
+        }
+        _mutedCounts.clear();
+        return {{"muted", summary}, {"mutedTotal", total}};
     }
 
     bool EventSystem::HasEvents() const {

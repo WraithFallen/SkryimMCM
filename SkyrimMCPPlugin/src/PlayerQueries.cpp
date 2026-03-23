@@ -46,11 +46,11 @@ namespace SkyrimMCP::PlayerQueries {
         return result;
     }
 
-    json GetInventory() {
-        auto* player = RE::PlayerCharacter::GetSingleton();
-        if (!player) return {{"error", "Player not available"}};
+    json GetInventory(const std::string& refId) {
+        auto* actor = Helpers::ResolveActor(refId);
+        if (!actor) return {{"error", refId.empty() ? "Player not available" : "Actor not found: " + refId}};
 
-        auto inv = player->GetInventory();
+        auto inv = actor->GetInventory();
         json items = json::array();
 
         for (auto& [form, data] : inv) {
@@ -123,7 +123,14 @@ namespace SkyrimMCP::PlayerQueries {
             }
         }
 
-        return {{"items", items}};
+        json result;
+        result["items"] = items;
+        if (!refId.empty() && refId != "player") {
+            result["refId"] = refId;
+            result["name"] = actor->GetName() ? actor->GetName() : "";
+            result["count"] = items.size();
+        }
+        return result;
     }
 
     json GetGoldCount() {
@@ -570,7 +577,7 @@ namespace SkyrimMCP::PlayerQueries {
         blueprint["powers"] = GetPowers();
 
         // Cross-module data
-        blueprint["factions"] = NPCManager::GetPlayerFactions();
+        blueprint["factions"] = NPCManager::GetFactions();
         blueprint["damageStats"] = CombatAnalysis::GetDamageStats();
 
         return blueprint;
@@ -868,6 +875,44 @@ namespace SkyrimMCP::PlayerQueries {
 
     json SetLevel(int level) {
         return Helpers::ExecuteConsoleCommand(std::format("player.setlevel {}", level));
+    }
+
+    json ToggleGodMode() {
+        REL::Relocation<bool*> godMode{ RELOCATION_ID(517711, 404238) };
+        *godMode = !*godMode;
+        return {{"godMode", *godMode}};
+    }
+
+    json ToggleImmortalMode() {
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        static bool immortalMode = false;
+        immortalMode = !immortalMode;
+
+        std::string method;
+        auto safety = Helpers::CheckGameSafety();
+
+        if (safety.safe) {
+            // Preferred: use tim command when VM is in a clean state
+            Helpers::ExecuteConsoleCommand("tim");
+            method = "tim";
+        } else {
+            // Fallback: setessential when VM state is risky
+            auto* base = player->GetActorBase();
+            if (base) {
+                std::string baseId = std::format("{:08X}", base->GetFormID());
+                Helpers::ExecuteConsoleCommand(
+                    std::format("setessential {} {}", baseId, immortalMode ? 1 : 0));
+                method = "setessential";
+            } else {
+                return {{"error", "Could not toggle immortal mode — no safe method available"}};
+            }
+            SKSE::log::info("ToggleImmortalMode: used fallback '{}' due to: {}",
+                method, safety.warning);
+        }
+
+        return {{"immortalMode", immortalMode}, {"method", method}};
     }
 
 }

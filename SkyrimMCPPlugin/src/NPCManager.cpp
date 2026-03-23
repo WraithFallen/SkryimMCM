@@ -190,50 +190,6 @@ namespace SkyrimMCP::NPCManager {
         }
     }
 
-    json GetNPCInventory(const std::string& refFormIdHex) {
-        try {
-            auto* form = RE::TESForm::LookupByID(Helpers::ParseFormId(refFormIdHex));
-            if (!form) return {{"error", "Reference not found: " + refFormIdHex}};
-
-            auto* ref = form->As<RE::TESObjectREFR>();
-            if (!ref) return {{"error", "Not a reference: " + refFormIdHex}};
-
-            auto inv = ref->GetInventory();
-            json items = json::array();
-
-            for (auto& [itemForm, data] : inv) {
-                if (!itemForm || data.first <= 0) continue;
-                try {
-                    json item;
-                    item["formId"] = std::format("{:08X}", itemForm->GetFormID());
-                    item["name"] = itemForm->GetName();
-                    item["count"] = data.first;
-
-                    switch (itemForm->GetFormType()) {
-                        case RE::FormType::Weapon: item["type"] = "weapon"; break;
-                        case RE::FormType::Armor: item["type"] = "armor"; break;
-                        case RE::FormType::AlchemyItem: item["type"] = "potion"; break;
-                        case RE::FormType::Misc: item["type"] = "misc"; break;
-                        case RE::FormType::Ammo: item["type"] = "ammo"; break;
-                        default: item["type"] = "other"; break;
-                    }
-
-                    if (auto* boundObj = itemForm->As<RE::TESBoundObject>()) {
-                        item["value"] = boundObj->GetGoldValue();
-                    }
-
-                    items.push_back(item);
-                } catch (...) { continue; }
-            }
-
-            return {{"refId", refFormIdHex},
-                    {"name", ref->GetName() ? ref->GetName() : ""},
-                    {"items", items}, {"count", items.size()}};
-        } catch (...) {
-            return {{"error", "Failed to get NPC inventory: " + refFormIdHex}};
-        }
-    }
-
     json GetFollowers() {
         auto* player = RE::PlayerCharacter::GetSingleton();
         if (!player) return {{"error", "Player not available"}};
@@ -432,44 +388,31 @@ namespace SkyrimMCP::NPCManager {
         return {{"error", "Nothing targeted — look at an NPC or object"}};
     }
 
-    json SetActorValue(const std::string& attribute, float value) {
-        auto* player = RE::PlayerCharacter::GetSingleton();
-        if (!player) return {{"error", "Player not available"}};
+    json SetActorValue(const std::string& attribute, float value, const std::string& refId) {
+        auto* actor = Helpers::ResolveActor(refId);
+        if (!actor) return {{"error", refId.empty() ? "Player not available" : "Actor not found: " + refId}};
 
         auto av = Helpers::ResolveActorValue(attribute);
         if (!av) return {{"error", "Unknown attribute: " + attribute}};
 
-        auto* avo = player->AsActorValueOwner();
+        auto* avo = actor->AsActorValueOwner();
         if (!avo) return {{"error", "Actor value owner not available"}};
 
         avo->SetActorValue(*av, value);
-        return {{"set", true}, {"attribute", attribute}, {"value", value}};
-    }
 
-    json SetActorValueOn(const std::string& actorFormIdHex, const std::string& attribute, float value) {
-        try {
-            auto* form = RE::TESForm::LookupByID(Helpers::ParseFormId(actorFormIdHex));
-            if (!form) return {{"error", "Form not found: " + actorFormIdHex}};
-
-            auto* actor = form->As<RE::Actor>();
-            if (!actor) return {{"error", "Not an actor: " + actorFormIdHex}};
-
-            auto av = Helpers::ResolveActorValue(attribute);
-            if (!av) return {{"error", "Unknown attribute: " + attribute}};
-
-            auto* avo = actor->AsActorValueOwner();
-            if (!avo) return {{"error", "Actor value owner not available"}};
-
-            avo->SetActorValue(*av, value);
-            return {{"set", true}, {"actor", actorFormIdHex}, {"attribute", attribute}, {"value", value}};
-        } catch (...) {
-            return {{"error", "Invalid FormID: " + actorFormIdHex}};
+        json result;
+        result["set"] = true;
+        result["attribute"] = attribute;
+        result["value"] = value;
+        if (!refId.empty() && refId != "player") {
+            result["actor"] = refId;
         }
+        return result;
     }
 
-    json GetPlayerFactions() {
-        auto* player = RE::PlayerCharacter::GetSingleton();
-        if (!player) return {{"error", "Player not available"}};
+    json GetFactions(const std::string& refId) {
+        auto* actor = Helpers::ResolveActor(refId);
+        if (!actor) return {{"error", refId.empty() ? "Player not available" : "Actor not found: " + refId}};
 
         json factions = json::array();
         std::unordered_set<RE::FormID> seen;
@@ -488,7 +431,7 @@ namespace SkyrimMCP::NPCManager {
         };
 
         // 1. Base TESNPC factions (from race/class/record)
-        auto* base = player->GetActorBase();
+        auto* base = actor->GetActorBase();
         if (base) {
             for (auto& factionRank : base->factions) {
                 if (factionRank.faction) {
@@ -498,7 +441,7 @@ namespace SkyrimMCP::NPCManager {
         }
 
         // 2. Runtime faction changes (via ExtraData)
-        auto* extraList = &player->extraList;
+        auto* extraList = &actor->extraList;
         if (extraList) {
             auto* factionChanges = extraList->GetByType<RE::ExtraFactionChanges>();
             if (factionChanges) {
@@ -511,12 +454,19 @@ namespace SkyrimMCP::NPCManager {
         }
 
         // 3. VisitFactions as fallback for any we missed
-        player->VisitFactions([&](RE::TESFaction* faction, std::int8_t rank) -> bool {
+        actor->VisitFactions([&](RE::TESFaction* faction, std::int8_t rank) -> bool {
             if (faction) addFaction(faction, rank);
             return true;
         });
 
-        return {{"factions", factions}, {"count", factions.size()}};
+        json result;
+        result["factions"] = factions;
+        result["count"] = factions.size();
+        if (!refId.empty() && refId != "player") {
+            result["refId"] = refId;
+            result["name"] = actor->GetName();
+        }
+        return result;
     }
 
 }

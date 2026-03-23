@@ -42,6 +42,16 @@ namespace SkyrimMCP::Helpers {
         return std::nullopt;
     }
 
+    // ==================== Actor Resolution ====================
+
+    inline RE::Actor* ResolveActor(const std::string& refId = "") {
+        if (refId.empty() || refId == "player") {
+            return RE::PlayerCharacter::GetSingleton();
+        }
+        auto* form = RE::TESForm::LookupByID(ParseFormId(refId));
+        return form ? form->As<RE::Actor>() : nullptr;
+    }
+
     // ==================== Name Resolution ====================
 
     inline std::string GetRefName(RE::TESObjectREFR* ref) {

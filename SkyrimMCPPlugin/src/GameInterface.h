@@ -37,7 +37,7 @@ namespace SkyrimMCP {
 
         // === Player State (PlayerQueries) ===
         inline json GetPlayerInfo() { return PlayerQueries::GetPlayerInfo(); }
-        inline json GetInventory() { return PlayerQueries::GetInventory(); }
+        inline json GetInventory(const std::string& refId = "") { return PlayerQueries::GetInventory(refId); }
         inline json GetGoldCount() { return PlayerQueries::GetGoldCount(); }
         inline json GetActiveEffects() { return PlayerQueries::GetActiveEffects(); }
         inline json GetEquippedItems() { return PlayerQueries::GetEquippedItems(); }
@@ -52,6 +52,8 @@ namespace SkyrimMCP {
         inline json GetMagicResistances() { return PlayerQueries::GetMagicResistances(); }
         inline json GetPowers() { return PlayerQueries::GetPowers(); }
         inline json SetLevel(int level) { return PlayerQueries::SetLevel(level); }
+        inline json ToggleGodMode() { return PlayerQueries::ToggleGodMode(); }
+        inline json ToggleImmortalMode() { return PlayerQueries::ToggleImmortalMode(); }
         inline json GetDiseaseStatus() { return PlayerQueries::GetDiseaseStatus(); }
         inline json GetEnchantmentInfo(const std::string& formIdHex) { return PlayerQueries::GetEnchantmentInfo(formIdHex); }
         inline json GetSpellDetails(const std::string& formIdHex) { return PlayerQueries::GetSpellDetails(formIdHex); }
@@ -139,16 +141,14 @@ namespace SkyrimMCP {
         inline json GetNearbyNPCs(float radius) { return NPCManager::GetNearbyNPCs(radius); }
         inline json GetActorInfo(const std::string& formIdHex) { return NPCManager::GetActorInfo(formIdHex); }
         inline json GetNPCDetailedInfo(const std::string& refFormIdHex) { return NPCManager::GetNPCDetailedInfo(refFormIdHex); }
-        inline json GetNPCInventory(const std::string& refFormIdHex) { return NPCManager::GetNPCInventory(refFormIdHex); }
         inline json GetFollowers() { return NPCManager::GetFollowers(); }
         inline json GetDetectionLevel(const std::string& refFormIdHex) { return NPCManager::GetDetectionLevel(refFormIdHex); }
         inline json MoveActorTo(const std::string& actorFormIdHex, const std::string& targetCellOrRefId) { return NPCManager::MoveActorTo(actorFormIdHex, targetCellOrRefId); }
         inline json SetRelationshipRank(const std::string& actorFormIdHex, int rank) { return NPCManager::SetRelationshipRank(actorFormIdHex, rank); }
         inline json KillActor(const std::string& refFormIdHex) { return NPCManager::KillActor(refFormIdHex); }
         inline json GetCrosshairRef() { return NPCManager::GetCrosshairRef(); }
-        inline json SetActorValue(const std::string& attribute, float value) { return NPCManager::SetActorValue(attribute, value); }
-        inline json SetActorValueOn(const std::string& actorFormIdHex, const std::string& attribute, float value) { return NPCManager::SetActorValueOn(actorFormIdHex, attribute, value); }
-        inline json GetPlayerFactions() { return NPCManager::GetPlayerFactions(); }
+        inline json SetActorValue(const std::string& attribute, float value, const std::string& refId = "") { return NPCManager::SetActorValue(attribute, value, refId); }
+        inline json GetFactions(const std::string& refId = "") { return NPCManager::GetFactions(refId); }
 
         // === World (WorldManager) ===
         inline json Teleport(const std::string& cellId) { return WorldManager::Teleport(cellId); }
@@ -163,8 +163,6 @@ namespace SkyrimMCP {
         inline json DiscoverAllMapMarkers() { return WorldManager::DiscoverAllMapMarkers(); }
         inline json GetGameTime() { return WorldManager::GetGameTime(); }
         inline json SetGameTime(float hours) { return WorldManager::SetGameTime(hours); }
-        inline json ToggleGodMode() { return WorldManager::ToggleGodMode(); }
-        inline json ToggleImmortalMode() { return WorldManager::ToggleImmortalMode(); }
         inline json ToggleCollision(const std::string& refFormIdHex = "") { return WorldManager::ToggleCollision(refFormIdHex); }
         inline json GetNearbyMerchants(float radius) { return WorldManager::GetNearbyMerchants(radius); }
         inline json GetMerchantInventory(const std::string& refFormIdHex) { return WorldManager::GetMerchantInventory(refFormIdHex); }

@@ -139,10 +139,13 @@ public class PlayerTools : ToolBase
     }
 
     [McpServerTool]
-    [Description("Get all factions the player belongs to, with rank for each.")]
-    public async Task<object> GetPlayerFactions()
+    [Description("Get factions an actor belongs to, with rank for each. " +
+        "Defaults to the player if no refId is given. Pass a refId to query any NPC's factions.")]
+    public async Task<object> GetFactions(string? refId = null)
     {
-        var data = await _pipe.SendRequestAsync("get_player_factions");
+        var parms = new JsonObject();
+        if (!string.IsNullOrEmpty(refId)) parms["refId"] = refId;
+        var data = await _pipe.SendRequestAsync("get_factions", parms);
         return DeserializeResponse(data);
     }
 
@@ -248,5 +251,28 @@ public class PlayerTools : ToolBase
         var data = await _pipe.SendRequestAsync("set_level", new JsonObject { ["level"] = level });
         await NotifyInGame($"Level set to {level}");
         return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
+    [Description("Toggle god mode (invincibility) for the player. Uses direct engine API — no console command.")]
+    public async Task<object> ToggleGodMode()
+    {
+        var data = await _pipe.SendRequestAsync("toggle_god_mode");
+        var godMode = data?["godMode"]?.GetValue<bool>() ?? false;
+        var msg = godMode ? "God Mode On" : "God Mode Off";
+        await NotifyInGame(msg);
+        return new { success = true, godMode, message = msg };
+    }
+
+    [McpServerTool]
+    [Description("Toggle immortal mode (TIM) — player takes damage but cannot die. " +
+        "Different from god mode: god mode prevents all damage, immortal mode allows damage but prevents death.")]
+    public async Task<object> ToggleImmortalMode()
+    {
+        var data = await _pipe.SendRequestAsync("toggle_immortal_mode");
+        var immortal = data?["immortalMode"]?.GetValue<bool>() ?? false;
+        var msg = immortal ? "Immortal Mode On" : "Immortal Mode Off";
+        await NotifyInGame(msg);
+        return new { success = true, immortalMode = immortal, message = msg };
     }
 }

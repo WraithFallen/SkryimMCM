@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using ModelContextProtocol.Server;
 
@@ -211,5 +212,114 @@ public class UtilityTools : ToolBase
     {
         var data = await _pipe.SendRequestAsync("load_most_recent_save");
         return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
+    [Description("Read a plugin config file (JSON or INI) from Data/SKSE/Plugins/. " +
+        "Pass the filename relative to the plugins directory (e.g., 'SmoothCam.json', 'po3_Tweaks.ini'). " +
+        "Returns the file contents parsed as JSON. Use this to inspect mod settings. " +
+        "For SmoothCam: 'SmoothCam.json' (active config), 'SmoothCamPreset0.json' through 'SmoothCamPreset5.json' (presets).")]
+    public async Task<object> ReadPluginConfig(string filename)
+    {
+        try
+        {
+            // Get Skyrim path from pipe — ask plugin for current working dir
+            // For now, use a known path pattern
+            var skyrimPath = Environment.GetEnvironmentVariable("SKYRIM_PATH")
+                ?? @"C:\Steam\steamapps\common\Skyrim Special Edition";
+            var filePath = Path.Combine(skyrimPath, "Data", "SKSE", "Plugins", filename);
+
+            if (!File.Exists(filePath))
+                return new { error = $"File not found: {filename}" };
+
+            var content = await File.ReadAllTextAsync(filePath);
+
+            // Try parsing as JSON
+            if (filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var json = JsonNode.Parse(content);
+                    return new { filename, format = "json", data = JsonSerializer.Deserialize<JsonElement>(content) };
+                }
+                catch { }
+            }
+
+            // Return as raw text for INI and other formats
+            return new { filename, format = "text", content };
+        }
+        catch (Exception ex)
+        {
+            return new { error = $"Failed to read config: {ex.Message}" };
+        }
+    }
+
+    [McpServerTool]
+    [Description("Write a plugin config file (JSON) to Data/SKSE/Plugins/. " +
+        "Pass the filename and the JSON content to write. " +
+        "CAUTION: This overwrites the file. Back up first if needed. " +
+        "Changes take effect on next MCM reload or game restart depending on the plugin. " +
+        "For SmoothCam: write to 'SmoothCam.json' to change active config, or preset files to modify presets.")]
+    public async Task<object> WritePluginConfig(string filename, string content)
+    {
+        try
+        {
+            // Security: only allow writing to SKSE/Plugins directory, no path traversal
+            if (filename.Contains("..") || filename.Contains("/") || filename.Contains("\\"))
+                return new { error = "Invalid filename — no path separators or .. allowed" };
+
+            if (!filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase) &&
+                !filename.EndsWith(".ini", StringComparison.OrdinalIgnoreCase) &&
+                !filename.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+                return new { error = "Only .json, .ini, and .txt files can be written" };
+
+            var skyrimPath = Environment.GetEnvironmentVariable("SKYRIM_PATH")
+                ?? @"C:\Steam\steamapps\common\Skyrim Special Edition";
+            var filePath = Path.Combine(skyrimPath, "Data", "SKSE", "Plugins", filename);
+
+            await File.WriteAllTextAsync(filePath, content);
+            await NotifyInGame($"Config saved: {filename}");
+
+            return new { success = true, filename, message = $"Written to {filePath}" };
+        }
+        catch (Exception ex)
+        {
+            return new { error = $"Failed to write config: {ex.Message}" };
+        }
+    }
+
+    [McpServerTool]
+    [Description("List all config files for a plugin in Data/SKSE/Plugins/. " +
+        "Pass a search pattern like 'SmoothCam' to find all SmoothCam files, or '*' for everything. " +
+        "Returns filenames, sizes, and last modified dates.")]
+    public async Task<object> ListPluginConfigs(string pattern = "*")
+    {
+        try
+        {
+            var skyrimPath = Environment.GetEnvironmentVariable("SKYRIM_PATH")
+                ?? @"C:\Steam\steamapps\common\Skyrim Special Edition";
+            var pluginsDir = Path.Combine(skyrimPath, "Data", "SKSE", "Plugins");
+
+            if (!Directory.Exists(pluginsDir))
+                return new { error = "Plugins directory not found" };
+
+            var files = Directory.GetFiles(pluginsDir, $"*{pattern}*")
+                .Where(f => f.EndsWith(".json") || f.EndsWith(".ini") || f.EndsWith(".txt") || f.EndsWith(".toml"))
+                .Select(f => new FileInfo(f))
+                .Select(fi => new
+                {
+                    filename = fi.Name,
+                    sizeBytes = fi.Length,
+                    lastModified = fi.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
+                })
+                .OrderBy(f => f.filename)
+                .ToArray();
+
+            return new { files, count = files.Length, pattern };
+        }
+        catch (Exception ex)
+        {
+            return new { error = $"Failed to list configs: {ex.Message}" };
+        }
     }
 }

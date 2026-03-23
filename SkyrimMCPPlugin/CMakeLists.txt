@@ -22,38 +22,38 @@ add_subdirectory(extern/CommonLibSSE-NG)
 
 # Plugin sources
 set(SOURCES
-    src/Main.cpp
-    src/PipeServer.cpp
-    src/Protocol.cpp
-    src/PlayerQueries.cpp
-    src/InventoryManager.cpp
-    src/QuestManager.cpp
-    src/NPCManager.cpp
-    src/WorldManager.cpp
-    src/UtilityManager.cpp
-    src/TaskQueue.cpp
-    src/EventSystem.cpp
     src/CombatAnalysis.cpp
-    src/UIManager.cpp
+    src/EventSystem.cpp
+    src/InventoryManager.cpp
+    src/Main.cpp
+    src/NPCManager.cpp
     src/PapyrusBridge.cpp
+    src/PipeServer.cpp
+    src/PlayerQueries.cpp
+    src/Protocol.cpp
+    src/QuestManager.cpp
+    src/TaskQueue.cpp
+    src/UIManager.cpp
+    src/UtilityManager.cpp
+    src/WorldManager.cpp
 )
 
 set(HEADERS
-    src/PipeServer.h
-    src/Protocol.h
-    src/GameInterface.h
     src/CombatAnalysis.h
-    src/UIManager.h
-    src/PapyrusBridge.h
-    src/Helpers.h
-    src/PlayerQueries.h
-    src/InventoryManager.h
-    src/QuestManager.h
-    src/NPCManager.h
-    src/WorldManager.h
-    src/UtilityManager.h
-    src/TaskQueue.h
     src/EventSystem.h
+    src/GameInterface.h
+    src/Helpers.h
+    src/InventoryManager.h
+    src/NPCManager.h
+    src/PapyrusBridge.h
+    src/PipeServer.h
+    src/PlayerQueries.h
+    src/Protocol.h
+    src/QuestManager.h
+    src/TaskQueue.h
+    src/UIManager.h
+    src/UtilityManager.h
+    src/WorldManager.h
 )
 
 # Create the SKSE plugin as a shared library (DLL)

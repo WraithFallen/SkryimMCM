@@ -14,6 +14,8 @@ namespace SkyrimMCP {
         json SaveGame(const std::string& saveName);
         json GetLoadOrder();
         json GetModFormIdPrefix(const std::string& modName);
+        json LoadSave(const std::string& saveName);
+        json LoadMostRecentSave();
     }
 
 }

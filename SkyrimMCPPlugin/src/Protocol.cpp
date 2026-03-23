@@ -135,6 +135,7 @@ namespace SkyrimMCP::Protocol {
         noParam("get_combat_state", []() { return GameInterface::GetCombatState(); });
         noParam("get_menu_state", []() { return GameInterface::GetMenuState(); });
         noParam("get_game_safety", []() { return GameInterface::GetGameSafety(); });
+        noParam("load_most_recent_save", []() { return GameInterface::LoadMostRecentSave(); });
 
         // Papyrus Bridge — these run on pipe thread (no game thread needed for catalog)
         registry["get_papyrus_catalog"] = [](const std::string& id, const json&) {
@@ -212,6 +213,7 @@ namespace SkyrimMCP::Protocol {
         formIdParam("get_detection_level", "refId", [](const std::string& r) { return GameInterface::GetDetectionLevel(r); });
         formIdParam("get_mod_formid_prefix", "modName", [](const std::string& m) { return GameInterface::GetModFormIdPrefix(m); });
         formIdParam("set_weather", "weather", [](const std::string& w) { return GameInterface::SetWeather(w); });
+        formIdParam("load_save", "saveName", [](const std::string& s) { return GameInterface::LoadSave(s); });
         formIdParam("get_merchant_inventory", "refId", [](const std::string& r) { return GameInterface::GetMerchantInventory(r); });
         formIdParam("clear_bounty", "factionFormId", [](const std::string& f) { return GameInterface::ClearBounty(f); });
         formIdParam("get_spell_details", "formId", [](const std::string& f) { return GameInterface::GetSpellDetails(f); });

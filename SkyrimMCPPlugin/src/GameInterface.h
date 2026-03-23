@@ -187,6 +187,8 @@ namespace SkyrimMCP {
         inline json SaveGame(const std::string& saveName) { return UtilityManager::SaveGame(saveName); }
         inline json GetLoadOrder() { return UtilityManager::GetLoadOrder(); }
         inline json GetModFormIdPrefix(const std::string& modName) { return UtilityManager::GetModFormIdPrefix(modName); }
+        inline json LoadSave(const std::string& saveName) { return UtilityManager::LoadSave(saveName); }
+        inline json LoadMostRecentSave() { return UtilityManager::LoadMostRecentSave(); }
     }
 
 }

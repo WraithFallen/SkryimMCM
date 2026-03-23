@@ -285,4 +285,20 @@ namespace SkyrimMCP::UtilityManager {
         return {{"error", "Mod not found in load order: " + modName}};
     }
 
+    json LoadSave(const std::string& saveName) {
+        auto* mgr = RE::BGSSaveLoadManager::GetSingleton();
+        if (!mgr) return {{"error", "Save manager not available"}};
+
+        mgr->Load(saveName.c_str());
+        return {{"loading", true}, {"saveName", saveName}};
+    }
+
+    json LoadMostRecentSave() {
+        auto* mgr = RE::BGSSaveLoadManager::GetSingleton();
+        if (!mgr) return {{"error", "Save manager not available"}};
+
+        bool success = mgr->LoadMostRecentSaveGame();
+        return {{"loading", success}};
+    }
+
 }

@@ -8,101 +8,114 @@ A Model Context Protocol (MCP) server that lets AI assistants (Claude, etc.) int
 Claude Desktop <--stdio/MCP--> C# MCP Server <--named pipe--> SKSE Plugin (inside Skyrim)
 ```
 
-**SKSE Plugin** (C++ DLL) — runs inside Skyrim's process via SKSE. Uses CommonLibSSE-NG for typed engine access. Exposes game state and actions over a named pipe (`\\.\pipe\SkyrimMCP`).
+**SKSE Plugin** (C++ DLL) — runs inside Skyrim's process via SKSE. Uses CommonLibSSE-NG for typed engine access. Exposes 50+ game actions over a named pipe (`\\.\pipe\SkyrimMCP`).
 
-**C# MCP Server** (.NET 8) — bridges Claude Desktop (stdio MCP) and the SKSE plugin (named pipe). Auto-discovers tools via `[McpServerTool]` attributes.
+**C# MCP Server** (.NET 10) — bridges Claude Desktop (stdio MCP) and the SKSE plugin (named pipe). 60+ MCP tools auto-discovered via `[McpServerTool]` attributes.
 
 ## Features
 
-### 30+ Game Actions via Named Pipe
+### 60+ Game Actions
 
-| Category | Actions |
-|----------|---------|
-| **Player State** | Get player info, inventory, gold count, active effects |
-| **Items** | Add/remove items, equip/unequip, FormID lookup |
-| **Combat & Stats** | Set health/magicka/stamina, check combat status, god mode |
-| **Quests** | Get quest info, get/set quest stage, start/stop/complete quests |
-| **NPCs** | Get nearby NPCs, get actor info, set actor values, move actors, set relationships |
-| **Spells & Perks** | Add/remove spells, add/remove perks |
-| **World** | Teleport, get/set game time, toggle collision |
-| **Console** | Execute any console command via engine API |
+| Category | Tools |
+|----------|-------|
+| **Player** | Info, skills, perks, spells, shouts, appearance, factions, resistances, powers, diseases, level, blueprint export |
+| **Inventory** | Full inventory (paged), equipped items (32 slots), add/remove, bulk add, equip/unequip, enchantment details |
+| **Quests** | Active quests, stages, aliases (resolved to NPCs), quest items, set stage, start/stop/complete |
+| **NPCs** | Nearby NPCs, detailed info, NPC inventory, followers, detection level, crosshair targeting, kill, move |
+| **World** | Weather (get/set/list 339 types), cell info, nearby objects, containers, lock/unlock doors, map markers, teleport |
+| **Combat** | Combat state (targets + allies), damage stats (armor + weapon damage), threat assessment |
+| **Economy** | Nearby merchants, merchant inventory, bounties, clear bounties |
+| **Magic** | Spell details (cost/school/effects), enchantment info, magic resistances, disease/vampire/werewolf status |
+| **Actions** | God mode, immortal mode, collision toggle, save/load game, set time, notifications |
+| **Events** | 17 event types: combat, death, quests, location, inventory, equip, hits, spells, activate |
+| **Utility** | Console commands (with output capture), form search, load order, SKSE plugin scanner, game safety check |
+| **Papyrus** | Function catalog (3,389 functions from 166 scripts), script function lookup, VM call bridge |
 
-### 15 MCP Tools for Claude Desktop
+### Smart Features
 
-CheckConnection, GetPlayerInfo, GetInventory, GetGoldCount, ExecuteConsoleCommand, AddItem, RemoveItem, Teleport, ToggleGodMode, SetHealth/Magicka/Stamina, ToggleCollision, ListKnownItems, GetQuestInfo, GetNearbyNPCs
+- **Paged output** — large responses (inventory, spells, perks) support page/pageSize params. `page=0` returns count-only summary
+- **Character blueprint** — single-call export of entire character state (skills, perks, spells, shouts, equipment, inventory, appearance, factions, resistances)
+- **Event system** — 17 event types with framework noise filtering and type/exclude filters
+- **Game safety checker** — detects unsafe states (loading, kill moves, saves) before executing commands
+- **HUD notifications** — in-game notifications for all actions
+- **Loot scanner** — finds and ranks nearby container contents by value
+- **Snapshot** — exports blueprint + saves game with matching timestamped names
 
 ## Requirements
 
-- **Windows** (Skyrim is Windows-only)
-- **Skyrim SE or AE** with SKSE64 installed
-- **Address Library for SKSE** (matching your game version)
-- **.NET 8 SDK** (for the MCP server)
-- **Visual Studio 2022** with C++ Desktop workload (to build the SKSE plugin)
-- **CMake 3.21+** and **vcpkg**
+- **Windows 10 or 11**
+- **Skyrim SE or AE** (v1.6.1130+)
+- **SKSE64** ([skse.silverlock.org](https://skse.silverlock.org/))
+- **Address Library for SKSE** ([Nexus](https://www.nexusmods.com/skyrimspecialedition/mods/32444))
+- **.NET 10 Runtime** ([download](https://dotnet.microsoft.com/download/dotnet/10.0))
+- **Claude Desktop** ([claude.ai/desktop](https://claude.ai/desktop))
 
-## Building
+## Installation
 
-### SKSE Plugin
-
-```bash
-# Clone CommonLibSSE-NG into extern/ (one-time)
-git clone https://github.com/CharmedBaryon/CommonLibSSE-NG.git SkyrimMCPPlugin/extern/CommonLibSSE-NG --depth 1
-
-# Configure and build
-cd SkyrimMCPPlugin
-cmake --preset default
-cmake --build build --config Release
-
-# Deploy — copy DLL to Skyrim
-copy output\SkyrimMCPPlugin.dll "<Skyrim>\Data\SKSE\Plugins\"
-```
-
-### C# MCP Server
-
-```bash
-cd SkyrimMCP
-dotnet build
-```
+1. Extract the `Data` folder into your Skyrim directory (or install via MO2/Vortex)
+2. Install .NET 10 Runtime if not already installed
+3. Configure Claude Desktop (see below)
+4. Launch Skyrim via SKSE, then open Claude Desktop
 
 ## Claude Desktop Configuration
 
-Add to `%APPDATA%\Claude\claude_desktop_config.json`:
+Edit `%APPDATA%\Claude\claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
     "skyrim": {
       "command": "dotnet",
-      "args": ["run", "--project", "X:\\_work\\skyrim_mcp\\SkyrimMCP\\SkyrimMCP.csproj"]
+      "args": ["<SKYRIM_PATH>\\Data\\SKSE\\Plugins\\SkyrimMCP_Server\\SkyrimMCP.dll"]
     }
   }
 }
 ```
 
+Replace `<SKYRIM_PATH>` with your Skyrim installation path.
+
 ## Usage
 
 1. Launch Skyrim via SKSE
-2. Start Claude Desktop
-3. Ask Claude to interact with your game:
+2. Open Claude Desktop
+3. Just ask. Anything.
 
 ```
-"What's my current health and location?"
-"Give me 5000 gold"
-"Teleport me to Solitude"
-"What quests am I on?"
-"Who's nearby?"
+"Give me 5000 gold and teleport me to Solitude"
+"What's the strongest NPC nearby and what are they carrying?"
+"Export my character blueprint to a file"
+"Scan for valuable loot in nearby containers"
+"Make it snow, then toggle god mode"
+"Find the Remiel quest and show me who fills each alias"
+"Spawn 5 bandits and monitor the combat"
+"What Papyrus functions does the Experience mod expose?"
 ```
 
-## Protocol
+With 60+ tools covering player state, inventory, quests, NPCs, world interaction, combat, economy, magic, events, and a Papyrus VM bridge to 3,000+ mod functions — if Skyrim can do it, Claude can probably help.
 
-JSON over named pipe `\\.\pipe\SkyrimMCP`, newline-delimited.
+See **[USAGE.md](USAGE.md)** for the full tool reference and advanced features.
 
-```json
-// Request
-{"id": "uuid", "action": "get_player_info", "params": {}}
+## Building from Source
 
-// Response
-{"id": "uuid", "success": true, "data": {"name": "Dragonborn", "level": 42, ...}}
+```powershell
+# Prerequisites: VS2022 C++ workload, CMake 3.21+, vcpkg, .NET 10 SDK
+
+$env:VCPKG_ROOT = "C:\vcpkg"
+
+# Clone CommonLibSSE-NG (one-time)
+git clone https://github.com/CharmedBaryon/CommonLibSSE-NG.git SkyrimMCPPlugin/extern/CommonLibSSE-NG --depth 1
+
+# Build SKSE plugin
+cd SkyrimMCPPlugin
+cmake --preset default
+cmake --build build --config Release
+
+# Build MCP server
+dotnet build ..\SkyrimMCP
+
+# Or build release package
+cd ..
+.\build_release.ps1 -Version "1.0.0"
 ```
 
 ## Project Structure
@@ -111,19 +124,50 @@ JSON over named pipe `\\.\pipe\SkyrimMCP`, newline-delimited.
 ├── SkyrimMCPPlugin/          # C++ SKSE plugin
 │   ├── src/
 │   │   ├── Main.cpp          # SKSE entry point
-│   │   ├── PipeServer.h/cpp  # Named pipe server
-│   │   ├── Protocol.h/cpp    # JSON message routing
-│   │   ├── GameInterface.h/cpp # Engine API calls
-│   │   └── TaskQueue.h/cpp   # Game thread dispatch
+│   │   ├── PipeServer.*      # Named pipe server
+│   │   ├── Protocol.*        # Command registry
+│   │   ├── Helpers.h         # Shared utilities + ResolveActor
+│   │   ├── PlayerQueries.*   # Player state + toggles
+│   │   ├── NPCManager.*     # NPC/actor operations
+│   │   ├── InventoryManager.*# Item operations
+│   │   ├── QuestManager.*    # Quest operations
+│   │   ├── WorldManager.*    # World interaction
+│   │   ├── CombatAnalysis.*  # Combat analysis
+│   │   ├── UIManager.*       # Menu state
+│   │   ├── UtilityManager.*  # Misc utilities
+│   │   ├── PapyrusBridge.*   # Papyrus VM bridge
+│   │   ├── EventSystem.*     # Game event sinks
+│   │   └── TaskQueue.*       # Game thread dispatch
 │   ├── CMakeLists.txt
 │   └── vcpkg.json
-├── SkyrimMCP/                # C# MCP server
+├── SkyrimMCP/                # C# MCP server (.NET 10)
 │   ├── Program.cs
-│   ├── SkyrimTools.cs        # MCP tool definitions
-│   ├── PipeClient.cs         # Named pipe client
-│   └── SkyrimOffsets.cs      # FormID database
-└── src/                      # Legacy Node.js prototype (deprecated)
+│   ├── IPipeClient.cs
+│   ├── PipeClient.cs
+│   ├── SkyrimOffsets.cs
+│   └── Tools/                # MCP tool classes
+│       ├── ToolBase.cs
+│       ├── PlayerTools.cs
+│       ├── InventoryTools.cs
+│       ├── QuestTools.cs
+│       ├── NPCTools.cs
+│       ├── WorldTools.cs
+│       ├── CombatTools.cs
+│       ├── UtilityTools.cs
+│       └── PapyrusTools.cs
+├── build_release.ps1         # Nexus packaging script
+├── project_work_items.json   # Feature/bug tracking
+├── project_dashboard.html    # Visual project dashboard
+├── ROADMAP.md               # Feature roadmap
+├── CHARACTER_BLUEPRINT_SPEC.json
+└── CLAUDE.md                # Dev guidance for Claude Code
 ```
+
+## Credits
+
+- Console command execution approach adapted from [ConsoleUtilSSE](https://github.com/VersuchDrei/ConsoleUtilSSE) by VersuchDrei (MIT License)
+- [CommonLibSSE-NG](https://github.com/CharmedBaryon/CommonLibSSE-NG) by CharmedBaryon
+- SKSE by Ian Patterson, Stephen Abel, and Paul Shortman
 
 ## License
 

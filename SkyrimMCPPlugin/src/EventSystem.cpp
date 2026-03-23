@@ -67,6 +67,7 @@ namespace SkyrimMCP {
     static const std::unordered_set<std::string> SUPPRESSED_QUEST_FORMIDS = {
         "FEBD3801",  // NFF Quest Alias NPC — cycles start/stop dozens of times
         "000F9075",  // Framework quest — cycles start/stop and stage 0 constantly
+        "F30C44FC",  // Follower Object Awareness — cycles start/stop repeatedly
     };
 
     static bool IsMutedEvent(const std::string& eventType, const json& data) {

@@ -375,11 +375,22 @@ namespace SkyrimMCP::WorldManager {
     }
 
     json ToggleImmortalMode() {
-        // TIM — toggle immortal mode via console command
-        // Unlike god mode, there's no direct static bool for immortal mode
+        // TIM crashes via CompileAndRun (BUG-010).
+        // Instead, toggle the player's essential flag — same effect as TIM
+        // (takes damage but cannot die). Uses setessential on the player base ID.
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
         static bool immortalMode = false;
         immortalMode = !immortalMode;
-        Helpers::ExecuteConsoleCommand("tim");
+
+        auto* base = player->GetActorBase();
+        if (base) {
+            std::string baseId = std::format("{:08X}", base->GetFormID());
+            Helpers::ExecuteConsoleCommand(
+                std::format("setessential {} {}", baseId, immortalMode ? 1 : 0));
+        }
+
         return {{"immortalMode", immortalMode}};
     }
 

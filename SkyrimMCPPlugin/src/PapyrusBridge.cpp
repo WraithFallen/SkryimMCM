@@ -258,56 +258,41 @@ namespace SkyrimMCP::PapyrusBridge {
 
         SKSE::log::info("Calling Papyrus: {}.{}({} args)", className, functionName, args.size());
 
-        // Build function arguments based on JSON types
-        RE::BSScript::IFunctionArguments* funcArgs = nullptr;
+        // Build function arguments from JSON array
+        // Uses a custom IFunctionArguments that packs Variables at runtime
+        class DynamicArgs : public RE::BSScript::IFunctionArguments {
+        public:
+            std::vector<RE::BSScript::Variable> vars;
 
-        if (args.empty() || args.is_null()) {
-            funcArgs = RE::MakeFunctionArguments();
-        } else if (args.is_array()) {
-            // For now, support up to 5 simple-typed arguments
-            // Complex types would need form resolution
-            auto size = args.size();
-
-            if (size == 0) {
-                funcArgs = RE::MakeFunctionArguments();
-            } else if (size == 1) {
-                auto& a0 = args[0];
-                if (a0.is_string()) funcArgs = RE::MakeFunctionArguments(RE::BSFixedString(a0.get<std::string>()));
-                else if (a0.is_number_integer()) funcArgs = RE::MakeFunctionArguments(a0.get<std::int32_t>());
-                else if (a0.is_number_float()) funcArgs = RE::MakeFunctionArguments(a0.get<float>());
-                else if (a0.is_boolean()) funcArgs = RE::MakeFunctionArguments(a0.get<bool>());
-                else funcArgs = RE::MakeFunctionArguments();
-            } else if (size == 2) {
-                // Two-arg version — detect types
-                auto makeArg = [](const json& j) -> RE::BSScript::Variable {
-                    RE::BSScript::Variable v;
-                    if (j.is_string()) v.SetString(j.get<std::string>());
-                    else if (j.is_number_integer()) v.Pack(j.get<std::int32_t>());
-                    else if (j.is_number_float()) v.SetFloat(j.get<float>());
-                    else if (j.is_boolean()) v.SetBool(j.get<bool>());
-                    return v;
-                };
-                // For 2+ args, use ZeroFunctionArguments with manual packing
-                // Actually, MakeFunctionArguments supports multiple args:
-                if (args[0].is_string() && args[1].is_string()) {
-                    funcArgs = RE::MakeFunctionArguments(
-                        RE::BSFixedString(args[0].get<std::string>()),
-                        RE::BSFixedString(args[1].get<std::string>()));
-                } else if (args[0].is_string() && args[1].is_number_integer()) {
-                    funcArgs = RE::MakeFunctionArguments(
-                        RE::BSFixedString(args[0].get<std::string>()),
-                        args[1].get<std::int32_t>());
-                } else {
-                    funcArgs = RE::MakeFunctionArguments();
+            bool operator()(RE::BSScrapArray<RE::BSScript::Variable>& a_dst) const override {
+                a_dst.resize(vars.size());
+                for (size_t i = 0; i < vars.size(); i++) {
+                    a_dst[i] = vars[i];
                 }
-            } else {
-                // 3+ args — use no-args for now, log warning
-                SKSE::log::warn("Papyrus call with {} args — only 0-2 args supported currently", size);
-                funcArgs = RE::MakeFunctionArguments();
+                return true;
             }
-        } else {
-            funcArgs = RE::MakeFunctionArguments();
+        };
+
+        auto* dynArgs = new DynamicArgs();
+
+        if (args.is_array()) {
+            for (auto& arg : args) {
+                RE::BSScript::Variable v;
+                if (arg.is_string()) {
+                    v.SetString(arg.get<std::string>());
+                } else if (arg.is_number_integer()) {
+                    v.Pack(arg.get<std::int32_t>());
+                } else if (arg.is_number_float()) {
+                    v.SetFloat(arg.get<float>());
+                } else if (arg.is_boolean()) {
+                    v.SetBool(arg.get<bool>());
+                }
+                // TODO: Form types would need FormID resolution
+                dynArgs->vars.push_back(v);
+            }
         }
+
+        RE::BSScript::IFunctionArguments* funcArgs = dynArgs;
 
         // Create callback
         auto callback = RE::BSTSmartPointer<RE::BSScript::IStackCallbackFunctor>(new PapyrusCallback());

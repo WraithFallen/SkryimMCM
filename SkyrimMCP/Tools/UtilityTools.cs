@@ -193,4 +193,21 @@ public class UtilityTools : ToolBase
         await NotifyInGame("Shout unlocked");
         return DeserializeResponse(data);
     }
+
+    [McpServerTool]
+    [Description("Load a save game by name. Immediately begins loading — current game state is lost. " +
+        "CAUTION: Any unsaved progress will be lost. Use SaveGame first if needed.")]
+    public async Task<object> LoadSave(string saveName)
+    {
+        var data = await _pipe.SendRequestAsync("load_save", new JsonObject { ["saveName"] = saveName });
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
+    [Description("Load the most recent save game. Useful for quick recovery after a CTD or mistake.")]
+    public async Task<object> LoadMostRecentSave()
+    {
+        var data = await _pipe.SendRequestAsync("load_most_recent_save");
+        return DeserializeResponse(data);
+    }
 }

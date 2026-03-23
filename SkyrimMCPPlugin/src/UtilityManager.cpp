@@ -85,6 +85,58 @@ namespace SkyrimMCP::UtilityManager {
             typesToSearch = {{RE::FormType::Scroll, "scroll"}};
         } else if (lowerFilter == "soulgem" || lowerFilter == "slgm") {
             typesToSearch = {{RE::FormType::SoulGem, "soulgem"}};
+        } else if (lowerFilter == "idle" || lowerFilter == "animation") {
+            typesToSearch = {{RE::FormType::Idle, "idle"}};
+        } else if (lowerFilter == "race") {
+            typesToSearch = {{RE::FormType::Race, "race"}};
+        } else if (lowerFilter == "faction") {
+            typesToSearch = {{RE::FormType::Faction, "faction"}};
+        } else if (lowerFilter == "worldspace") {
+            typesToSearch = {{RE::FormType::WorldSpace, "worldspace"}};
+        } else if (lowerFilter == "cell") {
+            typesToSearch = {{RE::FormType::Cell, "cell"}};
+        } else if (lowerFilter == "container" || lowerFilter == "cont") {
+            typesToSearch = {{RE::FormType::Container, "container"}};
+        } else if (lowerFilter == "activator" || lowerFilter == "acti") {
+            typesToSearch = {{RE::FormType::Activator, "activator"}};
+        } else if (lowerFilter == "furniture" || lowerFilter == "furn") {
+            typesToSearch = {{RE::FormType::Furniture, "furniture"}};
+        } else if (lowerFilter == "door") {
+            typesToSearch = {{RE::FormType::Door, "door"}};
+        } else if (lowerFilter == "flora") {
+            typesToSearch = {{RE::FormType::Flora, "flora"}};
+        } else if (lowerFilter == "music" || lowerFilter == "musc") {
+            typesToSearch = {{RE::FormType::MusicType, "music"}};
+        } else if (lowerFilter == "keyword" || lowerFilter == "kywd") {
+            typesToSearch = {{RE::FormType::Keyword, "keyword"}};
+        } else if (lowerFilter == "magiceffect" || lowerFilter == "mgef") {
+            typesToSearch = {{RE::FormType::MagicEffect, "magiceffect"}};
+        } else if (lowerFilter == "headpart" || lowerFilter == "hdpt") {
+            typesToSearch = {{RE::FormType::HeadPart, "headpart"}};
+        } else if (lowerFilter == "eyes") {
+            typesToSearch = {{RE::FormType::Eyes, "eyes"}};
+        } else if (lowerFilter == "outfit" || lowerFilter == "otft") {
+            typesToSearch = {{RE::FormType::Outfit, "outfit"}};
+        } else if (lowerFilter == "voicetype" || lowerFilter == "vtyp") {
+            typesToSearch = {{RE::FormType::VoiceType, "voicetype"}};
+        } else if (lowerFilter == "class" || lowerFilter == "clas") {
+            typesToSearch = {{RE::FormType::Class, "class"}};
+        } else if (lowerFilter == "combatstyle") {
+            typesToSearch = {{RE::FormType::CombatStyle, "combatstyle"}};
+        } else if (lowerFilter == "wordofpower" || lowerFilter == "woop") {
+            typesToSearch = {{RE::FormType::WordOfPower, "wordofpower"}};
+        } else if (lowerFilter == "scene" || lowerFilter == "scen") {
+            typesToSearch = {{RE::FormType::Scene, "scene"}};
+        } else if (lowerFilter == "relationship" || lowerFilter == "rela") {
+            typesToSearch = {{RE::FormType::Relationship, "relationship"}};
+        } else if (lowerFilter == "constructible" || lowerFilter == "cobj" || lowerFilter == "recipe") {
+            typesToSearch = {{RE::FormType::ConstructibleObject, "recipe"}};
+        } else if (lowerFilter == "projectile" || lowerFilter == "proj") {
+            typesToSearch = {{RE::FormType::Projectile, "projectile"}};
+        } else if (lowerFilter == "light") {
+            typesToSearch = {{RE::FormType::Light, "light"}};
+        } else if (lowerFilter == "global" || lowerFilter == "glob") {
+            typesToSearch = {{RE::FormType::Global, "global"}};
         } else {
             // Default to searching common types
             typesToSearch = {

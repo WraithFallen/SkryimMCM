@@ -19,6 +19,7 @@ namespace SkyrimMCP {
         json GetCrosshairRef();
         json SetActorValue(const std::string& attribute, float value, const std::string& refId = "");
         json GetFactions(const std::string& refId = "");
+        json PlayIdle(const std::string& refFormIdHex, const std::string& idleFormIdHex);
     }
 
 }

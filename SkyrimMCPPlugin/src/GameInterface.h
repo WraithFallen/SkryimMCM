@@ -149,6 +149,7 @@ namespace SkyrimMCP {
         inline json GetCrosshairRef() { return NPCManager::GetCrosshairRef(); }
         inline json SetActorValue(const std::string& attribute, float value, const std::string& refId = "") { return NPCManager::SetActorValue(attribute, value, refId); }
         inline json GetFactions(const std::string& refId = "") { return NPCManager::GetFactions(refId); }
+        inline json PlayIdle(const std::string& refFormIdHex, const std::string& idleFormIdHex) { return NPCManager::PlayIdle(refFormIdHex, idleFormIdHex); }
 
         // === World (WorldManager) ===
         inline json Teleport(const std::string& cellId) { return WorldManager::Teleport(cellId); }

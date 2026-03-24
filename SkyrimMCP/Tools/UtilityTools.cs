@@ -198,6 +198,20 @@ public class UtilityTools : ToolBase
     }
 
     [McpServerTool]
+    [Description("Set the master volume. Value from 0.0 (mute) to 1.0 (full). " +
+        "Affects all game audio including music, effects, and voice.")]
+    public async Task<object> SetVolume(float volume)
+    {
+        // Use console command to set master volume via game setting
+        var data = await _pipe.SendRequestAsync("execute_command", new JsonObject
+        {
+            ["command"] = $"setgs fAudioMasterVolume {volume:F2}"
+        });
+        await NotifyInGame($"Volume: {volume:P0}");
+        return new { success = true, volume, message = $"Volume set to {volume:P0}" };
+    }
+
+    [McpServerTool]
     [Description("Take a screenshot. Saves to the Skyrim root directory as a .bmp file.")]
     public async Task<object> TakeScreenshot()
     {

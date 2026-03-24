@@ -198,6 +198,18 @@ public class UtilityTools : ToolBase
     }
 
     [McpServerTool]
+    [Description("Take a screenshot. Saves to the Skyrim root directory as a .bmp file.")]
+    public async Task<object> TakeScreenshot()
+    {
+        var data = await _pipe.SendRequestAsync("execute_command", new JsonObject
+        {
+            ["command"] = "screenshot"
+        });
+        await NotifyInGame("Screenshot taken");
+        return new { success = true, message = "Screenshot saved to Skyrim directory" };
+    }
+
+    [McpServerTool]
     [Description("Load a save game by name. Immediately begins loading — current game state is lost. " +
         "CAUTION: Any unsaved progress will be lost. Use SaveGame first if needed.")]
     public async Task<object> LoadSave(string saveName)

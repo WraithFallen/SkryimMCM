@@ -20,6 +20,8 @@ namespace SkyrimMCP {
         json SetActorValue(const std::string& attribute, float value, const std::string& refId = "");
         json GetFactions(const std::string& refId = "");
         json PlayIdle(const std::string& idleFormIdHex, const std::string& refId = "");
+        json GetCurrentIdle(const std::string& refId = "");
+        json StopIdle(const std::string& refId = "");
     }
 
 }

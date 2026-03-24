@@ -543,4 +543,47 @@ namespace SkyrimMCP::WorldManager {
         }
     }
 
+    json PlayMusic(const std::string& formIdHex) {
+        try {
+            auto* musicType = RE::TESForm::LookupByID<RE::BGSMusicType>(Helpers::ParseFormId(formIdHex));
+            if (!musicType) return {{"error", "Music type not found: " + formIdHex}};
+
+            auto* musicManager = RE::BSMusicManager::GetSingleton();
+            if (!musicManager) return {{"error", "Music manager not available"}};
+
+            musicType->DoPlay();
+
+            return {
+                {"playing", true},
+                {"formId", formIdHex},
+                {"name", musicType->GetFormEditorID() ? musicType->GetFormEditorID() : ""},
+                {"priority", musicType->priority},
+                {"fadeTime", musicType->fadeTime}
+            };
+        } catch (...) {
+            return {{"error", "Failed to play music: " + formIdHex}};
+        }
+    }
+
+    json StopMusic() {
+        auto* musicManager = RE::BSMusicManager::GetSingleton();
+        if (!musicManager) return {{"error", "Music manager not available"}};
+
+        auto* current = musicManager->current;
+        if (!current) return {{"stopped", false}, {"message", "No music currently playing"}};
+
+        std::string name;
+        auto* bgsMusicType = dynamic_cast<RE::BGSMusicType*>(current);
+        if (bgsMusicType) {
+            name = bgsMusicType->GetFormEditorID() ? bgsMusicType->GetFormEditorID() : "";
+        }
+
+        current->DoFinish(true);
+
+        return {
+            {"stopped", true},
+            {"wasPlaying", name}
+        };
+    }
+
 }

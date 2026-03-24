@@ -89,15 +89,41 @@ public class NPCTools : ToolBase
     }
 
     [McpServerTool]
-    [Description("Play an idle animation on the player or an NPC. Pass the idle animation's FormID. " +
-        "Optional refId targets a specific NPC — leave empty for the player. " +
+    [Description("Play an idle animation on the player or an NPC via native API (no console commands). " +
+        "Pass the idle animation's FormID. Optional refId targets a specific NPC — leave empty for the player. " +
         "Use SearchForms with type='idle' to find animation FormIDs. " +
-        "Example: make an NPC dance, sit, cheer, or perform any registered idle animation.")]
+        "Works with all mod types including ESL-flagged plugins.")]
     public async Task<object> PlayIdle(string idleFormId, string? refId = null)
     {
         var data = await _pipe.SendRequestAsync("play_idle", new JsonObject
         {
             ["idleFormId"] = idleFormId,
+            ["refId"] = refId ?? ""
+        });
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
+    [Description("Get the currently playing idle animation on the player or an NPC. " +
+        "Returns the idle form's ID, editor ID, animation file, and event name. " +
+        "Returns null if no idle is playing. Optional refId targets a specific NPC.")]
+    public async Task<object> GetCurrentIdle(string? refId = null)
+    {
+        var data = await _pipe.SendRequestAsync("get_current_idle", new JsonObject
+        {
+            ["refId"] = refId ?? ""
+        });
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
+    [Description("Stop the currently playing idle animation on the player or an NPC. " +
+        "Use this to cancel an animation started by PlayIdle. " +
+        "Optional refId targets a specific NPC — leave empty for the player.")]
+    public async Task<object> StopIdle(string? refId = null)
+    {
+        var data = await _pipe.SendRequestAsync("stop_idle", new JsonObject
+        {
             ["refId"] = refId ?? ""
         });
         return DeserializeResponse(data);

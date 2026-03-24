@@ -232,6 +232,14 @@ namespace SkyrimMCP::Protocol {
                 return MakeResponse(id, false, {}, "Missing idleFormId").dump() + "\n";
             return GameThread(id, [idleFormId, refId]() { return GameInterface::PlayIdle(idleFormId, refId); });
         };
+        registry["get_current_idle"] = [](const std::string& id, const json& params) {
+            std::string refId = params.value("refId", "");
+            return GameThread(id, [refId]() { return GameInterface::GetCurrentIdle(refId); });
+        };
+        registry["stop_idle"] = [](const std::string& id, const json& params) {
+            std::string refId = params.value("refId", "");
+            return GameThread(id, [refId]() { return GameInterface::StopIdle(refId); });
+        };
 
         formIdParam("get_npc_detailed_info", "refId", [](const std::string& r) { return GameInterface::GetNPCDetailedInfo(r); });
         formIdParam("get_npc_inventory", "refId", [](const std::string& r) { return GameInterface::GetInventory(r); });
@@ -242,6 +250,8 @@ namespace SkyrimMCP::Protocol {
         formIdParam("load_save", "saveName", [](const std::string& s) { return GameInterface::LoadSave(s); });
         formIdParam("get_merchant_inventory", "refId", [](const std::string& r) { return GameInterface::GetMerchantInventory(r); });
         formIdParam("clear_bounty", "factionFormId", [](const std::string& f) { return GameInterface::ClearBounty(f); });
+        formIdParam("play_music", "formId", [](const std::string& f) { return GameInterface::PlayMusic(f); });
+        noParam("stop_music", []() { return GameInterface::StopMusic(); });
         formIdParam("get_spell_details", "formId", [](const std::string& f) { return GameInterface::GetSpellDetails(f); });
         formIdParam("get_enchantment_info", "formId", [](const std::string& f) { return GameInterface::GetEnchantmentInfo(f); });
         formIdParam("get_script_functions", "className", [](const std::string& c) { return GameInterface::GetScriptFunctions(c); });

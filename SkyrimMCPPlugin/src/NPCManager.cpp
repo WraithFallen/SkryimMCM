@@ -470,16 +470,69 @@ namespace SkyrimMCP::NPCManager {
     }
 
     json PlayIdle(const std::string& idleFormIdHex, const std::string& refId) {
-        std::string target;
-        if (refId.empty() || refId == "player") {
-            target = "player";
-        } else {
-            target = refId;
-        }
-        auto result = Helpers::ExecuteConsoleCommand(
-            std::format("{}.playidle {}", target, idleFormIdHex));
-        result["target"] = target;
+        auto* actor = Helpers::ResolveActor(refId);
+        if (!actor) return {{"error", "Actor not found: " + refId}};
+
+        auto* idle = RE::TESForm::LookupByID<RE::TESIdleForm>(Helpers::ParseFormId(idleFormIdHex));
+        if (!idle) return {{"error", "Idle form not found: " + idleFormIdHex}};
+
+        auto* process = actor->GetActorRuntimeData().currentProcess;
+        if (!process) return {{"error", "Actor has no AI process (too far away?)"}};
+
+        bool played = process->PlayIdle(actor, idle, nullptr);
+        auto refIdStr = std::format("{:08X}", actor->GetFormID());
+        json result;
+        result["success"] = played;
+        result["target"] = actor->GetName();
+        result["targetRefId"] = refIdStr;
         result["idleFormId"] = idleFormIdHex;
+        result["idleName"] = idle->GetFormEditorID() ? idle->GetFormEditorID() : "";
+        result["animFile"] = idle->animFileName.c_str() ? idle->animFileName.c_str() : "";
+        result["animEvent"] = idle->animEventName.c_str() ? idle->animEventName.c_str() : "";
+        return result;
+    }
+
+    json GetCurrentIdle(const std::string& refId) {
+        auto* actor = Helpers::ResolveActor(refId);
+        if (!actor) return {{"error", "Actor not found: " + refId}};
+
+        auto* process = actor->GetActorRuntimeData().currentProcess;
+        if (!process) return {{"error", "Actor has no AI process"}};
+
+        auto* high = process->high;
+        if (!high) return {{"currentIdle", nullptr}, {"target", actor->GetName()}};
+
+        auto* idle = high->currentProcessIdle;
+        if (!idle) return {{"currentIdle", nullptr}, {"target", actor->GetName()}};
+
+        auto actorRefId = std::format("{:08X}", actor->GetFormID());
+        auto idleFormId = std::format("{:08X}", idle->GetFormID());
+        json idleInfo;
+        idleInfo["formId"] = idleFormId;
+        idleInfo["editorId"] = idle->GetFormEditorID() ? idle->GetFormEditorID() : "";
+        idleInfo["animFile"] = idle->animFileName.c_str() ? idle->animFileName.c_str() : "";
+        idleInfo["animEvent"] = idle->animEventName.c_str() ? idle->animEventName.c_str() : "";
+
+        json result;
+        result["target"] = actor->GetName();
+        result["targetRefId"] = actorRefId;
+        result["currentIdle"] = idleInfo;
+        return result;
+    }
+
+    json StopIdle(const std::string& refId) {
+        auto* actor = Helpers::ResolveActor(refId);
+        if (!actor) return {{"error", "Actor not found: " + refId}};
+
+        auto* process = actor->GetActorRuntimeData().currentProcess;
+        if (!process) return {{"error", "Actor has no AI process"}};
+
+        process->StopCurrentIdle(actor, true);
+        auto refIdStr = std::format("{:08X}", actor->GetFormID());
+        json result;
+        result["stopped"] = true;
+        result["target"] = actor->GetName();
+        result["targetRefId"] = refIdStr;
         return result;
     }
 

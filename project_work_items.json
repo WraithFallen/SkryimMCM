@@ -516,9 +516,9 @@
         {
           "id": "BUG-005",
           "type": "bug",
-          "status": "implemented-untested",
+          "status": "complete",
           "title": "Hit events misattributed",
-          "description": "Hit events now include targetRole/attackerRole."
+          "description": "Hit events with targetRole/attackerRole (player/follower/other). Tested 2026-03-24."
         },
         {
           "id": "FEAT-140",
@@ -673,9 +673,9 @@
         {
           "id": "FEAT-056",
           "type": "feature",
-          "status": "planned",
+          "status": "complete",
           "title": "Quest variable read",
-          "description": "Read quest script variables \u2014 safe alternative to sqv."
+          "description": "Quest variable read \u2014 native API via get_quest_stage. Tested 2026-03-24."
         },
         {
           "id": "FEAT-057",
@@ -1186,9 +1186,9 @@
         {
           "id": "FEAT-130",
           "type": "feature",
-          "status": "planned",
+          "status": "complete",
           "title": "Music control",
-          "description": "Change music track, battle music state."
+          "description": "PlayMusic/StopMusic \u2014 native BGSMusicType::DoPlay()/DoFinish(). Tested 2026-03-24."
         },
         {
           "id": "FEAT-131",
@@ -1206,9 +1206,9 @@
         {
           "id": "FEAT-132",
           "type": "feature",
-          "status": "implemented-untested",
+          "status": "complete",
           "title": "Play idle animations",
-          "description": "Trigger specific idles on player or NPCs.",
+          "description": "PlayIdle \u2014 native AIProcess::PlayIdle(), works with ESL-prefix NPCs. Tested 2026-03-24.",
           "history": [
             {
               "datetime": "2026-03-24T18:05",
@@ -1228,6 +1228,20 @@
               "note": "Implemented, pending test on next restart."
             }
           ]
+        },
+        {
+          "id": "FEAT-134",
+          "type": "feature",
+          "status": "complete",
+          "title": "GetCurrentIdle \u2014 read current idle animation",
+          "description": "Native HighProcessData::currentProcessIdle. Returns null for most idles (field clears after handoff to behavior graph). Tested 2026-03-24."
+        },
+        {
+          "id": "FEAT-135",
+          "type": "feature",
+          "status": "complete",
+          "title": "StopIdle \u2014 stop current idle animation",
+          "description": "Native AIProcess::StopCurrentIdle(). Tested 2026-03-24."
         }
       ]
     },

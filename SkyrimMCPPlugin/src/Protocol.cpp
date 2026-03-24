@@ -225,6 +225,14 @@ namespace SkyrimMCP::Protocol {
         formIdParam("unlock_shout", "formId", [](const std::string& f) { return GameInterface::UnlockShout(f); });
         formIdParam("unlock_door", "refId", [](const std::string& r) { return GameInterface::UnlockDoor(r); });
         formIdParam("kill_actor", "refId", [](const std::string& r) { return GameInterface::KillActor(r); });
+        registry["play_idle"] = [](const std::string& id, const json& params) {
+            std::string refId = params.value("refId", "");
+            std::string idleFormId = params.value("idleFormId", "");
+            if (refId.empty() || idleFormId.empty())
+                return MakeResponse(id, false, {}, "Missing refId or idleFormId").dump() + "\n";
+            return GameThread(id, [refId, idleFormId]() { return GameInterface::PlayIdle(refId, idleFormId); });
+        };
+
         formIdParam("get_npc_detailed_info", "refId", [](const std::string& r) { return GameInterface::GetNPCDetailedInfo(r); });
         formIdParam("get_npc_inventory", "refId", [](const std::string& r) { return GameInterface::GetInventory(r); });
         formIdParam("get_container_inventory", "refId", [](const std::string& r) { return GameInterface::GetContainerInventory(r); });

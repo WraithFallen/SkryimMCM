@@ -87,4 +87,18 @@ public class NPCTools : ToolBase
         await NotifyInGame($"{name} killed");
         return DeserializeResponse(data);
     }
+
+    [McpServerTool]
+    [Description("Play an idle animation on an NPC or the player. Pass the actor's refId and the idle animation's FormID. " +
+        "Use SearchForms with type='idle' to find animation FormIDs. " +
+        "Example: make an NPC dance, sit, cheer, or perform any registered idle animation.")]
+    public async Task<object> PlayIdle(string refId, string idleFormId)
+    {
+        var data = await _pipe.SendRequestAsync("play_idle", new JsonObject
+        {
+            ["refId"] = refId,
+            ["idleFormId"] = idleFormId
+        });
+        return DeserializeResponse(data);
+    }
 }

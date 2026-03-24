@@ -150,6 +150,32 @@ namespace SkyrimMCP::UtilityManager {
         json results = json::array();
         int count = 0;
 
+        // Debug: log form array size for the requested type
+        for (auto& [ft, lb] : typesToSearch) {
+            try {
+                auto& fa = dataHandler->GetFormArray(ft);
+                SKSE::log::info("SearchForms: type '{}' has {} forms", lb, fa.size());
+
+                // Log first 3 idle forms to diagnose empty fields
+                if (ft == RE::FormType::Idle) {
+                    int logged = 0;
+                    for (auto* f : fa) {
+                        if (!f || logged >= 3) break;
+                        auto* idle = f->As<RE::TESIdleForm>();
+                        if (idle) {
+                            SKSE::log::info("  Idle {:08X}: name='{}' editorId='{}' animFile='{}' animEvent='{}'",
+                                idle->GetFormID(),
+                                idle->GetName() ? idle->GetName() : "(null)",
+                                idle->GetFormEditorID() ? idle->GetFormEditorID() : "(null)",
+                                idle->animFileName.c_str() ? idle->animFileName.c_str() : "(null)",
+                                idle->animEventName.c_str() ? idle->animEventName.c_str() : "(null)");
+                            logged++;
+                        }
+                    }
+                }
+            } catch (...) {}
+        }
+
         for (auto& [formType, label] : typesToSearch) {
             if (count >= maxResults) break;
 

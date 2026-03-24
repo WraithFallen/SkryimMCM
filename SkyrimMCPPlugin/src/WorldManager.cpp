@@ -13,9 +13,41 @@ namespace SkyrimMCP::WorldManager {
     using json = nlohmann::json;
 
     json Teleport(const std::string& cellId) {
-        // Try direct execute of the "coc" console command
-        // If that fails, it'll fall through to CompileAndRun with SEH
-        return Helpers::ExecuteConsoleCommand("coc " + cellId);
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        // Try lookup by editor ID first (e.g., "WhiterunDragonsreach"), then by FormID
+        RE::TESObjectCELL* cell = nullptr;
+
+        auto* form = RE::TESForm::LookupByEditorID(cellId);
+        if (form) {
+            cell = form->As<RE::TESObjectCELL>();
+        }
+
+        if (!cell) {
+            try {
+                auto formId = Helpers::ParseFormId(cellId);
+                auto* formById = RE::TESForm::LookupByID(formId);
+                if (formById) {
+                    cell = formById->As<RE::TESObjectCELL>();
+                }
+            } catch (...) {}
+        }
+
+        if (!cell) return {{"error", "Cell not found: " + cellId}};
+
+        // Use MoveTo_Impl: teleport to cell origin
+        RE::NiPoint3 pos{0.0f, 0.0f, 0.0f};
+        RE::NiPoint3 rot{0.0f, 0.0f, 0.0f};
+        auto* worldSpace = cell->IsInteriorCell() ? nullptr : cell->GetRuntimeData().worldSpace;
+        player->MoveTo_Impl(RE::ObjectRefHandle(), cell, worldSpace, pos, rot);
+
+        json result;
+        result["teleported"] = true;
+        result["cell"] = cellId;
+        result["cellName"] = cell->GetName() ? cell->GetName() : "";
+        result["isInterior"] = cell->IsInteriorCell();
+        return result;
     }
 
     json GetWeather() {

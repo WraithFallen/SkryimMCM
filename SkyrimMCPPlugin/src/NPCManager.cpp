@@ -476,26 +476,27 @@ namespace SkyrimMCP::NPCManager {
         auto* idle = RE::TESForm::LookupByID<RE::TESIdleForm>(Helpers::ParseFormId(idleFormIdHex));
         if (!idle) return {{"error", "Idle form not found: " + idleFormIdHex}};
 
-        auto* process = actor->GetCurrentProcess();
+        auto* process = actor->GetActorRuntimeData().currentProcess;
         if (!process) return {{"error", "Actor has no AI process (too far away?)"}};
 
         bool played = process->PlayIdle(actor, idle, nullptr);
-        return {
-            {"success", played},
-            {"target", actor->GetName()},
-            {"targetRefId", std::format("{:08X}", actor->GetFormID())},
-            {"idleFormId", idleFormIdHex},
-            {"idleName", idle->GetFormEditorID() ? idle->GetFormEditorID() : ""},
-            {"animFile", idle->animFileName.c_str() ? idle->animFileName.c_str() : ""},
-            {"animEvent", idle->animEventName.c_str() ? idle->animEventName.c_str() : ""}
-        };
+        auto refIdStr = std::format("{:08X}", actor->GetFormID());
+        json result;
+        result["success"] = played;
+        result["target"] = actor->GetName();
+        result["targetRefId"] = refIdStr;
+        result["idleFormId"] = idleFormIdHex;
+        result["idleName"] = idle->GetFormEditorID() ? idle->GetFormEditorID() : "";
+        result["animFile"] = idle->animFileName.c_str() ? idle->animFileName.c_str() : "";
+        result["animEvent"] = idle->animEventName.c_str() ? idle->animEventName.c_str() : "";
+        return result;
     }
 
     json GetCurrentIdle(const std::string& refId) {
         auto* actor = Helpers::ResolveActor(refId);
         if (!actor) return {{"error", "Actor not found: " + refId}};
 
-        auto* process = actor->GetCurrentProcess();
+        auto* process = actor->GetActorRuntimeData().currentProcess;
         if (!process) return {{"error", "Actor has no AI process"}};
 
         auto* high = process->high;
@@ -504,31 +505,35 @@ namespace SkyrimMCP::NPCManager {
         auto* idle = high->currentProcessIdle;
         if (!idle) return {{"currentIdle", nullptr}, {"target", actor->GetName()}};
 
-        return {
-            {"target", actor->GetName()},
-            {"targetRefId", std::format("{:08X}", actor->GetFormID())},
-            {"currentIdle", {
-                {"formId", std::format("{:08X}", idle->GetFormID())},
-                {"editorId", idle->GetFormEditorID() ? idle->GetFormEditorID() : ""},
-                {"animFile", idle->animFileName.c_str() ? idle->animFileName.c_str() : ""},
-                {"animEvent", idle->animEventName.c_str() ? idle->animEventName.c_str() : ""}
-            }}
-        };
+        auto actorRefId = std::format("{:08X}", actor->GetFormID());
+        auto idleFormId = std::format("{:08X}", idle->GetFormID());
+        json idleInfo;
+        idleInfo["formId"] = idleFormId;
+        idleInfo["editorId"] = idle->GetFormEditorID() ? idle->GetFormEditorID() : "";
+        idleInfo["animFile"] = idle->animFileName.c_str() ? idle->animFileName.c_str() : "";
+        idleInfo["animEvent"] = idle->animEventName.c_str() ? idle->animEventName.c_str() : "";
+
+        json result;
+        result["target"] = actor->GetName();
+        result["targetRefId"] = actorRefId;
+        result["currentIdle"] = idleInfo;
+        return result;
     }
 
     json StopIdle(const std::string& refId) {
         auto* actor = Helpers::ResolveActor(refId);
         if (!actor) return {{"error", "Actor not found: " + refId}};
 
-        auto* process = actor->GetCurrentProcess();
+        auto* process = actor->GetActorRuntimeData().currentProcess;
         if (!process) return {{"error", "Actor has no AI process"}};
 
         process->StopCurrentIdle(actor, true);
-        return {
-            {"stopped", true},
-            {"target", actor->GetName()},
-            {"targetRefId", std::format("{:08X}", actor->GetFormID())}
-        };
+        auto refIdStr = std::format("{:08X}", actor->GetFormID());
+        json result;
+        result["stopped"] = true;
+        result["target"] = actor->GetName();
+        result["targetRefId"] = refIdStr;
+        return result;
     }
 
 }

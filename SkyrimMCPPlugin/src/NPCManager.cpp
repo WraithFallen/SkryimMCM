@@ -469,11 +469,16 @@ namespace SkyrimMCP::NPCManager {
         return result;
     }
 
-    json PlayIdle(const std::string& refFormIdHex, const std::string& idleFormIdHex) {
-        // Use playidle console command with dot-notation
+    json PlayIdle(const std::string& idleFormIdHex, const std::string& refId) {
+        std::string target;
+        if (refId.empty() || refId == "player") {
+            target = "player";
+        } else {
+            target = refId;
+        }
         auto result = Helpers::ExecuteConsoleCommand(
-            std::format("{}.playidle {}", refFormIdHex, idleFormIdHex));
-        result["refId"] = refFormIdHex;
+            std::format("{}.playidle {}", target, idleFormIdHex));
+        result["target"] = target;
         result["idleFormId"] = idleFormIdHex;
         return result;
     }

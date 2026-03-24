@@ -89,15 +89,16 @@ public class NPCTools : ToolBase
     }
 
     [McpServerTool]
-    [Description("Play an idle animation on an NPC or the player. Pass the actor's refId and the idle animation's FormID. " +
+    [Description("Play an idle animation on the player or an NPC. Pass the idle animation's FormID. " +
+        "Optional refId targets a specific NPC — leave empty for the player. " +
         "Use SearchForms with type='idle' to find animation FormIDs. " +
         "Example: make an NPC dance, sit, cheer, or perform any registered idle animation.")]
-    public async Task<object> PlayIdle(string refId, string idleFormId)
+    public async Task<object> PlayIdle(string idleFormId, string? refId = null)
     {
         var data = await _pipe.SendRequestAsync("play_idle", new JsonObject
         {
-            ["refId"] = refId,
-            ["idleFormId"] = idleFormId
+            ["idleFormId"] = idleFormId,
+            ["refId"] = refId ?? ""
         });
         return DeserializeResponse(data);
     }

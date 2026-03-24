@@ -874,7 +874,20 @@ namespace SkyrimMCP::PlayerQueries {
     }
 
     json SetLevel(int level) {
-        return Helpers::ExecuteConsoleCommand(std::format("player.setlevel {}", level));
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        if (!player) return {{"error", "Player not available"}};
+
+        auto* base = player->GetActorBase();
+        if (!base) return {{"error", "Player base not available"}};
+
+        auto oldLevel = base->GetLevel();
+        base->actorData.level = static_cast<std::uint16_t>(level);
+
+        json result;
+        result["set"] = true;
+        result["oldLevel"] = oldLevel;
+        result["newLevel"] = level;
+        return result;
     }
 
     json ToggleGodMode() {
@@ -887,32 +900,18 @@ namespace SkyrimMCP::PlayerQueries {
         auto* player = RE::PlayerCharacter::GetSingleton();
         if (!player) return {{"error", "Player not available"}};
 
-        static bool immortalMode = false;
-        immortalMode = !immortalMode;
+        // Toggle essential flag directly on the actor
+        auto& flags = player->GetActorRuntimeData().boolFlags;
+        bool wasEssential = flags.all(RE::Actor::BOOL_FLAGS::kEssential);
 
-        std::string method;
-        auto safety = Helpers::CheckGameSafety();
-
-        if (safety.safe) {
-            // Preferred: use tim command when VM is in a clean state
-            Helpers::ExecuteConsoleCommand("tim");
-            method = "tim";
+        if (wasEssential) {
+            flags.reset(RE::Actor::BOOL_FLAGS::kEssential);
         } else {
-            // Fallback: setessential when VM state is risky
-            auto* base = player->GetActorBase();
-            if (base) {
-                std::string baseId = std::format("{:08X}", base->GetFormID());
-                Helpers::ExecuteConsoleCommand(
-                    std::format("setessential {} {}", baseId, immortalMode ? 1 : 0));
-                method = "setessential";
-            } else {
-                return {{"error", "Could not toggle immortal mode — no safe method available"}};
-            }
-            SKSE::log::info("ToggleImmortalMode: used fallback '{}' due to: {}",
-                method, safety.warning);
+            flags.set(RE::Actor::BOOL_FLAGS::kEssential);
         }
 
-        return {{"immortalMode", immortalMode}, {"method", method}};
+        bool nowEssential = flags.all(RE::Actor::BOOL_FLAGS::kEssential);
+        return {{"immortalMode", nowEssential}, {"method", "native_essential_flag"}};
     }
 
 }

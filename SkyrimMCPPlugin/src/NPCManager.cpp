@@ -316,8 +316,33 @@ namespace SkyrimMCP::NPCManager {
     }
 
     json SetRelationshipRank(const std::string& actorFormIdHex, int rank) {
-        return Helpers::ExecuteConsoleCommand(
-            std::format("setrelationshiprank {} {}", actorFormIdHex, rank));
+        try {
+            auto* actor = Helpers::ResolveActor(actorFormIdHex);
+            if (!actor) return {{"error", "Actor not found: " + actorFormIdHex}};
+
+            auto* actorBase = actor->GetActorBase();
+            if (!actorBase) return {{"error", "Actor has no base form"}};
+
+            auto* player = RE::PlayerCharacter::GetSingleton();
+            if (!player) return {{"error", "Player not available"}};
+            auto* playerBase = player->GetActorBase();
+            if (!playerBase) return {{"error", "Player base not available"}};
+
+            auto* rel = RE::BGSRelationship::GetRelationship(playerBase, actorBase);
+            if (!rel) return {{"error", "No relationship found with: " + actorFormIdHex}};
+
+            auto oldLevel = static_cast<int>(rel->level.get());
+            rel->level = static_cast<RE::BGSRelationship::RELATIONSHIP_LEVEL>(rank);
+
+            json result;
+            result["set"] = true;
+            result["actor"] = actor->GetName();
+            result["oldRank"] = oldLevel;
+            result["newRank"] = rank;
+            return result;
+        } catch (...) {
+            return {{"error", "Failed to set relationship: " + actorFormIdHex}};
+        }
     }
 
     json KillActor(const std::string& refFormIdHex) {
@@ -333,12 +358,10 @@ namespace SkyrimMCP::NPCManager {
             bool wasEssential = actor->IsEssential();
             bool wasProtected = actor->IsProtected();
 
-            // Remove essential/protected via console if needed, then kill
+            // Remove essential/protected flags natively
             if (wasEssential) {
-                auto* base = actor->GetActorBase();
-                if (base) {
-                    Helpers::ExecuteConsoleCommand(std::format("setessential {:08X} 0", base->GetFormID()));
-                }
+                auto& flags = actor->GetActorRuntimeData().boolFlags;
+                flags.reset(RE::Actor::BOOL_FLAGS::kEssential);
             }
 
             actor->KillImmediate();

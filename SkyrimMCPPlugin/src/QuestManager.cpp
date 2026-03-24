@@ -223,12 +223,33 @@ namespace SkyrimMCP::QuestManager {
         }
     }
 
+    // No native SetStage API in CommonLibSSE-NG — console command is the only option
     json SetQuestStage(const std::string& formIdHex, int stage) {
         return Helpers::ExecuteConsoleCommand(std::format("setstage {} {}", formIdHex, stage));
     }
 
     json CompleteQuest(const std::string& formIdHex) {
-        return Helpers::ExecuteConsoleCommand(std::format("completeallobjectives {}", formIdHex));
+        try {
+            auto* quest = RE::TESForm::LookupByID<RE::TESQuest>(Helpers::ParseFormId(formIdHex));
+            if (!quest) return {{"error", "Quest not found: " + formIdHex}};
+
+            int completed = 0;
+            for (auto& obj : quest->objectives) {
+                if (obj && obj->initialized) {
+                    obj->state = RE::QUEST_OBJECTIVE_STATE::kCompleted;
+                    completed++;
+                }
+            }
+
+            json result;
+            result["completed"] = true;
+            result["formId"] = formIdHex;
+            result["name"] = quest->GetName() ? quest->GetName() : "";
+            result["objectivesCompleted"] = completed;
+            return result;
+        } catch (...) {
+            return {{"error", "Failed to complete quest: " + formIdHex}};
+        }
     }
 
     json StartQuest(const std::string& formIdHex) {

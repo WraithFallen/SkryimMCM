@@ -130,13 +130,15 @@ namespace SkyrimMCP {
                 auto* form = RE::TESForm::LookupByID(formId);
                 if (!form) return {{"error", "Form not found: " + formIdHex}};
 
+                auto* player = RE::PlayerCharacter::GetSingleton();
+                if (!player) return {{"error", "Player not available"}};
+
                 auto* shout = form->As<RE::TESShout>();
                 if (shout) {
+                    player->AddShout(shout);
                     for (int i = 0; i < 3; i++) {
                         if (shout->variations[i].word) {
-                            auto wordId = std::format("{:08X}", shout->variations[i].word->GetFormID());
-                            Helpers::ExecuteConsoleCommand("player.teachword " + wordId);
-                            Helpers::ExecuteConsoleCommand("player.unlockword " + wordId);
+                            player->UnlockWord(shout->variations[i].word);
                         }
                     }
                     return {{"unlocked", true}, {"formId", formIdHex}, {"name", shout->GetName()}, {"type", "shout"}};
@@ -144,8 +146,7 @@ namespace SkyrimMCP {
 
                 auto* word = form->As<RE::TESWordOfPower>();
                 if (word) {
-                    Helpers::ExecuteConsoleCommand("player.teachword " + formIdHex);
-                    Helpers::ExecuteConsoleCommand("player.unlockword " + formIdHex);
+                    player->UnlockWord(word);
                     return {{"unlocked", true}, {"formId", formIdHex}, {"name", word->GetName()}, {"type", "word"}};
                 }
 

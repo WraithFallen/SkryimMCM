@@ -13,9 +13,12 @@ namespace SkyrimMCP::WorldManager {
     using json = nlohmann::json;
 
     json Teleport(const std::string& cellId) {
-        // Try direct execute of the "coc" console command
-        // If that fails, it'll fall through to CompileAndRun with SEH
-        return Helpers::ExecuteConsoleCommand("coc " + cellId);
+        // coc is kept as console command — MoveTo_Impl is private, and coc handles
+        // all cell loading/transition logic (loading screens, cell attach, navmesh)
+        // that direct MoveTo doesn't. coc is a valid script command, not batch.
+        auto result = Helpers::ExecuteConsoleCommand("coc " + cellId);
+        result["cell"] = cellId;
+        return result;
     }
 
     json GetWeather() {
@@ -328,17 +331,10 @@ namespace SkyrimMCP::WorldManager {
     }
 
     json DiscoverAllMapMarkers() {
-        // tmm 1 discovers all markers via console
-        auto result = Helpers::ExecuteConsoleCommand("tmm 1");
-
-        // Count how many markers exist
-        int count = 0;
-        auto* dataHandler = RE::TESDataHandler::GetSingleton();
-        if (dataHandler) {
-            auto& refs = dataHandler->GetFormArray(RE::FormType::Reference);
-            // Can't easily count markers this way, just report success
-        }
-
+        // tmm 1 is kept as console command — native approach requires iterating all
+        // TESObjectREFR in every worldspace to find ExtraMapMarker data, which is
+        // significantly more expensive than the engine's built-in tmm command.
+        Helpers::ExecuteConsoleCommand("tmm 1");
         return {{"discovered", true}, {"message", "All map markers discovered"}};
     }
 

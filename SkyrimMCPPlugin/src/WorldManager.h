@@ -27,6 +27,10 @@ namespace SkyrimMCP {
         json GetMerchantInventory(const std::string& refFormIdHex);
         json GetBounties();
         json ClearBounty(const std::string& factionFormIdHex);
+
+        // Music (native API)
+        json PlayMusic(const std::string& formIdHex);
+        json StopMusic();
     }
 
 }

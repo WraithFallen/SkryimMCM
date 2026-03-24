@@ -154,93 +154,124 @@ namespace SkyrimMCP::UtilityManager {
         for (auto& [ft, lb] : typesToSearch) {
             try {
                 auto& fa = dataHandler->GetFormArray(ft);
-                SKSE::log::info("SearchForms: type '{}' has {} forms", lb, fa.size());
+                SKSE::log::info("SearchForms: type '{}' has {} forms (formArray)", lb, fa.size());
 
-                // Log first 3 idle forms to diagnose empty fields
-                if (ft == RE::FormType::Idle) {
-                    int logged = 0;
-                    for (auto* f : fa) {
-                        if (!f || logged >= 3) break;
-                        auto* idle = f->As<RE::TESIdleForm>();
-                        if (idle) {
-                            SKSE::log::info("  Idle {:08X}: name='{}' editorId='{}' animFile='{}' animEvent='{}'",
-                                idle->GetFormID(),
-                                idle->GetName() ? idle->GetName() : "(null)",
-                                idle->GetFormEditorID() ? idle->GetFormEditorID() : "(null)",
-                                idle->animFileName.c_str() ? idle->animFileName.c_str() : "(null)",
-                                idle->animEventName.c_str() ? idle->animEventName.c_str() : "(null)");
-                            logged++;
+                // For idle forms with empty array, count from global map
+                if (ft == RE::FormType::Idle && fa.empty()) {
+                    const auto& [allForms, lock] = RE::TESForm::GetAllForms();
+                    RE::BSReadLockGuard readLock(lock);
+                    int idleCount = 0, logged = 0;
+                    if (allForms) {
+                        for (auto& [id, f] : *allForms) {
+                            if (f && f->GetFormType() == RE::FormType::Idle) {
+                                idleCount++;
+                                if (logged < 3) {
+                                    auto* idle = f->As<RE::TESIdleForm>();
+                                    if (idle) {
+                                        SKSE::log::info("  Idle {:08X}: name='{}' editorId='{}' animFile='{}' animEvent='{}'",
+                                            idle->GetFormID(),
+                                            idle->GetName() ? idle->GetName() : "(null)",
+                                            idle->GetFormEditorID() ? idle->GetFormEditorID() : "(null)",
+                                            idle->animFileName.c_str() ? idle->animFileName.c_str() : "(null)",
+                                            idle->animEventName.c_str() ? idle->animEventName.c_str() : "(null)");
+                                        logged++;
+                                    }
+                                }
+                            }
                         }
                     }
+                    SKSE::log::info("SearchForms: type '{}' has {} forms (global map fallback)", lb, idleCount);
                 }
             } catch (...) {}
         }
+
+        // Helper lambda: check if a form matches the query and add to results
+        auto tryMatchForm = [&](RE::TESForm* form, RE::FormType formType, const char* label) -> bool {
+            if (count >= maxResults) return false;
+            if (!form) return false;
+
+            try {
+                const char* name = form->GetName();
+                const char* editorId = form->GetFormEditorID();
+
+                bool matched = false;
+                if (name && name[0]) {
+                    std::string lowerName(name);
+                    std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+                    if (lowerName.find(lowerQuery) != std::string::npos) matched = true;
+                }
+                if (!matched && editorId && editorId[0]) {
+                    std::string lowerEditorId(editorId);
+                    std::transform(lowerEditorId.begin(), lowerEditorId.end(), lowerEditorId.begin(), ::tolower);
+                    if (lowerEditorId.find(lowerQuery) != std::string::npos) matched = true;
+                }
+
+                // For idle forms, also search animation file/event names
+                if (!matched && formType == RE::FormType::Idle) {
+                    auto* idle = form->As<RE::TESIdleForm>();
+                    if (idle) {
+                        std::string animFile = idle->animFileName.c_str() ? idle->animFileName.c_str() : "";
+                        std::string animEvent = idle->animEventName.c_str() ? idle->animEventName.c_str() : "";
+                        std::string lowerFile = animFile;
+                        std::string lowerEvent = animEvent;
+                        std::transform(lowerFile.begin(), lowerFile.end(), lowerFile.begin(), ::tolower);
+                        std::transform(lowerEvent.begin(), lowerEvent.end(), lowerEvent.begin(), ::tolower);
+                        if ((!lowerFile.empty() && lowerFile.find(lowerQuery) != std::string::npos) ||
+                            (!lowerEvent.empty() && lowerEvent.find(lowerQuery) != std::string::npos)) {
+                            matched = true;
+                        }
+                    }
+                }
+
+                if (matched) {
+                    json r;
+                    r["formId"] = std::format("{:08X}", form->GetFormID());
+                    r["name"] = name ? name : "";
+                    r["editorId"] = editorId ? editorId : "";
+                    r["type"] = label;
+
+                    if (formType == RE::FormType::Idle) {
+                        auto* idle = form->As<RE::TESIdleForm>();
+                        if (idle) {
+                            r["animFile"] = idle->animFileName.c_str() ? idle->animFileName.c_str() : "";
+                            r["animEvent"] = idle->animEventName.c_str() ? idle->animEventName.c_str() : "";
+                        }
+                    }
+
+                    results.push_back(r);
+                    count++;
+                    return true;
+                }
+            } catch (...) {}
+            return false;
+        };
 
         for (auto& [formType, label] : typesToSearch) {
             if (count >= maxResults) break;
 
             try {
                 auto& forms = dataHandler->GetFormArray(formType);
+
+                // Some form types (notably Idle) have empty form arrays in TESDataHandler.
+                // Fall back to the global form map filtered by FormType.
+                if (forms.empty() && formType == RE::FormType::Idle) {
+                    SKSE::log::info("SearchForms: formArray empty for '{}', falling back to global form map", label);
+                    const auto& [allForms, lock] = RE::TESForm::GetAllForms();
+                    RE::BSReadLockGuard readLock(lock);
+                    if (allForms) {
+                        for (auto& [id, form] : *allForms) {
+                            if (count >= maxResults) break;
+                            if (form && form->GetFormType() == formType) {
+                                tryMatchForm(form, formType, label);
+                            }
+                        }
+                    }
+                    continue;
+                }
+
                 for (auto* form : forms) {
                     if (count >= maxResults) break;
-                    if (!form) continue;
-
-                    try {
-                        const char* name = form->GetName();
-                        const char* editorId = form->GetFormEditorID();
-
-                        // Match against name or editor ID
-                        bool matched = false;
-                        if (name && name[0]) {
-                            std::string lowerName(name);
-                            std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
-                            if (lowerName.find(lowerQuery) != std::string::npos) matched = true;
-                        }
-                        if (!matched && editorId && editorId[0]) {
-                            std::string lowerEditorId(editorId);
-                            std::transform(lowerEditorId.begin(), lowerEditorId.end(), lowerEditorId.begin(), ::tolower);
-                            if (lowerEditorId.find(lowerQuery) != std::string::npos) matched = true;
-                        }
-
-                        // For idle forms, also search animation file/event names
-                        if (!matched && formType == RE::FormType::Idle) {
-                            auto* idle = form->As<RE::TESIdleForm>();
-                            if (idle) {
-                                std::string animFile = idle->animFileName.c_str() ? idle->animFileName.c_str() : "";
-                                std::string animEvent = idle->animEventName.c_str() ? idle->animEventName.c_str() : "";
-                                std::string lowerFile = animFile;
-                                std::string lowerEvent = animEvent;
-                                std::transform(lowerFile.begin(), lowerFile.end(), lowerFile.begin(), ::tolower);
-                                std::transform(lowerEvent.begin(), lowerEvent.end(), lowerEvent.begin(), ::tolower);
-                                if ((!lowerFile.empty() && lowerFile.find(lowerQuery) != std::string::npos) ||
-                                    (!lowerEvent.empty() && lowerEvent.find(lowerQuery) != std::string::npos)) {
-                                    matched = true;
-                                }
-                            }
-                        }
-
-                        if (matched) {
-                            json r;
-                            r["formId"] = std::format("{:08X}", form->GetFormID());
-                            r["name"] = name ? name : "";
-                            r["editorId"] = editorId ? editorId : "";
-                            r["type"] = label;
-
-                            // Include extra fields for idle forms
-                            if (formType == RE::FormType::Idle) {
-                                auto* idle = form->As<RE::TESIdleForm>();
-                                if (idle) {
-                                    r["animFile"] = idle->animFileName.c_str() ? idle->animFileName.c_str() : "";
-                                    r["animEvent"] = idle->animEventName.c_str() ? idle->animEventName.c_str() : "";
-                                }
-                            }
-
-                            results.push_back(r);
-                            count++;
-                        }
-                    } catch (...) {
-                        continue;
-                    }
+                    tryMatchForm(form, formType, label);
                 }
             } catch (...) {
                 continue;

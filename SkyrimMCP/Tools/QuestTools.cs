@@ -52,26 +52,15 @@ public class QuestTools : ToolBase
     }
 
     [McpServerTool]
-    [Description("Read quest variables and running status via console commands. " +
-        "Pass a quest FormID to check if it's running and get its current stage. " +
-        "Uses getqueststage and isrunning console commands with output capture.")]
+    [Description("Read quest variables and running status via native API. " +
+        "Returns current stage, running/active/completed status, and objectives. " +
+        "This is a convenience wrapper around GetQuestStages for quick status checks.")]
     public async Task<object> ReadQuestVariables(string questFormId)
     {
-        var stage = await _pipe.SendRequestAsync("execute_command", new JsonObject
+        var data = await _pipe.SendRequestAsync("get_quest_stage", new JsonObject
         {
-            ["command"] = $"getqueststage {questFormId}"
+            ["formId"] = questFormId
         });
-
-        var running = await _pipe.SendRequestAsync("execute_command", new JsonObject
-        {
-            ["command"] = $"isrunning {questFormId}"
-        });
-
-        return new
-        {
-            questFormId,
-            stageOutput = stage?["output"]?.GetValue<string>() ?? "no output",
-            runningOutput = running?["output"]?.GetValue<string>() ?? "no output"
-        };
+        return DeserializeResponse(data);
     }
 }

@@ -89,7 +89,16 @@ namespace SkyrimMCP {
             }
         }
         inline json RemoveSpell(const std::string& formIdHex) {
-            return Helpers::ExecuteConsoleCommand(std::format("player.removespell {}", formIdHex));
+            try {
+                auto* spell = RE::TESForm::LookupByID<RE::SpellItem>(Helpers::ParseFormId(formIdHex));
+                if (!spell) return {{"error", "Spell not found: " + formIdHex}};
+                auto* player = RE::PlayerCharacter::GetSingleton();
+                if (!player) return {{"error", "Player not available"}};
+                bool removed = player->RemoveSpell(spell);
+                return {{"removed", removed}, {"formId", formIdHex}, {"name", spell->GetName()}};
+            } catch (...) {
+                return {{"error", "Invalid FormID: " + formIdHex}};
+            }
         }
         inline json AddPerk(const std::string& formIdHex) {
             try {
@@ -104,7 +113,16 @@ namespace SkyrimMCP {
             }
         }
         inline json RemovePerk(const std::string& formIdHex) {
-            return Helpers::ExecuteConsoleCommand(std::format("player.removeperk {}", formIdHex));
+            try {
+                auto* perk = RE::TESForm::LookupByID<RE::BGSPerk>(Helpers::ParseFormId(formIdHex));
+                if (!perk) return {{"error", "Perk not found: " + formIdHex}};
+                auto* player = RE::PlayerCharacter::GetSingleton();
+                if (!player) return {{"error", "Player not available"}};
+                player->RemovePerk(perk);
+                return {{"removed", true}, {"formId", formIdHex}, {"name", perk->GetName()}};
+            } catch (...) {
+                return {{"error", "Invalid FormID: " + formIdHex}};
+            }
         }
         inline json UnlockShout(const std::string& formIdHex) {
             try {
@@ -150,6 +168,8 @@ namespace SkyrimMCP {
         inline json SetActorValue(const std::string& attribute, float value, const std::string& refId = "") { return NPCManager::SetActorValue(attribute, value, refId); }
         inline json GetFactions(const std::string& refId = "") { return NPCManager::GetFactions(refId); }
         inline json PlayIdle(const std::string& idleFormIdHex, const std::string& refId = "") { return NPCManager::PlayIdle(idleFormIdHex, refId); }
+        inline json GetCurrentIdle(const std::string& refId = "") { return NPCManager::GetCurrentIdle(refId); }
+        inline json StopIdle(const std::string& refId = "") { return NPCManager::StopIdle(refId); }
 
         // === World (WorldManager) ===
         inline json Teleport(const std::string& cellId) { return WorldManager::Teleport(cellId); }
@@ -169,6 +189,8 @@ namespace SkyrimMCP {
         inline json GetMerchantInventory(const std::string& refFormIdHex) { return WorldManager::GetMerchantInventory(refFormIdHex); }
         inline json GetBounties() { return WorldManager::GetBounties(); }
         inline json ClearBounty(const std::string& factionFormIdHex) { return WorldManager::ClearBounty(factionFormIdHex); }
+        inline json PlayMusic(const std::string& formIdHex) { return WorldManager::PlayMusic(formIdHex); }
+        inline json StopMusic() { return WorldManager::StopMusic(); }
 
         // === Papyrus Bridge ===
         inline json GetPapyrusCatalog() { return PapyrusBridge::GetPapyrusCatalog(); }

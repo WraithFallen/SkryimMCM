@@ -198,27 +198,24 @@ public class UtilityTools : ToolBase
     }
 
     [McpServerTool]
-    [Description("Play a music track by editor ID or FormID. Use SearchForms with type='music' to find tracks. " +
-        "Example: PlayMusic('MUSCombatBoss') to play boss battle music.")]
-    public async Task<object> PlayMusic(string musicId)
+    [Description("Play a music track by FormID via native API. Use SearchForms with type='music' to find tracks. " +
+        "Example: search for 'combat' or 'explore' to find music type FormIDs.")]
+    public async Task<object> PlayMusic(string formId)
     {
-        var data = await _pipe.SendRequestAsync("execute_command", new JsonObject
+        var data = await _pipe.SendRequestAsync("play_music", new JsonObject
         {
-            ["command"] = $"playmusic {musicId}"
+            ["formId"] = formId
         });
-        await NotifyInGame($"Playing: {musicId}");
+        await NotifyInGame("Music playing");
         return DeserializeResponse(data);
     }
 
     [McpServerTool]
-    [Description("Stop the currently playing music.")]
+    [Description("Stop the currently playing music via native API. Returns what was playing.")]
     public async Task<object> StopMusic()
     {
-        var data = await _pipe.SendRequestAsync("execute_command", new JsonObject
-        {
-            ["command"] = "removemusic"
-        });
-        return new { success = true, message = "Music stopped" };
+        var data = await _pipe.SendRequestAsync("stop_music");
+        return DeserializeResponse(data);
     }
 
     [McpServerTool]

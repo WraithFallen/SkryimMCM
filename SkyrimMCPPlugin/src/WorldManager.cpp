@@ -13,40 +13,11 @@ namespace SkyrimMCP::WorldManager {
     using json = nlohmann::json;
 
     json Teleport(const std::string& cellId) {
-        auto* player = RE::PlayerCharacter::GetSingleton();
-        if (!player) return {{"error", "Player not available"}};
-
-        // Try lookup by editor ID first (e.g., "WhiterunDragonsreach"), then by FormID
-        RE::TESObjectCELL* cell = nullptr;
-
-        auto* form = RE::TESForm::LookupByEditorID(cellId);
-        if (form) {
-            cell = form->As<RE::TESObjectCELL>();
-        }
-
-        if (!cell) {
-            try {
-                auto formId = Helpers::ParseFormId(cellId);
-                auto* formById = RE::TESForm::LookupByID(formId);
-                if (formById) {
-                    cell = formById->As<RE::TESObjectCELL>();
-                }
-            } catch (...) {}
-        }
-
-        if (!cell) return {{"error", "Cell not found: " + cellId}};
-
-        // Use MoveTo_Impl: teleport to cell origin
-        RE::NiPoint3 pos{0.0f, 0.0f, 0.0f};
-        RE::NiPoint3 rot{0.0f, 0.0f, 0.0f};
-        auto* worldSpace = cell->IsInteriorCell() ? nullptr : cell->GetRuntimeData().worldSpace;
-        player->MoveTo_Impl(RE::ObjectRefHandle(), cell, worldSpace, pos, rot);
-
-        json result;
-        result["teleported"] = true;
+        // coc is kept as console command — MoveTo_Impl is private, and coc handles
+        // all cell loading/transition logic (loading screens, cell attach, navmesh)
+        // that direct MoveTo doesn't. coc is a valid script command, not batch.
+        auto result = Helpers::ExecuteConsoleCommand("coc " + cellId);
         result["cell"] = cellId;
-        result["cellName"] = cell->GetName() ? cell->GetName() : "";
-        result["isInterior"] = cell->IsInteriorCell();
         return result;
     }
 

@@ -176,12 +176,39 @@ namespace SkyrimMCP::UtilityManager {
                             if (lowerEditorId.find(lowerQuery) != std::string::npos) matched = true;
                         }
 
+                        // For idle forms, also search animation file/event names
+                        if (!matched && formType == RE::FormType::Idle) {
+                            auto* idle = form->As<RE::TESIdleForm>();
+                            if (idle) {
+                                std::string animFile = idle->animFileName.c_str() ? idle->animFileName.c_str() : "";
+                                std::string animEvent = idle->animEventName.c_str() ? idle->animEventName.c_str() : "";
+                                std::string lowerFile = animFile;
+                                std::string lowerEvent = animEvent;
+                                std::transform(lowerFile.begin(), lowerFile.end(), lowerFile.begin(), ::tolower);
+                                std::transform(lowerEvent.begin(), lowerEvent.end(), lowerEvent.begin(), ::tolower);
+                                if ((!lowerFile.empty() && lowerFile.find(lowerQuery) != std::string::npos) ||
+                                    (!lowerEvent.empty() && lowerEvent.find(lowerQuery) != std::string::npos)) {
+                                    matched = true;
+                                }
+                            }
+                        }
+
                         if (matched) {
                             json r;
                             r["formId"] = std::format("{:08X}", form->GetFormID());
                             r["name"] = name ? name : "";
                             r["editorId"] = editorId ? editorId : "";
                             r["type"] = label;
+
+                            // Include extra fields for idle forms
+                            if (formType == RE::FormType::Idle) {
+                                auto* idle = form->As<RE::TESIdleForm>();
+                                if (idle) {
+                                    r["animFile"] = idle->animFileName.c_str() ? idle->animFileName.c_str() : "";
+                                    r["animEvent"] = idle->animEventName.c_str() ? idle->animEventName.c_str() : "";
+                                }
+                            }
+
                             results.push_back(r);
                             count++;
                         }

@@ -198,6 +198,30 @@ public class UtilityTools : ToolBase
     }
 
     [McpServerTool]
+    [Description("Play a music track by editor ID or FormID. Use SearchForms with type='music' to find tracks. " +
+        "Example: PlayMusic('MUSCombatBoss') to play boss battle music.")]
+    public async Task<object> PlayMusic(string musicId)
+    {
+        var data = await _pipe.SendRequestAsync("execute_command", new JsonObject
+        {
+            ["command"] = $"playmusic {musicId}"
+        });
+        await NotifyInGame($"Playing: {musicId}");
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
+    [Description("Stop the currently playing music.")]
+    public async Task<object> StopMusic()
+    {
+        var data = await _pipe.SendRequestAsync("execute_command", new JsonObject
+        {
+            ["command"] = "removemusic"
+        });
+        return new { success = true, message = "Music stopped" };
+    }
+
+    [McpServerTool]
     [Description("Set the master volume. Value from 0.0 (mute) to 1.0 (full). " +
         "Affects all game audio including music, effects, and voice.")]
     public async Task<object> SetVolume(float volume)

@@ -568,18 +568,24 @@ namespace SkyrimMCP::WorldManager {
         auto* current = musicManager->current;
         if (!current) return {{"stopped", false}, {"message", "No music currently playing"}};
 
+        // BGSMusicType inherits from both TESForm and BSIMusicType.
+        // dynamic_cast fails across the MI boundary. Use reinterpret offset instead:
+        // BGSMusicType layout: TESForm (0x00-0x1F) + BSIMusicType (0x20-0x6F) + editorID (0x70)
+        // BSIMusicType* points to offset 0x20, so BGSMusicType* = BSIMusicType* - 0x20
         std::string name;
-        auto* bgsMusicType = dynamic_cast<RE::BGSMusicType*>(current);
-        if (bgsMusicType) {
+        auto* bgsMusicType = reinterpret_cast<RE::BGSMusicType*>(
+            reinterpret_cast<std::uintptr_t>(current) - 0x20);
+        // Validate by checking if it's actually a MusicType form
+        if (bgsMusicType && bgsMusicType->GetFormType() == RE::FormType::MusicType) {
             name = bgsMusicType->GetFormEditorID() ? bgsMusicType->GetFormEditorID() : "";
         }
 
         current->DoFinish(true);
 
-        return {
-            {"stopped", true},
-            {"wasPlaying", name}
-        };
+        json result;
+        result["stopped"] = true;
+        result["wasPlaying"] = name;
+        return result;
     }
 
 }

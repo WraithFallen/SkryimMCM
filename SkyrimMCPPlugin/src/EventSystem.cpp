@@ -70,7 +70,13 @@ namespace SkyrimMCP {
         "F30C44FC",  // Follower Object Awareness — cycles start/stop repeatedly
     };
 
+    // Event types that are always muted (too noisy to report individually)
+    static const std::unordered_set<std::string> MUTED_EVENT_TYPES = {
+        "cell_loaded",  // 50+ events per fast travel as worldspace streams in
+    };
+
     static bool IsMutedEvent(const std::string& eventType, const json& data) {
+        if (MUTED_EVENT_TYPES.count(eventType)) return true;
         if (eventType == "quest_start_stop" || eventType == "quest_stage") {
             auto formId = data.value("questFormId", "");
             if (SUPPRESSED_QUEST_FORMIDS.count(formId)) return true;

@@ -358,7 +358,7 @@ namespace SkyrimMCP::NPCManager {
             bool wasEssential = actor->IsEssential();
             bool wasProtected = actor->IsProtected();
 
-            // Remove essential/protected flags natively
+            // Remove essential flag to allow kill (runtime flag, one-shot)
             if (wasEssential) {
                 auto& flags = actor->GetActorRuntimeData().boolFlags;
                 flags.reset(RE::Actor::BOOL_FLAGS::kEssential);

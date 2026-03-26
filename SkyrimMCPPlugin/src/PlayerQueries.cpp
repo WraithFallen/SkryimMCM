@@ -900,7 +900,7 @@ namespace SkyrimMCP::PlayerQueries {
         auto* player = RE::PlayerCharacter::GetSingleton();
         if (!player) return {{"error", "Player not available"}};
 
-        // Toggle essential flag directly on the actor
+        // Toggle essential flag directly on the actor runtime
         auto& flags = player->GetActorRuntimeData().boolFlags;
         bool wasEssential = flags.all(RE::Actor::BOOL_FLAGS::kEssential);
 
@@ -910,8 +910,11 @@ namespace SkyrimMCP::PlayerQueries {
             flags.set(RE::Actor::BOOL_FLAGS::kEssential);
         }
 
-        bool nowEssential = flags.all(RE::Actor::BOOL_FLAGS::kEssential);
-        return {{"immortalMode", nowEssential}, {"method", "native_essential_flag"}};
+        json result;
+        result["success"] = true;
+        result["immortalMode"] = !wasEssential;  // Report intended state
+        result["method"] = "native_essential_flag";
+        return result;
     }
 
 }

@@ -58,13 +58,13 @@ with Skyrim SE/AE's runtime engine via an SKSE plugin.
 - Skyrim SE or AE
 - SKSE64 (https://skse.silverlock.org/)
 - Address Library for SKSE (https://www.nexusmods.com/skyrimspecialedition/mods/32444)
-- .NET 8 Runtime (https://dotnet.microsoft.com/download/dotnet/8.0)
+- .NET 10 Runtime (https://dotnet.microsoft.com/download/dotnet/10.0)
 - Claude Desktop (https://claude.ai/desktop)
 
 ## Installation
 1. Extract the Data folder into your Skyrim directory
    (or install via Mod Organizer 2 / Vortex)
-2. Install .NET 8 Runtime if not already installed
+2. Install .NET 10 Runtime if not already installed
 3. Configure Claude Desktop (see below)
 
 ## Claude Desktop Configuration
@@ -87,7 +87,7 @@ Replace <SKYRIM_PATH> with your Skyrim installation path.
 3. Ask Claude to interact with your game!
 
 ## Features
-- 50+ MCP tools for reading and modifying game state
+- 74 MCP tools for reading and modifying game state
 - Player stats, inventory, spells, perks, shouts, appearance
 - Quest management, NPC interaction, follower management
 - Weather control, world objects, containers, locks

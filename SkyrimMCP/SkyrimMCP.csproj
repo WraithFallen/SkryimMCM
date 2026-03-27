@@ -7,6 +7,10 @@
     <Nullable>enable</Nullable>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>SkyrimMCP.snk</AssemblyOriginatorKeyFile>
+    <AssemblyTitle>SkyLink AI</AssemblyTitle>
+    <Product>SkyLink AI</Product>
+    <Description>MCP server connecting AI assistants to Skyrim SE/AE — 74 tools for real-time game interaction</Description>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

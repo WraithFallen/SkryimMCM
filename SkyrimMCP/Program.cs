@@ -23,7 +23,14 @@ class Program
 
         // Configure MCP server with stdio transport and auto-discover tools
         builder.Services
-            .AddMcpServer()
+            .AddMcpServer(options =>
+            {
+                options.ServerInfo = new()
+                {
+                    Name = "SkyLink AI",
+                    Version = "1.0.0"
+                };
+            })
             .WithStdioServerTransport()
             .WithToolsFromAssembly();
 

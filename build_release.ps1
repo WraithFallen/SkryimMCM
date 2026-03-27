@@ -1,4 +1,4 @@
-# Skyrim MCP — Release Build Script
+# SkyLink AI — Release Build Script
 # Run from Developer PowerShell for VS 2022
 # Produces a ready-to-zip release folder
 
@@ -10,14 +10,14 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "=== Building Skyrim MCP v$Version ===" -ForegroundColor Cyan
+Write-Host "=== Building SkyLink AI v$Version ===" -ForegroundColor Cyan
 
 # Set vcpkg
 $env:VCPKG_ROOT = $VcpkgRoot
 
 # Clean output
 if (Test-Path $OutputDir) { Remove-Item -Recurse -Force $OutputDir }
-New-Item -ItemType Directory -Path "$OutputDir\Data\SKSE\Plugins\SkyrimMCP_Server" -Force | Out-Null
+New-Item -ItemType Directory -Path "$OutputDir\Data\SKSE\Plugins\SkyLinkAI_Server" -Force | Out-Null
 
 # Build C++ plugin
 Write-Host "`n--- Building SKSE Plugin (C++) ---" -ForegroundColor Yellow
@@ -30,7 +30,7 @@ Pop-Location
 
 # Build C# MCP Server
 Write-Host "`n--- Building MCP Server (C#) ---" -ForegroundColor Yellow
-dotnet publish SkyrimMCP -c Release -o "$OutputDir\Data\SKSE\Plugins\SkyrimMCP_Server" --no-self-contained
+dotnet publish SkyrimMCP -c Release -o "$OutputDir\Data\SKSE\Plugins\SkyLinkAI_Server" --no-self-contained
 
 # Copy SKSE plugin DLL
 Write-Host "`n--- Packaging ---" -ForegroundColor Yellow
@@ -41,7 +41,7 @@ $config = @{
     mcpServers = @{
         skyrim = @{
             command = "dotnet"
-            args = @("<SKYRIM_PATH>\Data\SKSE\Plugins\SkyrimMCP_Server\SkyrimMCP.dll")
+            args = @("<SKYRIM_PATH>\Data\SKSE\Plugins\SkyLinkAI_Server\SkyrimMCP.dll")
         }
     }
 }
@@ -49,7 +49,7 @@ $config | ConvertTo-Json -Depth 4 | Set-Content "$OutputDir\claude_desktop_confi
 
 # Create README
 @"
-# Skyrim MCP Server v$Version
+# SkyLink AI v$Version
 
 An MCP server that lets AI assistants (Claude, etc.) interact directly
 with Skyrim SE/AE's runtime engine via an SKSE plugin.
@@ -74,7 +74,7 @@ Edit %APPDATA%\Claude\claude_desktop_config.json:
   "mcpServers": {
     "skyrim": {
       "command": "dotnet",
-      "args": ["<SKYRIM_PATH>\\Data\\SKSE\\Plugins\\SkyrimMCP_Server\\SkyrimMCP.dll"]
+      "args": ["<SKYRIM_PATH>\\Data\\SKSE\\Plugins\\SkyLinkAI_Server\\SkyrimMCP.dll"]
     }
   }
 }
@@ -106,5 +106,5 @@ Replace <SKYRIM_PATH> with your Skyrim installation path.
 Write-Host "`n=== Build Complete ===" -ForegroundColor Green
 Write-Host "Release folder: $OutputDir\"
 Write-Host "  SKSE Plugin: $OutputDir\Data\SKSE\Plugins\SkyrimMCPPlugin.dll"
-Write-Host "  MCP Server:  $OutputDir\Data\SKSE\Plugins\SkyrimMCP_Server\"
+Write-Host "  MCP Server:  $OutputDir\Data\SKSE\Plugins\SkyLinkAI_Server\"
 Write-Host "`nZip the '$OutputDir' folder for Nexus upload."

@@ -1,4 +1,4 @@
-# Skyrim MCP — Usage Guide
+# SkyLink AI — Usage Guide
 
 ## Getting Started
 

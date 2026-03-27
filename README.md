@@ -1,6 +1,6 @@
-# Skyrim MCP
+# SkyLink AI
 
-A Model Context Protocol (MCP) server that lets AI assistants (Claude, etc.) interact directly with Skyrim SE/AE's runtime engine. Read game state, manipulate inventory, manage quests, control NPCs — all through a structured API.
+A Model Context Protocol (MCP) server that lets AI assistants (Claude, etc.) interact directly with Skyrim SE/AE's runtime engine. 74 tools for reading and modifying game state in real time — player stats, inventory, quests, NPCs, world interaction, combat, and more.
 
 ## Architecture
 
@@ -8,13 +8,13 @@ A Model Context Protocol (MCP) server that lets AI assistants (Claude, etc.) int
 Claude Desktop <--stdio/MCP--> C# MCP Server <--named pipe--> SKSE Plugin (inside Skyrim)
 ```
 
-**SKSE Plugin** (C++ DLL) — runs inside Skyrim's process via SKSE. Uses CommonLibSSE-NG for typed engine access. Exposes 50+ game actions over a named pipe (`\\.\pipe\SkyrimMCP`).
+**SKSE Plugin** (C++ DLL) — runs inside Skyrim's process via SKSE. Uses CommonLibSSE-NG for native engine access. Exposes 74 game actions over a named pipe (`\\.\pipe\SkyrimMCP`).
 
-**C# MCP Server** (.NET 10) — bridges Claude Desktop (stdio MCP) and the SKSE plugin (named pipe). 60+ MCP tools auto-discovered via `[McpServerTool]` attributes.
+**C# MCP Server** (.NET 10) — bridges Claude Desktop (stdio MCP) and the SKSE plugin (named pipe). 74 MCP tools auto-discovered via `[McpServerTool]` attributes.
 
 ## Features
 
-### 60+ Game Actions
+### 74 Game Actions
 
 | Category | Tools |
 |----------|-------|
@@ -66,7 +66,7 @@ Edit `%APPDATA%\Claude\claude_desktop_config.json`:
   "mcpServers": {
     "skyrim": {
       "command": "dotnet",
-      "args": ["<SKYRIM_PATH>\\Data\\SKSE\\Plugins\\SkyrimMCP_Server\\SkyrimMCP.dll"]
+      "args": ["<SKYRIM_PATH>\\Data\\SKSE\\Plugins\\SkyLinkAI_Server\\SkyrimMCP.dll"]
     }
   }
 }
@@ -91,7 +91,7 @@ Replace `<SKYRIM_PATH>` with your Skyrim installation path.
 "What Papyrus functions does the Experience mod expose?"
 ```
 
-With 60+ tools covering player state, inventory, quests, NPCs, world interaction, combat, economy, magic, events, and a Papyrus VM bridge to 3,000+ mod functions — if Skyrim can do it, Claude can probably help.
+With 74 tools covering player state, inventory, quests, NPCs, world interaction, combat, economy, magic, events, and a Papyrus VM bridge to 3,000+ mod functions — if Skyrim can do it, Claude can probably help.
 
 See **[USAGE.md](USAGE.md)** for the full tool reference and advanced features.
 

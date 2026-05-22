@@ -214,10 +214,15 @@ namespace SkyrimMCP::PapyrusBridge {
     json GetScriptsOnRef(const std::string& refFormIdHex) {
         RE::FormID formId = 0;
         try {
-            formId = static_cast<RE::FormID>(
-                (refFormIdHex.empty() || refFormIdHex == "player")
-                    ? 0x14u
-                    : std::stoul(refFormIdHex, nullptr, 16));
+            if (refFormIdHex.empty() || refFormIdHex == "player") {
+                formId = 0x14u;
+            } else {
+                std::size_t idx = 0;
+                unsigned long val = std::stoul(refFormIdHex, &idx, 16);
+                if (idx != refFormIdHex.size())
+                    throw std::invalid_argument("trailing chars");
+                formId = static_cast<RE::FormID>(val);
+            }
         } catch (...) {
             return {{"error", "Invalid refId: " + refFormIdHex}};
         }

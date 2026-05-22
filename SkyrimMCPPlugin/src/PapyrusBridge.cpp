@@ -211,6 +211,68 @@ namespace SkyrimMCP::PapyrusBridge {
         return {{"error", "Script class not found: " + className}};
     }
 
+    json GetScriptsOnRef(const std::string& refFormIdHex) {
+        RE::FormID formId = 0;
+        try {
+            formId = static_cast<RE::FormID>(
+                (refFormIdHex.empty() || refFormIdHex == "player")
+                    ? 0x14u
+                    : std::stoul(refFormIdHex, nullptr, 16));
+        } catch (...) {
+            return {{"error", "Invalid refId: " + refFormIdHex}};
+        }
+
+        auto* form = RE::TESForm::LookupByID(formId);
+        if (!form) {
+            return {{"error", "Form not found: " + refFormIdHex}};
+        }
+
+        auto* vm = RE::BSScript::Internal::VirtualMachine::GetSingleton();
+        if (!vm) {
+            return {{"error", "Papyrus VM not available"}};
+        }
+
+        auto* policy = vm->handlePolicy;
+        if (!policy) {
+            return {{"error", "VM handle policy not available"}};
+        }
+
+        RE::VMHandle handle = policy->GetHandleForObject(form->GetFormType(), form);
+        if (handle == policy->EmptyHandle()) {
+            return {
+                {"refId", refFormIdHex},
+                {"scripts", json::array()},
+                {"count", 0}
+            };
+        }
+
+        json scripts = json::array();
+        {
+            RE::BSSpinLockGuard lock{vm->attachedScriptsLock};
+            auto it = vm->attachedScripts.find(handle);
+            if (it != vm->attachedScripts.end()) {
+                for (auto& attachedScript : it->second) {
+                    auto* obj = attachedScript.get();
+                    if (obj) {
+                        auto* typeInfo = obj->GetTypeInfo();
+                        if (typeInfo) {
+                            const char* name = typeInfo->GetName();
+                            if (name && name[0] != '\0') {
+                                scripts.push_back(std::string(name));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return {
+            {"refId", refFormIdHex},
+            {"scripts", scripts},
+            {"count", scripts.size()}
+        };
+    }
+
     // ==================== VM Call Bridge ====================
 
     // Custom callback functor that stores the result and signals a promise

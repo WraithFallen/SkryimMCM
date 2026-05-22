@@ -255,6 +255,7 @@ namespace SkyrimMCP::Protocol {
         formIdParam("get_spell_details", "formId", [](const std::string& f) { return GameInterface::GetSpellDetails(f); });
         formIdParam("get_enchantment_info", "formId", [](const std::string& f) { return GameInterface::GetEnchantmentInfo(f); });
         formIdParam("get_script_functions", "className", [](const std::string& c) { return GameInterface::GetScriptFunctions(c); });
+        formIdParam("get_scripts_on_ref", "refId", [](const std::string& r) { return GameInterface::GetScriptsOnRef(r); });
 
         // === Multi-param handlers ===
 

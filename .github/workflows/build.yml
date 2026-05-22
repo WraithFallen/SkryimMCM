@@ -1,0 +1,43 @@
+name: Build SkyrimMCPPlugin
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'SkyrimMCPPlugin/**'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone CommonLibSSE-NG
+        run: git clone --depth=1 https://github.com/CharmedBaryon/CommonLibSSE-NG.git SkyrimMCPPlugin/extern/CommonLibSSE-NG
+
+      - name: Cache vcpkg packages
+        uses: actions/cache@v4
+        with:
+          path: C:\vcpkg\installed
+          key: vcpkg-x64-windows-static-${{ hashFiles('SkyrimMCPPlugin/vcpkg.json') }}
+          restore-keys: vcpkg-x64-windows-static-
+
+      - name: Configure CMake
+        working-directory: SkyrimMCPPlugin
+        env:
+          VCPKG_ROOT: C:\vcpkg
+        run: cmake --preset default
+
+      - name: Build Release
+        working-directory: SkyrimMCPPlugin
+        run: cmake --build build --config Release
+
+      - name: Upload DLL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SkyrimMCPPlugin-${{ github.sha }}
+          path: SkyrimMCPPlugin/build/Release/SkyrimMCPPlugin.dll
+          if-no-files-found: error

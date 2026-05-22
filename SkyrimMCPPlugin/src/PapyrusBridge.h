@@ -24,6 +24,9 @@ namespace SkyrimMCP {
 
         // Get capabilities for a specific script class
         json GetScriptFunctions(const std::string& className);
+
+        // List all Papyrus script instances currently attached to a reference
+        json GetScriptsOnRef(const std::string& refFormIdHex);
     }
 
 }

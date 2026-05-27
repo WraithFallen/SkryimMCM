@@ -24,6 +24,18 @@ public class PapyrusTools : ToolBase
     }
 
     [McpServerTool]
+    [Description("Get all Papyrus scripts currently attached to a reference at runtime. " +
+        "Walks the Papyrus VM's live object table — shows what script classes are actually bound and running on the ref. " +
+        "Pass refId as a hex FormID (e.g. '14' for player) or 'player'. " +
+        "Omit refId to query the player. Returns an array of script class names.")]
+    public async Task<object> GetScriptsOnRef(string? refId = null)
+    {
+        var effectiveRefId = string.IsNullOrEmpty(refId) ? "player" : refId;
+        var data = await _pipe.SendRequestAsync("get_scripts_on_ref", new JsonObject { ["refId"] = effectiveRefId });
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
     [Description("Force rescan of Papyrus source files. Use after installing new mods to update the catalog.")]
     public async Task<object> ScanPapyrusSources()
     {

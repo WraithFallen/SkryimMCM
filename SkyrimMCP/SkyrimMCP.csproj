@@ -2,14 +2,19 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
+    <!-- net10.0 -> net9.0 (2026-06-12): the only .NET 10 SDK on the build machine (10.0.300) ships a
+         CET-marked Roslyn that fatals on this Windows build ("Your Windows doesn't fully support CET").
+         net9.0 builds with the system SDK 9 and runs on the installed 9.0.x runtime. Revisit when a
+         fixed .NET 10 SDK is installed. -->
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>SkyrimMCP.snk</AssemblyOriginatorKeyFile>
+    <!-- Strong-naming removed 2026-06-12: SkyrimMCP.snk only ever existed in the lost X:\_work tree
+         (never committed), and the deployed 2026-05-22 DLL has PublicKeyToken=null anyway — the
+         sibling tree built unsigned. Dropping it matches deployed reality and unbreaks cold builds. -->
     <AssemblyTitle>SkyLink AI</AssemblyTitle>
     <Product>SkyLink AI</Product>
-    <Description>MCP server connecting AI assistants to Skyrim SE/AE — 74 tools for real-time game interaction</Description>
+    <Description>MCP server connecting AI assistants to Skyrim SE/AE — 93 tools for real-time game interaction</Description>
     <Version>1.0.0</Version>
   </PropertyGroup>
 

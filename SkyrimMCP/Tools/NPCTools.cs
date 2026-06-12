@@ -12,7 +12,8 @@ public class NPCTools : ToolBase
 {
     public NPCTools(IPipeClient pipe) : base(pipe) { }
 
-    [McpServerTool]
+    // Explicit Name: the MCP SDK's PascalCase splitter derives "get_nearby_np_cs" from GetNearbyNPCs.
+    [McpServerTool(Name = "get_nearby_npcs")]
     [Description("Get nearby NPCs within a given radius. Returns refId (use for dot-notation console commands like 'refId.kill') " +
         "and baseId (use for setessential). Also includes name, race, level, distance, hostility, and dead status.")]
     public async Task<object> GetNearbyNPCs(float radius = 4096)

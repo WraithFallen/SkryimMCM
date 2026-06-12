@@ -6,10 +6,11 @@ namespace SkyrimMCP.Tools;
 
 /// <summary>
 /// MCP Tools added in Fix 3 — batch console execution, quest stage setting, crash log discovery, save listing.
-/// Recovered 2026-06-12 by decompiling the deployed SkyrimMCP.dll (built 2026-05-22): the original
-/// source lived only in the X:\_work working tree, which was lost with the drive. Behavior is
-/// byte-faithful to the deployed build; tool names are pinned with explicit Name attributes so the
-/// MCP SDK's PascalCase splitter can never change them (the get_nearby_np_cs artifact class).
+/// Recovered 2026-06-12 by decompiling the deployed SkyrimMCP.dll (built 2026-05-22), then validated
+/// line-for-line against the rediscovered originals (the May-22 build came from a decompiled-monolith
+/// side project that pre-dated adopting this fork repo; this commit integrates the tools properly).
+/// Tool names are pinned with explicit Name attributes so the MCP SDK's PascalCase splitter can
+/// never change them (the get_nearby_np_cs artifact class).
 /// </summary>
 [McpServerToolType]
 public class AdditionalTools : ToolBase

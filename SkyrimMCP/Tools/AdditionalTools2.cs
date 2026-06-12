@@ -7,8 +7,8 @@ namespace SkyrimMCP.Tools;
 
 /// <summary>
 /// MCP Tools added in Fix 4 — exact editor-ID lookup and paged active-quest listing.
-/// Recovered 2026-06-12 by decompiling the deployed SkyrimMCP.dll (built 2026-05-22) — see
-/// AdditionalTools.cs for the recovery story. The deployed build also carried GetScriptsOnRef
+/// Recovered 2026-06-12 (decompile + validation against the rediscovered originals — see
+/// AdditionalTools.cs for the recovery story). The deployed build also carried GetScriptsOnRef
 /// in this class; that copy was DELIBERATELY DROPPED here because PapyrusTools.GetScriptsOnRef
 /// (commit e22a26d, Fix 5) supersedes it — same pipe action, optional refId defaulting to player,
 /// and no longer needs the deployed copy's "plugin doesn't support this yet" fallback since the

@@ -10,6 +10,12 @@ namespace SkyrimMCP.Tools;
 [McpServerToolType]
 public class InventoryTools : ToolBase
 {
+    // BulkAddItems guard rails — block runaway/malformed batches without
+    // breaking realistic blueprint-inventory restores. (Audit 19 MED #7.)
+    private const int MaxBulkDistinctItems = 500;
+    private const int MaxBulkCountPerItem = 100_000;
+    private const long MaxBulkTotalMutations = 1_000_000;
+
     public InventoryTools(IPipeClient pipe) : base(pipe) { }
 
     [McpServerTool]
@@ -80,46 +86,72 @@ public class InventoryTools : ToolBase
         "Use this for bulk operations like applying a character blueprint's inventory.")]
     public async Task<object> BulkAddItems(string items)
     {
-        List<object> results = new();
         List<object> errors = new();
         int successCount = 0;
 
+        JsonArray? itemArray;
         try
         {
-            var itemArray = JsonNode.Parse(items)?.AsArray();
-            if (itemArray == null) return new { error = "Invalid JSON array" };
-
-            foreach (var item in itemArray)
-            {
-                try
-                {
-                    var formId = item?["formId"]?.GetValue<string>();
-                    var name = item?["name"]?.GetValue<string>();
-                    var count = item?["count"]?.GetValue<int>() ?? 1;
-
-                    var resolvedId = formId ?? SkyrimOffsets.GetItemFormId(name ?? "") ?? name;
-                    if (string.IsNullOrEmpty(resolvedId))
-                    {
-                        errors.Add(new { item = name ?? formId, error = "Could not resolve FormID" });
-                        continue;
-                    }
-
-                    await _pipe.SendRequestAsync("add_item", new JsonObject
-                    {
-                        ["formId"] = resolvedId,
-                        ["count"] = count
-                    });
-                    successCount++;
-                }
-                catch (Exception ex)
-                {
-                    errors.Add(new { item = item?.ToJsonString(), error = ex.Message });
-                }
-            }
+            itemArray = JsonNode.Parse(items)?.AsArray();
         }
         catch (Exception ex)
         {
             return new { error = $"Failed to parse items: {ex.Message}" };
+        }
+        if (itemArray == null) return new { error = "Invalid JSON array" };
+
+        // Pre-flight bounds check — one MCP call must not issue unbounded sequential
+        // mutations (save-bloat / instability vector). Reject the whole batch if it
+        // exceeds caps, before any item is added. Generous enough for any realistic
+        // blueprint-inventory restore; blocks only runaway/malformed requests.
+        if (itemArray.Count > MaxBulkDistinctItems)
+            return new { error = $"Too many items: {itemArray.Count} (max {MaxBulkDistinctItems} per call)" };
+
+        long totalMutations = 0;
+        foreach (var item in itemArray)
+        {
+            int count;
+            try { count = item?["count"]?.GetValue<int>() ?? 1; }
+            catch { count = 1; }  // non-int count — flagged per-item in the main loop
+            if (count > MaxBulkCountPerItem)
+                return new { error = $"Per-item count {count} exceeds max {MaxBulkCountPerItem}" };
+            if (count > 0) totalMutations += count;
+        }
+        if (totalMutations > MaxBulkTotalMutations)
+            return new { error = $"Total item count {totalMutations} exceeds max {MaxBulkTotalMutations} per call" };
+
+        foreach (var item in itemArray)
+        {
+            try
+            {
+                var formId = item?["formId"]?.GetValue<string>();
+                var name = item?["name"]?.GetValue<string>();
+                var count = item?["count"]?.GetValue<int>() ?? 1;
+
+                if (count <= 0)
+                {
+                    errors.Add(new { item = name ?? formId, error = "count must be >= 1" });
+                    continue;
+                }
+
+                var resolvedId = formId ?? SkyrimOffsets.GetItemFormId(name ?? "") ?? name;
+                if (string.IsNullOrEmpty(resolvedId))
+                {
+                    errors.Add(new { item = name ?? formId, error = "Could not resolve FormID" });
+                    continue;
+                }
+
+                await _pipe.SendRequestAsync("add_item", new JsonObject
+                {
+                    ["formId"] = resolvedId,
+                    ["count"] = count
+                });
+                successCount++;
+            }
+            catch (Exception ex)
+            {
+                errors.Add(new { item = item?.ToJsonString(), error = ex.Message });
+            }
         }
 
         await NotifyInGame($"Added {successCount} items");

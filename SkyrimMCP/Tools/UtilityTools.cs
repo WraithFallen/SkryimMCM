@@ -270,8 +270,12 @@ public class UtilityTools : ToolBase
     {
         try
         {
-            // Get Skyrim path from pipe — ask plugin for current working dir
-            // For now, use a known path pattern
+            // Security: confine to the SKSE/Plugins directory — no path traversal.
+            // (Mirrors the guard WritePluginConfig already has. Audit 19 MED #5.)
+            if (string.IsNullOrEmpty(filename) ||
+                filename.Contains("..") || filename.Contains("/") || filename.Contains("\\"))
+                return new { error = "Invalid filename — no path separators or .. allowed" };
+
             var skyrimPath = Environment.GetEnvironmentVariable("SKYRIM_PATH")
                 ?? @"C:\Steam\steamapps\common\Skyrim Special Edition";
             var filePath = Path.Combine(skyrimPath, "Data", "SKSE", "Plugins", filename);

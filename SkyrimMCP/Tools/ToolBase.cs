@@ -40,6 +40,61 @@ public abstract class ToolBase
     }
 
     /// <summary>
+    /// Resolve a caller-supplied output path and confirm it stays inside the
+    /// allowed output root — containment against an LLM writing to arbitrary
+    /// locations (e.g. system dirs or the game install). The root defaults to the
+    /// user profile (so Downloads/Documents/Desktop all work, matching the tool
+    /// descriptions) and is overridable via the SKYLINK_OUTPUT_ROOT env var.
+    /// Returns the normalized absolute path on success; sets <paramref name="error"/>
+    /// (and returns null) if the path is empty or escapes the root. (Audit 19 MED #5.)
+    ///
+    /// LIMITATION: containment is lexical (Path.GetFullPath + prefix check). A
+    /// directory junction/symlink the user has placed INSIDE the root that points
+    /// outside it is not resolved and would not be caught. This is acceptable for
+    /// the threat model (local single-user misuse containment, Claude-only client —
+    /// not a hostile-network boundary); a self-created junction redirecting an own
+    /// write is self-sabotage. Full reparse-point resolution is a queued LOW item.
+    /// </summary>
+    protected static string? ResolveContainedPath(string? requested, out string? error)
+    {
+        error = null;
+        if (string.IsNullOrWhiteSpace(requested))
+        {
+            error = "Output path is required";
+            return null;
+        }
+
+        var root = Environment.GetEnvironmentVariable("SKYLINK_OUTPUT_ROOT");
+        if (string.IsNullOrWhiteSpace(root))
+            root = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+        string rootFull, reqFull;
+        try
+        {
+            rootFull = Path.TrimEndingDirectorySeparator(Path.GetFullPath(root));
+            reqFull = Path.TrimEndingDirectorySeparator(Path.GetFullPath(requested));
+        }
+        catch (Exception ex)
+        {
+            error = $"Invalid output path: {ex.Message}";
+            return null;
+        }
+
+        // Boundary-safe containment: equal to the root, or under it with a
+        // separator boundary (so C:\Users\Bob does not match C:\Users\Bobby).
+        var withSep = rootFull + Path.DirectorySeparatorChar;
+        if (!reqFull.Equals(rootFull, StringComparison.OrdinalIgnoreCase) &&
+            !reqFull.StartsWith(withSep, StringComparison.OrdinalIgnoreCase))
+        {
+            error = $"Output path must be within '{rootFull}' " +
+                    "(set the SKYLINK_OUTPUT_ROOT env var to change the allowed root)";
+            return null;
+        }
+
+        return reqFull;
+    }
+
+    /// <summary>
     /// Apply paging to a response that contains an array field.
     /// Returns a paged envelope with items, page, pageSize, totalItems, totalPages, hasMore.
     /// If page=0 or pageSize=0, returns summary only (no items).

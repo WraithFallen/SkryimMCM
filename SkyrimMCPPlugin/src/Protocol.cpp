@@ -5,7 +5,9 @@
 
 #include <SKSE/SKSE.h>
 
+#include <atomic>
 #include <functional>
+#include <optional>
 #include <unordered_map>
 
 namespace SkyrimMCP::Protocol {
@@ -22,6 +24,104 @@ namespace SkyrimMCP::Protocol {
             response["error"] = error;
         }
         return response;
+    }
+
+    // ==================== Safety Gating ====================
+    //
+    // State-changing actions are classified into tiers and gated against the game
+    // safety state (loading / kill-move / saving) before dispatch:
+    //   SAVE_LOAD  — save/load/teleport/quest-flow: ALWAYS enforced (corruption /
+    //                lost-progress risk).
+    //   ARBITRARY  — execute_command / call_papyrus_function: ALWAYS enforced.
+    //   DURABLE    — inventory/stats/perks/etc. that persist in the save: enforced
+    //                only when the runtime policy flag is on (default OFF — the
+    //                /skylink protocol already mitigates procedurally). Toggle via
+    //                the `set_safety_policy` action {enforceDurable: bool}.
+    //   (anything else is ungated.)
+    // A blocked action returns an error and is NOT dispatched; the caller can force
+    // it by passing params.override_safety = true.
+
+    enum class SafetyTier { Ungated, Durable, SaveLoad, Arbitrary };
+
+    static std::atomic<bool> g_enforceDurable{false};
+
+    static SafetyTier ClassifyAction(const std::string& action) {
+        static const std::unordered_map<std::string, SafetyTier> tiers = {
+            // SAVE / LOAD — always enforced
+            {"save_game", SafetyTier::SaveLoad},
+            {"load_save", SafetyTier::SaveLoad},
+            {"load_most_recent_save", SafetyTier::SaveLoad},
+            {"teleport", SafetyTier::SaveLoad},
+            {"set_quest_stage", SafetyTier::SaveLoad},
+            {"start_quest", SafetyTier::SaveLoad},
+            {"stop_quest", SafetyTier::SaveLoad},
+            {"complete_quest", SafetyTier::SaveLoad},
+            // ARBITRARY — open-ended execution, always enforced
+            {"execute_command", SafetyTier::Arbitrary},
+            {"call_papyrus_function", SafetyTier::Arbitrary},
+            // DURABLE MUTATION — enforced only when policy enables it
+            {"add_item", SafetyTier::Durable},
+            {"remove_item", SafetyTier::Durable},
+            {"set_actor_value", SafetyTier::Durable},
+            {"set_actor_value_on", SafetyTier::Durable},
+            {"set_relationship_rank", SafetyTier::Durable},
+            {"add_spell", SafetyTier::Durable},
+            {"remove_spell", SafetyTier::Durable},
+            {"add_perk", SafetyTier::Durable},
+            {"remove_perk", SafetyTier::Durable},
+            {"equip_item", SafetyTier::Durable},
+            {"unequip_item", SafetyTier::Durable},
+            {"unlock_shout", SafetyTier::Durable},
+            {"kill_actor", SafetyTier::Durable},
+            {"set_level", SafetyTier::Durable},
+            {"clear_bounty", SafetyTier::Durable},
+            {"lock_door", SafetyTier::Durable},
+            {"unlock_door", SafetyTier::Durable},
+            {"move_actor_to", SafetyTier::Durable},
+            {"set_game_time", SafetyTier::Durable},
+            {"set_weather", SafetyTier::Durable},
+            {"discover_all_map_markers", SafetyTier::Durable},  // tmm 1 — permanently reveals markers
+            // Intentionally NOT gated (reversible runtime toggles, harmless in any
+            // state): toggle_god_mode, toggle_immortal_mode, toggle_collision.
+            // Also ungated: transient effects (show_notification, play/stop_music,
+            // play/stop_idle) and all read-only get_* actions.
+            // MAINTENANCE: any NEW action that persists in the save or executes
+            // arbitrary code MUST be added here — unlisted actions are Ungated.
+        };
+        auto it = tiers.find(action);
+        return it != tiers.end() ? it->second : SafetyTier::Ungated;
+    }
+
+    // Returns a ready-to-send block response if the action must be refused;
+    // std::nullopt to let it proceed.
+    static std::optional<std::string> CheckSafetyGate(const std::string& id,
+            const std::string& action, const json& params) {
+        SafetyTier tier = ClassifyAction(action);
+        bool enforced = (tier == SafetyTier::SaveLoad) || (tier == SafetyTier::Arbitrary) ||
+                        (tier == SafetyTier::Durable && g_enforceDurable.load());
+        if (!enforced) return std::nullopt;
+
+        // Explicit caller override
+        if (params.value("override_safety", false)) {
+            SKSE::log::warn("Action '{}' proceeding despite safety gate (override_safety=true)", action);
+            return std::nullopt;
+        }
+
+        // Evaluate game safety on the game thread (short timeout so the gate itself
+        // never hangs the 5s work budget). A timeout means the game thread is not
+        // pumping — i.e. loading — which we treat as unsafe.
+        try {
+            json safety = TaskQueue::RunOnGameThread([]() { return GameInterface::GetGameSafety(); }, 2000);
+            if (safety.value("safe", false)) return std::nullopt;  // safe — allow
+            std::string warning = safety.value("warning", "game is in an unsafe state");
+            return MakeResponse(id, false, {},
+                "Blocked (" + action + "): " + warning +
+                ". Retry when safe, or pass params.override_safety=true to force.").dump() + "\n";
+        } catch (...) {
+            return MakeResponse(id, false, {},
+                "Blocked (" + action + "): game is busy or loading (safety check timed out). "
+                "Retry when loaded, or pass params.override_safety=true to force.").dump() + "\n";
+        }
     }
 
     // Helper: wrap a no-arg game thread call
@@ -52,6 +152,19 @@ namespace SkyrimMCP::Protocol {
 
         registry["ping"] = [](const std::string& id, const json&) {
             return MakeResponse(id, true, json::object()).dump() + "\n";
+        };
+
+        // Safety policy control — toggles whether the DURABLE-mutation tier is
+        // gated. SAVE/LOAD and ARBITRARY are always gated regardless. Not itself gated.
+        registry["set_safety_policy"] = [](const std::string& id, const json& params) {
+            if (params.contains("enforceDurable")) {
+                g_enforceDurable.store(params.value("enforceDurable", false));
+            }
+            json result;
+            result["enforceDurable"] = g_enforceDurable.load();
+            result["note"] = "SAVE/LOAD and ARBITRARY actions are always gated; "
+                             "this toggles the DURABLE-mutation tier only.";
+            return MakeResponse(id, true, result).dump() + "\n";
         };
 
         registry["poll_events"] = [](const std::string& id, const json& params) {
@@ -373,6 +486,11 @@ namespace SkyrimMCP::Protocol {
         std::string id = request.value("id", "");
         std::string action = request.value("action", "");
         json params = request.value("params", json::object());
+
+        // Safety gate — refuse state-changing actions in unsafe states before dispatch.
+        if (auto blocked = CheckSafetyGate(id, action, params)) {
+            return *blocked;
+        }
 
         try {
             auto& registry = GetRegistry();

@@ -101,8 +101,14 @@ public class PlayerTools : ToolBase
 
         if (!string.IsNullOrEmpty(outputPath) && data != null)
         {
+            var containedPath = ResolveContainedPath(outputPath, out var pathError);
+            if (containedPath == null)
+                return new { error = pathError };
+            outputPath = containedPath;
+
             try
             {
+                Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
                 var jsonString = data.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
                 await File.WriteAllTextAsync(outputPath, jsonString);
                 await NotifyInGame("Blueprint exported");
@@ -202,8 +208,15 @@ public class PlayerTools : ToolBase
         "Creates both a .json blueprint file and an in-game save with matching names.")]
     public async Task<object> TakeSnapshot(string outputDir)
     {
+        var containedDir = ResolveContainedPath(outputDir, out var pathError);
+        if (containedDir == null)
+            return new { error = pathError };
+        outputDir = containedDir;
+
         try
         {
+            Directory.CreateDirectory(outputDir);
+
             // Get player info for naming
             var playerData = await _pipe.SendRequestAsync("get_player_info");
             var name = playerData?["name"]?.GetValue<string>() ?? "Player";

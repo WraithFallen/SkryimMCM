@@ -3,6 +3,7 @@
 #include <RE/Skyrim.h>
 #include <SKSE/SKSE.h>
 
+#include <atomic>
 #include <filesystem>
 #include <fstream>
 #include <mutex>
@@ -284,10 +285,17 @@ namespace SkyrimMCP::PapyrusBridge {
     class PapyrusCallback : public RE::BSScript::IStackCallbackFunctor {
     public:
         std::promise<json> promise;
+        // Resolve the promise at most once. The VM holds its own refcounted
+        // pointer to this callback (passed by ref to DispatchStaticCall), so a
+        // late/duplicate invocation can fire after CallPapyrusFunction has already
+        // returned on timeout — set_value() on an already-satisfied or reader-gone
+        // promise would otherwise throw std::future_error and escape. (Audit 19 LOW.)
+        std::atomic<bool> resolved{false};
 
         PapyrusCallback() = default;
 
         void operator()(RE::BSScript::Variable a_result) override {
+            if (resolved.exchange(true)) return;  // duplicate callback — ignore
             try {
                 json result;
                 auto rawType = a_result.GetType().GetRawType();
@@ -308,7 +316,7 @@ namespace SkyrimMCP::PapyrusBridge {
 
                 promise.set_value({{"result", result}});
             } catch (...) {
-                promise.set_value({{"error", "Failed to unpack result"}});
+                try { promise.set_value({{"error", "Failed to unpack result"}}); } catch (...) {}
             }
         }
 
@@ -340,6 +348,13 @@ namespace SkyrimMCP::PapyrusBridge {
             }
         };
 
+        // OWNERSHIP: the Skyrim VM takes ownership of the IFunctionArguments* and
+        // frees it — this is CommonLibSSE's own contract (RE::MakeFunctionArguments
+        // returns a raw `new` pointer that SendEvent/DispatchStaticCall consume and
+        // delete; it is never freed by the caller). So this raw `new` is correct and
+        // is NOT a leak. Do NOT wrap it in a unique_ptr / delete it here — that is a
+        // double-free (verified against CommonLibSSE-NG headers 2026-06-13; this
+        // reverses the earlier "dynArgs leaks" audit finding, which was wrong).
         auto* dynArgs = new DynamicArgs();
 
         if (args.is_array()) {

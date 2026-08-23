@@ -60,17 +60,34 @@ public class AdditionalTools : ToolBase
         return new { success = true, command, result = DeserializeResponse(data) };
     }
 
+    // MO2 instance root derived from SKYRIM_PATH (the game root the file tools already use —
+    // e.g. "C:\Games\Authoria 1.5\Stock Game" -> "C:\Games\Authoria 1.5"). Audit 43: the old
+    // hardcoded Apostasy paths made list_saves/check_crash_logs silently miss the ACTIVE
+    // modlist after every migration (list_saves was returning year-old Documents saves).
+    private static string? Mo2Root()
+    {
+        var sp = Environment.GetEnvironmentVariable("SKYRIM_PATH");
+        if (string.IsNullOrWhiteSpace(sp)) return null;
+        // TrimEnd: a trailing slash makes GetDirectoryName return the game root ITSELF (not its
+        // parent), which would silently skip the profiles scan. Non-MO2 setups (Steam root) are
+        // fine either way — profiles\ won't exist and the caller's Directory.Exists guard skips.
+        try { return Path.GetDirectoryName(Path.GetFullPath(sp.TrimEnd('\\', '/'))); } catch { return null; }
+    }
+
     [McpServerTool(Name = "check_crash_logs")]
     [Description("Scan crash log directories and return the most recent crash log files. Checks both the " +
-        "CrashLoggerSSE output (crash-*.log) and the Tullius CTD Logger output. Returns file names, paths, " +
-        "sizes, and last-modified timestamps sorted newest-first. Use this to quickly see if a recent crash " +
-        "occurred and locate the log files to read.")]
+        "CrashLoggerSSE output (crash-*.log) and the Tullius CTD Logger output (under the MO2 instance's " +
+        "overwrite, derived from SKYRIM_PATH). Returns file names, paths, sizes, and last-modified " +
+        "timestamps sorted newest-first. Use this to quickly see if a recent crash occurred and locate " +
+        "the log files to read.")]
     public Task<object> CheckCrashLogs(int count = 5)
     {
         count = Math.Clamp(count, 1, 100);
         var skseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
             "My Games", "Skyrim Special Edition", "SKSE");
-        var tulliusDir = @"C:\Games\Apostasy\overwrite\SKSE\Plugins\Tullius Ctd Logs";
+        var tulliusDir = Mo2Root() is string mo2Root
+            ? Path.Combine(mo2Root, "overwrite", "SKSE", "Plugins", "Tullius Ctd Logs")
+            : @"C:\Games\Apostasy\overwrite\SKSE\Plugins\Tullius Ctd Logs";
 
         var logs = new List<object>();
         var scanErrors = new List<string>();
@@ -96,9 +113,9 @@ public class AdditionalTools : ToolBase
     [McpServerTool(Name = "list_saves")]
     [Description("List Skyrim save files sorted newest-first. Returns save name, full path, size, and " +
         "last-modified time. Skyrim SE save filenames encode the character name and location " +
-        "(e.g. Save5_Dragonborn_Whiterun_...). Checks both the standard Documents save directory and " +
-        "MO2 Apostasy profile saves. Use this to find the most recent save, verify autosaves are being " +
-        "created, or locate a save to load.")]
+        "(e.g. Save5_Dragonborn_Whiterun_...). Checks the standard Documents save directory plus every " +
+        "MO2 profile's local saves under the active instance (derived from SKYRIM_PATH). Use this to " +
+        "find the most recent save, verify autosaves are being created, or locate a save to load.")]
     public Task<object> ListSaves(int count = 20)
     {
         count = Math.Clamp(count, 1, 200);
@@ -106,8 +123,21 @@ public class AdditionalTools : ToolBase
         {
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                 "My Games", "Skyrim Special Edition", "Saves"),
-            @"C:\Games\Apostasy\profiles\Apostasy\saves"
         };
+        // MO2 profile-local saves: every profiles\*\saves under the instance root (audit 43 —
+        // the old hardcoded Apostasy profile path missed the active playthrough entirely).
+        if (Mo2Root() is string mo2)
+        {
+            var profiles = Path.Combine(mo2, "profiles");
+            if (Directory.Exists(profiles))
+            {
+                foreach (var p in Directory.GetDirectories(profiles))
+                {
+                    var s = Path.Combine(p, "saves");
+                    if (Directory.Exists(s)) saveDirs.Add(s);
+                }
+            }
+        }
 
         var saves = new List<object>();
         var scanErrors = new List<string>();

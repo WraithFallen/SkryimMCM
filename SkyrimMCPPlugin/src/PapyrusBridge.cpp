@@ -408,13 +408,15 @@ namespace SkyrimMCP::PapyrusBridge {
             nowMenu = svm->currentVMMenuModeTime;  // header: real deadlines = updateTime + this clock (brief 56 B5)
         }
         std::vector<UpdateSnap> usnap;
+        usnap.reserve(kMaxAllRows);  // allocate BEFORE taking any queue lock (brief 57 A4)
+        std::vector<LosSnap> lsnap;
+        lsnap.reserve(kMaxAllRows);
         std::size_t totalReal = 0, totalGame = 0;
         bool truncated = false;
         {
             RE::BSSpinLockGuard lock{svm->queuedOnUpdateEventLock};
             totalReal = svm->queuedOnUpdateEvents.size();
             totalGame = svm->queuedOnUpdateGameEvents.size();
-            usnap.reserve(std::min<std::size_t>(totalReal + totalGame, kMaxAllRows));
             auto take = [&](auto& arr, bool game) {
                 for (auto& p : arr) {
                     if (!p || !(all || p->handle == want)) continue;
@@ -426,7 +428,6 @@ namespace SkyrimMCP::PapyrusBridge {
             take(svm->queuedOnUpdateEvents, false);
             take(svm->queuedOnUpdateGameEvents, true);
         }
-        std::vector<LosSnap> lsnap;
         {
             RE::BSSpinLockGuard lock{svm->queuedLOSEventCheckLock};
             for (auto& p : svm->queuedLOSEventChecks) {

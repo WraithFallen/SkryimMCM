@@ -279,6 +279,156 @@ namespace SkyrimMCP::PapyrusBridge {
         };
     }
 
+    // ==================== Pending timers / VM registrations (item 115) ====================
+    // READ-ONLY. SkyrimVM keeps every RegisterForUpdate / RegisterForSingleUpdate(GameTime) as an
+    // UpdateDataEvent in two lock-guarded arrays, keyed by VM handle. A script whose update chain died has
+    // NO entry here -- which is the observation that "stuck quest / dead framework" diagnosis has lacked.
+    // Handles: for a form, low 32 bits = FormID (quest aliases etc. use other handle types; they appear in
+    // "all" mode with formId = low 32 bits and whatever LookupByID finds, or null).
+    namespace {
+        json describeHandle(RE::VMHandle h) {
+            char buf[20];
+            std::snprintf(buf, sizeof(buf), "%016llX", static_cast<unsigned long long>(h));
+            const auto fid = static_cast<RE::FormID>(h & 0xFFFFFFFFull);
+            char fbuf[12];
+            std::snprintf(fbuf, sizeof(fbuf), "%08X", fid);
+            json j = {{"handle", buf}, {"formId", fbuf}, {"handleType", static_cast<std::uint32_t>(h >> 32)}};
+            if (auto* f = RE::TESForm::LookupByID(fid)) {
+                const char* name = f->GetName();
+                const char* edid = f->GetFormEditorID();
+                j["formType"] = RE::FormTypeToString(f->GetFormType());
+                if (name && name[0]) j["name"] = name;
+                if (edid && edid[0]) j["editorId"] = edid;
+            }
+            return j;
+        }
+
+        json describeUpdate(const RE::SkyrimVM::UpdateDataEvent& e, bool gameTime, std::uint32_t now) {
+            json j = describeHandle(e.handle);
+            j["clock"] = gameTime ? "game" : "real";
+            j["kind"] = e.updateType == RE::SkyrimVM::UpdateDataEvent::UpdateType::kRepeat ? "repeat" : "single";
+            j["updateTime_raw"] = e.updateTime;
+            j["timeToSendEvent_raw"] = e.timeToSendEvent;
+            const auto remaining = static_cast<std::int64_t>(e.timeToSendEvent) - static_cast<std::int64_t>(now);
+            j["remaining_raw"] = remaining;
+            // Derived, labelled as such: real clock is milliseconds; game clock is days x 1000 (SkyrimVM.h).
+            if (gameTime) {
+                j["interval_game_hours_derived"] = e.updateTime / 1000.0 * 24.0;
+                j["remaining_game_hours_derived"] = remaining / 1000.0 * 24.0;
+            } else {
+                j["interval_seconds_derived"] = e.updateTime / 1000.0;
+                j["remaining_seconds_derived"] = remaining / 1000.0;
+            }
+            return j;
+        }
+    }
+
+    json GetScriptTimers(const std::string& refFormIdHex) {
+        auto* svm = RE::SkyrimVM::GetSingleton();
+        if (!svm) {
+            return {{"error", "SkyrimVM not available"}};
+        }
+        const bool all = refFormIdHex == "all";
+        RE::VMHandle want = 0;
+        if (!all) {
+            RE::FormID formId = 0;
+            try {
+                if (refFormIdHex.empty() || refFormIdHex == "player") {
+                    formId = 0x14u;
+                } else {
+                    std::size_t idx = 0;
+                    unsigned long val = std::stoul(refFormIdHex, &idx, 16);
+                    if (idx != refFormIdHex.size())
+                        throw std::invalid_argument("trailing chars");
+                    formId = static_cast<RE::FormID>(val);
+                }
+            } catch (...) {
+                return {{"error", "Invalid refId: " + refFormIdHex}};
+            }
+            auto* form = RE::TESForm::LookupByID(formId);
+            if (!form) {
+                return {{"error", "Form not found: " + refFormIdHex}};
+            }
+            auto* vm = RE::BSScript::Internal::VirtualMachine::GetSingleton();
+            if (!vm || !vm->handlePolicy) {
+                return {{"error", "Papyrus VM not available"}};
+            }
+            want = vm->handlePolicy->GetHandleForObject(form->GetFormType(), form);
+            if (want == vm->handlePolicy->EmptyHandle()) {
+                return {{"refId", refFormIdHex}, {"bound", false},
+                        {"note", "no VM handle: nothing script-side is bound to this form, so it cannot hold a timer"}};
+            }
+        }
+
+        std::uint32_t nowReal = 0, nowGame = 0;
+        {
+            RE::BSSpinLockGuard lock{svm->currentVMTimeLock};
+            nowReal = svm->currentVMTime;
+            nowGame = svm->currentVMDaysPassed;
+        }
+        json updates = json::array();
+        std::size_t totalReal = 0, totalGame = 0;
+        {
+            RE::BSSpinLockGuard lock{svm->queuedOnUpdateEventLock};
+            totalReal = svm->queuedOnUpdateEvents.size();
+            totalGame = svm->queuedOnUpdateGameEvents.size();
+            for (auto& p : svm->queuedOnUpdateEvents) {
+                if (p && (all || p->handle == want)) updates.push_back(describeUpdate(*p, false, nowReal));
+            }
+            for (auto& p : svm->queuedOnUpdateGameEvents) {
+                if (p && (all || p->handle == want)) updates.push_back(describeUpdate(*p, true, nowGame));
+            }
+        }
+        json los = json::array();
+        {
+            RE::BSSpinLockGuard lock{svm->queuedLOSEventCheckLock};
+            for (auto& p : svm->queuedLOSEventChecks) {
+                if (!p || !(all || p->handle == want)) continue;
+                json j = describeHandle(p->handle);
+                char v[12], t[12];
+                std::snprintf(v, sizeof(v), "%08X", p->akViewerFormID);
+                std::snprintf(t, sizeof(t), "%08X", p->akTargetFormID);
+                j["viewer"] = v;
+                j["target"] = t;
+                j["event"] = p->losEventType == RE::SkyrimVM::LOSDataEvent::LOSEventType::kGain ? "gain"
+                           : p->losEventType == RE::SkyrimVM::LOSDataEvent::LOSEventType::kLost ? "lost" : "both";
+                los.push_back(j);
+            }
+        }
+        json out = {
+            {"refId", all ? "all" : refFormIdHex},
+            {"updates", updates},
+            {"lineOfSight", los},
+            {"queue_totals", {{"onUpdate", totalReal}, {"onUpdateGameTime", totalGame}}},
+            {"vm_clock", {{"currentVMTime_ms", nowReal}, {"currentVMDaysPassed_x1000", nowGame}}},
+        };
+        {
+            RE::BSSpinLockGuard lock{svm->queuedWaitEventLock};
+            out["pending_waits"] = {{"wait", svm->queuedWaitCalls.size()},
+                                    {"waitMenuMode", svm->queuedWaitMenuModeCalls.size()},
+                                    {"waitGameTime", svm->queuedWaitGameCalls.size()}};
+        }
+        if (!all) {
+            out["handle"] = describeHandle(want)["handle"];
+            {
+                RE::BSSpinLockGuard lock{svm->registeredSleepEventsLock};
+                out["registeredForSleep"] = svm->registeredSleepEvents.contains(want);
+            }
+            {
+                RE::BSSpinLockGuard lock{svm->registeredStatsEventsLock};
+                out["registeredForTrackedStats"] = svm->registeredStatsEvents.contains(want);
+            }
+            {
+                RE::BSSpinLockGuard lock{svm->InventoryEventFilterMapLock};
+                out["hasInventoryEventFilter"] = svm->InventoryEventFilterMap.contains(want);
+            }
+        }
+        out["not_covered"] = "SKSE registrations (RegisterForKey/Menu/ModEvent/CameraState/ControlDown...) live in "
+                             "SKSE's own RegistrationSets, and animation events on the actor's graph; neither is "
+                             "in SkyrimVM, so their absence here proves nothing.";
+        return out;
+    }
+
     // ==================== VM Call Bridge ====================
 
     // Custom callback functor that stores the result and signals a promise

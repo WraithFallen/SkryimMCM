@@ -36,6 +36,20 @@ public class PapyrusTools : ToolBase
     }
 
     [McpServerTool]
+    [Description("READ-ONLY. Pending Papyrus timers for a reference: every RegisterForUpdate / RegisterForSingleUpdate / " +
+        "RegisterForUpdateGameTime / RegisterForSingleUpdateGameTime still queued in the VM (repeat vs single, interval, " +
+        "time remaining), queued OnGainLOS/OnLostLOS checks, and whether it is registered for Sleep / TrackedStats / an " +
+        "inventory event filter. An EMPTY 'updates' list for a script that should be ticking means its update chain died. " +
+        "Pass refId as hex FormID, 'player', or 'all' to list every pending timer in the VM. " +
+        "Does NOT cover SKSE registrations (key/menu/mod events) or animation events.")]
+    public async Task<object> GetScriptTimers(string? refId = null)
+    {
+        var effectiveRefId = string.IsNullOrEmpty(refId) ? "player" : refId;
+        var data = await _pipe.SendRequestAsync("get_script_timers", new JsonObject { ["refId"] = effectiveRefId });
+        return DeserializeResponse(data);
+    }
+
+    [McpServerTool]
     [Description("Force rescan of Papyrus source files. Use after installing new mods to update the catalog.")]
     public async Task<object> ScanPapyrusSources()
     {

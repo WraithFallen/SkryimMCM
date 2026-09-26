@@ -27,6 +27,9 @@ namespace SkyrimMCP {
 
         // List all Papyrus script instances currently attached to a reference
         json GetScriptsOnRef(const std::string& refFormIdHex);
+
+        // Pending OnUpdate/OnUpdateGameTime timers, LOS checks and VM-side registrations for a ref ("all" = every one)
+        json GetScriptTimers(const std::string& refFormIdHex);
     }
 
 }

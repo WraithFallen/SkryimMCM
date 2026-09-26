@@ -349,7 +349,21 @@ namespace SkyrimMCP::PapyrusBridge {
         }
     }
 
+    static json GetScriptTimersImpl(const std::string& refFormIdHex);
+
+    // Every response, including the early returns, carries the provisional-runtime warning (brief 56 C1).
     json GetScriptTimers(const std::string& refFormIdHex) {
+        json out = GetScriptTimersImpl(refFormIdHex);
+        if (out.is_object()) {
+            out["unverified"] = "SkyrimVM member offsets come from CommonLibSSE-NG's reverse-engineered header and "
+                                "are NOT yet validated on AE 1.6.1170; *_derived units come from its comments (real "
+                                "deadlines vs currentVMMenuModeTime, game deadlines vs currentVMDaysPassed x1000). "
+                                "Treat every value as provisional until a live check (Codex briefs 55/56).";
+        }
+        return out;
+    }
+
+    static json GetScriptTimersImpl(const std::string& refFormIdHex) {
         auto* svm = RE::SkyrimVM::GetSingleton();
         if (!svm) {
             return {{"error", "SkyrimVM not available"}};
@@ -386,11 +400,12 @@ namespace SkyrimMCP::PapyrusBridge {
             }
         }
 
-        std::uint32_t nowReal = 0, nowGame = 0;
+        std::uint32_t nowReal = 0, nowGame = 0, nowMenu = 0;
         {
             RE::BSSpinLockGuard lock{svm->currentVMTimeLock};
             nowReal = svm->currentVMTime;
             nowGame = svm->currentVMDaysPassed;
+            nowMenu = svm->currentVMMenuModeTime;  // header: real deadlines = updateTime + this clock (brief 56 B5)
         }
         std::vector<UpdateSnap> usnap;
         std::size_t totalReal = 0, totalGame = 0;
@@ -416,13 +431,13 @@ namespace SkyrimMCP::PapyrusBridge {
             RE::BSSpinLockGuard lock{svm->queuedLOSEventCheckLock};
             for (auto& p : svm->queuedLOSEventChecks) {
                 if (!p || !(all || p->handle == want)) continue;
-                if (lsnap.size() >= kMaxAllRows) { truncated = true; break; }
+                if (usnap.size() + lsnap.size() >= kMaxAllRows) { truncated = true; break; }  // ONE shared cap (brief 56 B7)
                 lsnap.push_back({p->handle, p->akViewerFormID, p->akTargetFormID, static_cast<int>(p->losEventType)});
             }
         }
         // Locks released: now resolve and serialise.
         json updates = json::array();
-        for (auto& e : usnap) updates.push_back(describeUpdate(e, e.gameTime ? nowGame : nowReal));
+        for (auto& e : usnap) updates.push_back(describeUpdate(e, e.gameTime ? nowGame : nowMenu));
         json los = json::array();
         for (auto& e : lsnap) {
             json j = describeHandle(e.handle);
@@ -440,32 +455,36 @@ namespace SkyrimMCP::PapyrusBridge {
             {"lineOfSight", los},
             {"truncated_at", truncated ? json(kMaxAllRows) : json(nullptr)},
             {"queue_totals", {{"onUpdate", totalReal}, {"onUpdateGameTime", totalGame}}},
-            {"vm_clock", {{"currentVMTime_ms", nowReal}, {"currentVMDaysPassed_x1000", nowGame}}},
+            {"vm_clock", {{"currentVMTime_ms", nowReal}, {"currentVMMenuModeTime_ms", nowMenu}, {"currentVMDaysPassed_x1000", nowGame}}},
         };
+        // Primitives only under each lock; JSON after release (brief 56 A4).
+        std::size_t w1 = 0, w2 = 0, w3 = 0;
         {
             RE::BSSpinLockGuard lock{svm->queuedWaitEventLock};
-            out["pending_waits"] = {{"wait", svm->queuedWaitCalls.size()},
-                                    {"waitMenuMode", svm->queuedWaitMenuModeCalls.size()},
-                                    {"waitGameTime", svm->queuedWaitGameCalls.size()}};
+            w1 = svm->queuedWaitCalls.size();
+            w2 = svm->queuedWaitMenuModeCalls.size();
+            w3 = svm->queuedWaitGameCalls.size();
         }
+        out["pending_waits"] = {{"wait", w1}, {"waitMenuMode", w2}, {"waitGameTime", w3}};
         if (!all) {
-            out["handle"] = describeHandle(want)["handle"];
+            bool sleep = false, stats = false, inv = false;
             {
                 RE::BSSpinLockGuard lock{svm->registeredSleepEventsLock};
-                out["registeredForSleep"] = svm->registeredSleepEvents.contains(want);
+                sleep = svm->registeredSleepEvents.contains(want);
             }
             {
                 RE::BSSpinLockGuard lock{svm->registeredStatsEventsLock};
-                out["registeredForTrackedStats"] = svm->registeredStatsEvents.contains(want);
+                stats = svm->registeredStatsEvents.contains(want);
             }
             {
                 RE::BSSpinLockGuard lock{svm->InventoryEventFilterMapLock};
-                out["hasInventoryEventFilter"] = svm->InventoryEventFilterMap.contains(want);
+                inv = svm->InventoryEventFilterMap.contains(want);
             }
+            out["handle"] = describeHandle(want)["handle"];
+            out["registeredForSleep"] = sleep;
+            out["registeredForTrackedStats"] = stats;
+            out["hasInventoryEventFilter"] = inv;
         }
-        out["unverified"] = "SkyrimVM member offsets come from CommonLibSSE-NG's reverse-engineered header and are NOT "
-                            "yet validated on AE 1.6.1170; *_derived units (real ms, game days x 1000) come from its "
-                            "comments. Treat values as provisional until the first live check (Codex brief 55).";
         out["not_covered"] = "SKSE registrations (RegisterForKey/Menu/ModEvent/CameraState/ControlDown...) live in "
                              "SKSE's own RegistrationSets, and animation events on the actor's graph; neither is "
                              "in SkyrimVM, so their absence here proves nothing.";

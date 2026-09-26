@@ -369,7 +369,11 @@ namespace SkyrimMCP::Protocol {
         formIdParam("get_enchantment_info", "formId", [](const std::string& f) { return GameInterface::GetEnchantmentInfo(f); });
         formIdParam("get_script_functions", "className", [](const std::string& c) { return GameInterface::GetScriptFunctions(c); });
         formIdParam("get_scripts_on_ref", "refId", [](const std::string& r) { return GameInterface::GetScriptsOnRef(r); });
-        formIdParam("get_script_timers", "refId", [](const std::string& r) { return GameInterface::GetScriptTimers(r); });
+        // Optional refId -> player, matching the C++ function and the MCP tool (brief 55 C1).
+        registry["get_script_timers"] = [](const std::string& id, const json& params) {
+            std::string r = params.value("refId", std::string("player"));
+            return GameThread(id, [r]() { return GameInterface::GetScriptTimers(r); });
+        };
 
         // === Multi-param handlers ===
 

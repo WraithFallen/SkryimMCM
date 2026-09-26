@@ -292,10 +292,16 @@ namespace SkyrimMCP::PapyrusBridge {
             const auto fid = static_cast<RE::FormID>(h & 0xFFFFFFFFull);
             char fbuf[12];
             std::snprintf(fbuf, sizeof(fbuf), "%08X", fid);
-            json j = {{"handle", buf}, {"formId", fbuf}, {"handleType", static_cast<std::uint32_t>(h >> 32)}};
+            // The low 32 bits are the FormID ONLY for a form-owned handle; alias and active-effect handles use
+            // other layouts, so the lookup below is labelled a GUESS unless the handle type is the form's own
+            // (brief 55 Q9d -- unverified layout, so the label is deliberate).
+            const auto htype = static_cast<std::uint32_t>(h >> 32);
+            json j = {{"handle", buf}, {"formId_low32", fbuf}, {"handleType", htype}};
             if (auto* f = RE::TESForm::LookupByID(fid)) {
                 const char* name = f->GetName();
                 const char* edid = f->GetFormEditorID();
+                const bool own = htype == static_cast<std::uint32_t>(f->GetFormType());
+                j["owner_confidence"] = own ? "form handle (type matches)" : "GUESS (handle type != form type)";
                 j["formType"] = RE::FormTypeToString(f->GetFormType());
                 if (name && name[0]) j["name"] = name;
                 if (edid && edid[0]) j["editorId"] = edid;
@@ -303,13 +309,33 @@ namespace SkyrimMCP::PapyrusBridge {
             return j;
         }
 
-        json describeUpdate(const RE::SkyrimVM::UpdateDataEvent& e, bool gameTime, std::uint32_t now) {
+        // Primitive copy taken UNDER the queue lock; everything else (form lookup, names, JSON) happens after
+        // release, because the game thread needs these locks to schedule and fire events (Codex brief 55 A4).
+        struct UpdateSnap {
+            RE::VMHandle handle;
+            bool repeat;
+            bool gameTime;
+            std::uint32_t updateTime;
+            std::uint32_t timeToSendEvent;
+        };
+        struct LosSnap {
+            RE::VMHandle handle;
+            RE::FormID viewer;
+            RE::FormID target;
+            int type;
+        };
+        constexpr std::size_t kMaxAllRows = 500;
+
+        json describeUpdate(const UpdateSnap& e, std::uint32_t now) {
             json j = describeHandle(e.handle);
-            j["clock"] = gameTime ? "game" : "real";
-            j["kind"] = e.updateType == RE::SkyrimVM::UpdateDataEvent::UpdateType::kRepeat ? "repeat" : "single";
+            j["clock"] = e.gameTime ? "game" : "real";
+            j["kind"] = e.repeat ? "repeat" : "single";
             j["updateTime_raw"] = e.updateTime;
             j["timeToSendEvent_raw"] = e.timeToSendEvent;
-            const auto remaining = static_cast<std::int64_t>(e.timeToSendEvent) - static_cast<std::int64_t>(now);
+            // Modular: both are uint32 clocks that wrap (~49.7 days of real ms); valid while the interval is
+            // under half the clock range (brief 55 B5).
+            const auto remaining = static_cast<std::int64_t>(static_cast<std::int32_t>(e.timeToSendEvent - now));
+            const bool gameTime = e.gameTime;
             j["remaining_raw"] = remaining;
             // Derived, labelled as such: real clock is milliseconds; game clock is days x 1000 (SkyrimVM.h).
             if (gameTime) {
@@ -366,39 +392,53 @@ namespace SkyrimMCP::PapyrusBridge {
             nowReal = svm->currentVMTime;
             nowGame = svm->currentVMDaysPassed;
         }
-        json updates = json::array();
+        std::vector<UpdateSnap> usnap;
         std::size_t totalReal = 0, totalGame = 0;
+        bool truncated = false;
         {
             RE::BSSpinLockGuard lock{svm->queuedOnUpdateEventLock};
             totalReal = svm->queuedOnUpdateEvents.size();
             totalGame = svm->queuedOnUpdateGameEvents.size();
-            for (auto& p : svm->queuedOnUpdateEvents) {
-                if (p && (all || p->handle == want)) updates.push_back(describeUpdate(*p, false, nowReal));
-            }
-            for (auto& p : svm->queuedOnUpdateGameEvents) {
-                if (p && (all || p->handle == want)) updates.push_back(describeUpdate(*p, true, nowGame));
-            }
+            usnap.reserve(std::min<std::size_t>(totalReal + totalGame, kMaxAllRows));
+            auto take = [&](auto& arr, bool game) {
+                for (auto& p : arr) {
+                    if (!p || !(all || p->handle == want)) continue;
+                    if (usnap.size() >= kMaxAllRows) { truncated = true; return; }
+                    usnap.push_back({p->handle, p->updateType == RE::SkyrimVM::UpdateDataEvent::UpdateType::kRepeat,
+                                     game, p->updateTime, p->timeToSendEvent});
+                }
+            };
+            take(svm->queuedOnUpdateEvents, false);
+            take(svm->queuedOnUpdateGameEvents, true);
         }
-        json los = json::array();
+        std::vector<LosSnap> lsnap;
         {
             RE::BSSpinLockGuard lock{svm->queuedLOSEventCheckLock};
             for (auto& p : svm->queuedLOSEventChecks) {
                 if (!p || !(all || p->handle == want)) continue;
-                json j = describeHandle(p->handle);
-                char v[12], t[12];
-                std::snprintf(v, sizeof(v), "%08X", p->akViewerFormID);
-                std::snprintf(t, sizeof(t), "%08X", p->akTargetFormID);
-                j["viewer"] = v;
-                j["target"] = t;
-                j["event"] = p->losEventType == RE::SkyrimVM::LOSDataEvent::LOSEventType::kGain ? "gain"
-                           : p->losEventType == RE::SkyrimVM::LOSDataEvent::LOSEventType::kLost ? "lost" : "both";
-                los.push_back(j);
+                if (lsnap.size() >= kMaxAllRows) { truncated = true; break; }
+                lsnap.push_back({p->handle, p->akViewerFormID, p->akTargetFormID, static_cast<int>(p->losEventType)});
             }
+        }
+        // Locks released: now resolve and serialise.
+        json updates = json::array();
+        for (auto& e : usnap) updates.push_back(describeUpdate(e, e.gameTime ? nowGame : nowReal));
+        json los = json::array();
+        for (auto& e : lsnap) {
+            json j = describeHandle(e.handle);
+            char v[12], t[12];
+            std::snprintf(v, sizeof(v), "%08X", e.viewer);
+            std::snprintf(t, sizeof(t), "%08X", e.target);
+            j["viewer"] = v;
+            j["target"] = t;
+            j["event"] = e.type == 0 ? "gain" : e.type == 1 ? "lost" : "both";
+            los.push_back(j);
         }
         json out = {
             {"refId", all ? "all" : refFormIdHex},
             {"updates", updates},
             {"lineOfSight", los},
+            {"truncated_at", truncated ? json(kMaxAllRows) : json(nullptr)},
             {"queue_totals", {{"onUpdate", totalReal}, {"onUpdateGameTime", totalGame}}},
             {"vm_clock", {{"currentVMTime_ms", nowReal}, {"currentVMDaysPassed_x1000", nowGame}}},
         };
@@ -423,6 +463,9 @@ namespace SkyrimMCP::PapyrusBridge {
                 out["hasInventoryEventFilter"] = svm->InventoryEventFilterMap.contains(want);
             }
         }
+        out["unverified"] = "SkyrimVM member offsets come from CommonLibSSE-NG's reverse-engineered header and are NOT "
+                            "yet validated on AE 1.6.1170; *_derived units (real ms, game days x 1000) come from its "
+                            "comments. Treat values as provisional until the first live check (Codex brief 55).";
         out["not_covered"] = "SKSE registrations (RegisterForKey/Menu/ModEvent/CameraState/ControlDown...) live in "
                              "SKSE's own RegistrationSets, and animation events on the actor's graph; neither is "
                              "in SkyrimVM, so their absence here proves nothing.";
